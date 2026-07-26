@@ -1,0 +1,29 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local data and user-generated outputs should not be committed.
+local_data/
+data/
+work/
+tmp/
+outputs/
+examples/example_predictions.tsv
+
+# Raw or individual-level methylation artifacts are intentionally excluded.
+*.idat
+*.parquet
+*.h5
+*.hdf5
+*.loom
+*.npy
+*.npz
+*.rds
+*.rda
+*.pkl
+*.pickle

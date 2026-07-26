@@ -1,0 +1,24 @@
+[project]
+name = "minicpg"
+version = "0.1.0"
+description = "Compact DNA methylation classifier for cancer type"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "pyarrow>=15.0",
+  "scipy>=1.11",
+  "scikit-learn>=1.4",
+  "tqdm>=4.66",
+  "pyyaml>=6.0",
+  "matplotlib>=3.8",
+  "seaborn>=0.13",
+]
+
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/minicpg"]

@@ -1,0 +1,65 @@
+MiniCpG Academic and Non-commercial Research Use License
+
+Copyright (c) 2026 Tal Gutman, Tamir Tuller, and contributors.
+All rights reserved except as expressly granted below.
+
+1. Definitions
+
+"Software" means the MiniCpG source code, trained model files, examples,
+documentation, configuration templates, and aggregate result files included in
+this release.
+
+"Non-commercial research use" means use for academic research, education,
+personal study, reproducibility checks, peer review, or other research activity
+that is not primarily intended for commercial advantage or monetary
+compensation.
+
+"Commercial use" includes, but is not limited to, use of the Software in a paid
+product or service, use by or for a commercial entity for product development,
+clinical diagnostic deployment, incorporation into a proprietary diagnostic
+pipeline, or use to provide paid analysis services.
+
+2. Permission
+
+Permission is granted to use, copy, modify, and redistribute the Software, in
+source or modified form, solely for non-commercial research use, provided that
+all copyright, license, citation, and disclaimer notices are retained.
+
+3. Restrictions
+
+You may not use the Software for commercial use without a separate written
+license from the copyright holders or their authorized institution.
+
+You may not use the Software as a clinical diagnostic device, clinical
+decision-support system, or substitute for professional medical judgment. Any
+clinical or regulated use requires independent assay implementation,
+calibration, validation, regulatory review, and separate written permission.
+
+You may not remove or obscure this license notice, imply endorsement by the
+authors or their institutions, or sublicense the Software under different terms.
+
+4. Third-party data and dependencies
+
+This license does not grant rights to third-party datasets, raw methylation
+matrices, clinical metadata, software dependencies, or resources that are not
+owned by the copyright holders. Users are responsible for obtaining all required
+permissions and complying with the terms of the original data and dependency
+providers.
+
+5. Citation
+
+Academic publications or public reports that use the Software should cite the
+associated MiniCpG manuscript and any relevant third-party resources.
+
+6. No warranty
+
+The Software is provided "as is", without warranty of any kind, express or
+implied, including but not limited to warranties of merchantability, fitness for
+a particular purpose, non-infringement, accuracy, or clinical validity. The
+copyright holders and contributors are not liable for any claim, damages, or
+other liability arising from use of the Software.
+
+7. Termination
+
+Any rights granted under this license terminate automatically if you violate its
+terms. Upon termination, you must stop using and distributing the Software.

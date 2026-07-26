@@ -1,0 +1,7 @@
+metric	label	value
+gate_specificity	Normal specificity	0.7862222222222222
+gate_sensitivity	Cancer sensitivity	0.7266509803921569
+subtype_accuracy_gate_positive_cancers	"Subtype accuracy
+(gate-positive)"	0.585287513563291
+subtype_macro_f1_gate_positive_cancers	"Subtype macro-F1
+(gate-positive)"	0.52435060119731

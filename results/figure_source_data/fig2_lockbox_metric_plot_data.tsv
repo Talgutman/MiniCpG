@@ -1,0 +1,6 @@
+metric	metric_label	value	dataset	k
+macro_f1	Macro-F1	0.9206644714720832	Held-out TCGA test set	30
+weighted_f1	Weighted-F1	0.9248173282194696	Held-out TCGA test set	30
+balanced_accuracy	Balanced accuracy	0.917416587362818	Held-out TCGA test set	30
+accuracy	Accuracy	0.9250446162998216	Held-out TCGA test set	30
+auroc	AUROC	0.997251588405362	Held-out TCGA test set	30

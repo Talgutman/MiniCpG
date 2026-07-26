@@ -1,0 +1,31 @@
+Rank	CpG	Gene / locus	Gene / locus note	Prior evidence note	ENCODE cCRE	Gene annotation	CpG island context	Stability selection rate
+1	cg26687072	HOXB1	developmental homeobox	HOXB1: developmental/homeobox tumor suppressor	PLS	Promoter/TSS200	Island	0.99
+2	cg11331739	Intergenic	intergenic locus		dELS	Intergenic	Open sea	0.88
+3	cg08940169	ZFPM1	cancer/immune methylation-linked	Exact CpG: asthma/allergy/ALS EWAS; pancreatic cfDNA predictor | ZFPM1: cancer/immune methylation-linked	dELS	Gene body/intron	Island	0.88
+4	cg11420192	LINC01937	under-characterized lncRNA		dELS	Gene body/intron	Open sea	0.8
+5	cg19817912	HOXA-AS2;HOXA3	developmental homeobox; oncogenic lncRNA	HOXA-AS2 oncogenic lncRNA; HOXA3 cancer-linked homeobox	pELS	Promoter/TSS200 (HOXA-AS2); 5'UTR (HOXA3)	South shore	0.78
+6	cg09470010	GBF1	Golgi ARF-GEF / vesicle trafficking		dELS	Gene body/intron	Open sea	0.7
+7	cg02753354	ARHGAP45	immune cell migration	Exact CpG: sleep/preterm-birth EWAS; no cancer-specific hit	dELS	Gene body/intron	Island	0.68
+8	cg12689888	CCDC18;CCDC18-AS1	coiled-coil domain-containing protein; antisense lncRNA		dELS	Gene body/intron	Open sea	0.66
+9	cg19324462	AP000721.2;AP006333.2;MACROD1	ADP-ribose hydrolase		dELS	Gene body/intron	Island	0.65
+10	cg09063173	Intergenic	intergenic locus		dELS	Intergenic	Open sea	0.65
+11	cg14530382	SH2D3A	non-cancer disease-linked	Exact CpG: asthma/rhinitis meth-expression signal	dELS	Exon	Island	0.63
+12	cg13750214	Intergenic	intergenic locus		dELS	Intergenic	Island	0.61
+13	cg02075410	LRBA;MAB21L2	developmental/cancer dependency; immune dysregulation	LRBA immune-dysregulation gene; MAB21L2 neuroblastoma dependency	pELS	Promoter/TSS1500 (LRBA); 5'UTR (MAB21L2)	Island	0.6
+14	cg02546607	WWOX	tumor suppressor	WWOX: recurrently methylated tumor suppressor	None	Gene body/intron	Open sea	0.58
+15	cg19780352	CBR4;PALLD	mitochondrial carbonyl reductase; actin cytoskeleton scaffold	PALLD: stromal/CAF-linked cancer gene	None	5'UTR (PALLD); Gene body/intron (CBR4)	Island	0.56
+16	cg12083852	PI4KB	signaling	PI4KB: amplified/signaling-linked cancer gene	None	Gene body/intron	Open sea	0.47
+17	cg23994061	Intergenic	intergenic locus		dELS	Intergenic	Open sea	0.46
+18	cg16945186	Intergenic	intergenic locus		dELS	Intergenic	Island	0.44
+19	cg19696870	Intergenic	intergenic locus		dELS	Intergenic	Open sea	0.42
+20	cg27147556	ARL4D	T-effector regulator	Exact CpG: ARL4D expression-linked in breast cancer	pELS	Exon	Island	0.41
+21	cg24276395	YEATS2	chromatin regulator	Exact CpG: ESCC diagnostic marker; inverse YEATS2 expression | YEATS2: chromatin regulator with metastasis evidence	None	5'UTR	South shelf	0.41
+22	cg01655356	SHANK2	tumor-suppressor-like	SHANK2: neuroblastoma tumor suppressor	PLS	Promoter/TSS200	Island	0.39
+23	cg02357751	AC000093.1;GP1BB;SEPTIN5	platelet glycoprotein; septin cytoskeleton GTPase	Exact CpG: maternal glycemia/offspring blood methylation	PLS	Promoter/TSS200 (GP1BB); 3'UTR (SEPTIN5)	Island	0.38
+24	cg15431165	Intergenic	intergenic locus		dELS	Intergenic	South shelf	0.38
+25	cg02748089	AC046158.1;WWOX	tumor suppressor; under-characterized lncRNA	Exact CpG: breast-cancer immunotherapy-response signature | WWOX: recurrently methylated tumor suppressor	None	Gene body/intron	Open sea	0.38
+26	cg23737737	IFFO1	intermediate filament/DNA repair	Exact CpG: IFFO1-linked pancreatic-cancer methylation marker | IFFO1: pancreatic/ovarian methylation-linked cancer gene	PLS	Promoter/TSS200	South shore	0.37
+27	cg05124918	AC025259.1;SMIM41	small membrane protein	Exact CpG: age-related epigenetic-mutation marker	PLS	Promoter/TSS200 (SMIM41); Gene body/intron (AC025259.1)	Island	0.37
+28	cg25103160	AC078923.1	under-characterized lncRNA		dELS	Gene body/intron	Open sea	0.34
+29	cg02314348	CRTC3-AS1	antisense lncRNA		dELS	Gene body/intron	Open sea	0.32
+30	cg00182893	AL592429.2	under-characterized lncRNA		dELS	Gene body/intron	Open sea	0.32

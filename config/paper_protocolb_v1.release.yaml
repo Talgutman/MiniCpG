@@ -1,0 +1,82 @@
+# MiniCpG release configuration template.
+# Fill the path placeholders after downloading public inputs.
+
+project:
+  id: paper_protocolb_v1
+  output_root: outputs/minicpg_reproduction
+
+cohort:
+  min_class_n: 50
+  merge_policy: protocolb_three_merges
+  label_col: project_id
+  record_identifier_col: <column_containing_unique_array_or_sample_record>
+  subject_identifier_col: <column_containing_patient_or_subject_identifier_if_available>
+
+data_access:
+  tcga_hm450_primary_tumor_manifest: <path_to_public_or_authorized_tcga_manifest>
+  tcga_hm450_beta_matrix: <path_to_tcga_hm450_beta_matrix_built_by_user>
+  external_public_data_dir: <path_to_downloaded_geo_arrayexpress_methylation_files>
+  external_public_accession_summary: resources/external_public_accessions/external_public_accession_summary.tsv
+  blacklist_cross_reactive: <path_to_downloaded_public_cross_reactive_probe_blacklist>
+  blacklist_snp_affected: <path_to_downloaded_public_snp_affected_probe_blacklist>
+  probe_annotation: <path_to_public_illumina_or_gencode_probe_annotation>
+
+split:
+  seed: 7
+  lockbox_fraction: 0.2
+  stratify_by: project_id
+
+cv:
+  inner_folds: 5
+  seed: 7
+
+selection_stage:
+  outer_splits: 5
+  outer_repeats: 3
+
+confirm_stage:
+  outer_splits: 5
+  outer_repeats: 20
+
+training:
+  class_weight_mode: balanced
+  tune_metric: weighted_f1
+
+ks:
+  active: [30]
+  evaluated: [5, 10, 20, 30, 50, 100]
+
+prefilter:
+  method: mi
+  default_k: 3500
+  logistic_k: 500
+
+fs_methods:
+  - rare_class_rank_shift
+  - mi_rank_baseline
+  - pairwise_hard_weighted_auc_stable
+
+models:
+  - extra_trees
+  - random_forest
+  - linear_svm
+  - elastic_net_multinomial_logistic
+
+stable_panel:
+  method: rankrule
+  builder: scripts/build_stable_panel_v1.py
+  selected_panel: resources/panels/stable_panel_rankrule_top30.tsv
+
+selection:
+  primary_metric: macro_f1
+  tie_break_1: weighted_f1
+  tie_break_2: panel_stability
+  tie_break_3: model_simplicity
+
+external:
+  cache_mode: no_cache
+  buckets:
+    - main
+    - stress_ffpe
+    - stress_epic
+    - stress_metastatic

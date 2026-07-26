@@ -1,0 +1,4 @@
+source_label	target_label
+TCGA-LGG	TCGA-GBM
+TCGA-STAD	TCGA-ESCA
+TCGA-READ	TCGA-COAD

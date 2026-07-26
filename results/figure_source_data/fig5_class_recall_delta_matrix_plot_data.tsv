@@ -1,0 +1,64 @@
+class	class_short	bucket	bucket_label	context	present	support	recall	main_recall	recall_delta_vs_main	n_stress_buckets	total_support
+TCGA-SKCM	SKCM	stress_metastatic	Metastatic	Disease-context shift	True	32	0.8125	0.8625	-0.050000000000000044	3	329
+TCGA-SKCM	SKCM	stress_ffpe	FFPE	Preservation shift	True	104	0.5096153846153846	0.8625	-0.35288461538461546	3	329
+TCGA-SKCM	SKCM	stress_epic	EPIC	Platform shift	True	193	0.6373056994818653	0.8625	-0.22519430051813472	3	329
+TCGA-UCEC	UCEC	stress_metastatic	Metastatic	Disease-context shift	True	53	0.7924528301886793	0.9285714285714286	-0.1361185983827493	3	133
+TCGA-UCEC	UCEC	stress_ffpe	FFPE	Preservation shift	True	31	0.967741935483871	0.9285714285714286	0.03917050691244239	3	133
+TCGA-UCEC	UCEC	stress_epic	EPIC	Platform shift	True	49	0.9387755102040817	0.9285714285714286	0.010204081632653073	3	133
+TCGA-BRCA	BRCA	stress_metastatic	Metastatic	Disease-context shift	True	143	0.8671328671328671	0.8963963963963963	-0.029263529263529264	3	180
+TCGA-BRCA	BRCA	stress_ffpe	FFPE	Preservation shift	True	27	0.9259259259259259	0.8963963963963963	0.029529529529529586	3	180
+TCGA-BRCA	BRCA	stress_epic	EPIC	Platform shift	True	10	1.0	0.8963963963963963	0.10360360360360366	3	180
+TCGA-PRAD	PRAD	stress_metastatic	Metastatic	Disease-context shift	True	8	1.0	1.0	0.0	3	117
+TCGA-PRAD	PRAD	stress_ffpe	FFPE	Preservation shift	True	105	0.9809523809523809	1.0	-0.01904761904761909	3	117
+TCGA-PRAD	PRAD	stress_epic	EPIC	Platform shift	True	4	1.0	1.0	0.0	3	117
+TCGA-PAAD	PAAD	stress_metastatic	Metastatic	Disease-context shift	True	27	0.0	0.8308457711442786	-0.8308457711442786	2	43
+TCGA-PAAD	PAAD	stress_ffpe	FFPE	Preservation shift	True	16	0.3125	0.8308457711442786	-0.5183457711442786	2	43
+TCGA-PAAD	PAAD	stress_epic	EPIC	Platform shift	False	0				2	43
+TCGA-COAD	COAD/READ	stress_metastatic	Metastatic	Disease-context shift	True	29	0.20689655172413793	0.7759197324414716	-0.5690231807173337	2	41
+TCGA-COAD	COAD/READ	stress_ffpe	FFPE	Preservation shift	False	0				2	41
+TCGA-COAD	COAD/READ	stress_epic	EPIC	Platform shift	True	12	0.8333333333333334	0.7759197324414716	0.05741360089186176	2	41
+TCGA-SARC	SARC	stress_metastatic	Metastatic	Disease-context shift	False	0				2	1785
+TCGA-SARC	SARC	stress_ffpe	FFPE	Preservation shift	True	1781	0.5620437956204379	0.7397260273972602	-0.1776822317768223	2	1785
+TCGA-SARC	SARC	stress_epic	EPIC	Platform shift	True	4	0.25	0.7397260273972602	-0.48972602739726023	2	1785
+TCGA-HNSC	HNSC	stress_metastatic	Metastatic	Disease-context shift	True	25	0.44	0.8277777777777777	-0.3877777777777777	2	67
+TCGA-HNSC	HNSC	stress_ffpe	FFPE	Preservation shift	True	42	0.38095238095238093	0.8277777777777777	-0.4468253968253968	2	67
+TCGA-HNSC	HNSC	stress_epic	EPIC	Platform shift	False	0				2	67
+TCGA-THCA	THCA	stress_metastatic	Metastatic	Disease-context shift	False	0				2	58
+TCGA-THCA	THCA	stress_ffpe	FFPE	Preservation shift	True	4	1.0	0.9570552147239264	0.042944785276073594	2	58
+TCGA-THCA	THCA	stress_epic	EPIC	Platform shift	True	54	0.8518518518518519	0.9570552147239264	-0.10520336287207455	2	58
+TCGA-KIRC	KIRC	stress_metastatic	Metastatic	Disease-context shift	True	159	0.7484276729559748	0.8	-0.05157232704402526	2	297
+TCGA-KIRC	KIRC	stress_ffpe	FFPE	Preservation shift	False	0				2	297
+TCGA-KIRC	KIRC	stress_epic	EPIC	Platform shift	True	138	0.8695652173913043	0.8	0.06956521739130428	2	297
+TCGA-CESC	CESC	stress_metastatic	Metastatic	Disease-context shift	True	24	0.125	0.7858719646799117	-0.6608719646799117	1	24
+TCGA-CESC	CESC	stress_ffpe	FFPE	Preservation shift	False	0				1	24
+TCGA-CESC	CESC	stress_epic	EPIC	Platform shift	False	0				1	24
+TCGA-PCPG	PCPG	stress_metastatic	Metastatic	Disease-context shift	False	0				1	12
+TCGA-PCPG	PCPG	stress_ffpe	FFPE	Preservation shift	True	12	0.4166666666666667	1.0	-0.5833333333333333	1	12
+TCGA-PCPG	PCPG	stress_epic	EPIC	Platform shift	False	0				1	12
+TCGA-MESO	MESO	stress_metastatic	Metastatic	Disease-context shift	False	0				1	79
+TCGA-MESO	MESO	stress_ffpe	FFPE	Preservation shift	True	79	0.3037974683544304	0.6935483870967742	-0.38975091874234385	1	79
+TCGA-MESO	MESO	stress_epic	EPIC	Platform shift	False	0				1	79
+TCGA-LAML	LAML	stress_metastatic	Metastatic	Disease-context shift	False	0				1	192
+TCGA-LAML	LAML	stress_ffpe	FFPE	Preservation shift	False	0				1	192
+TCGA-LAML	LAML	stress_epic	EPIC	Platform shift	True	192	0.5	0.8675213675213675	-0.36752136752136755	1	192
+TCGA-UVM	UVM	stress_metastatic	Metastatic	Disease-context shift	False	0				1	23
+TCGA-UVM	UVM	stress_ffpe	FFPE	Preservation shift	True	23	0.13043478260869565	0.4827586206896552	-0.3523238380809596	1	23
+TCGA-UVM	UVM	stress_epic	EPIC	Platform shift	False	0				1	23
+TCGA-LIHC	LIHC	stress_metastatic	Metastatic	Disease-context shift	False	0				1	28
+TCGA-LIHC	LIHC	stress_ffpe	FFPE	Preservation shift	False	0				1	28
+TCGA-LIHC	LIHC	stress_epic	EPIC	Platform shift	True	28	0.7857142857142857	0.9839357429718876	-0.19822145725760187	1	28
+TCGA-UCS	UCS	stress_metastatic	Metastatic	Disease-context shift	False	0				1	7
+TCGA-UCS	UCS	stress_ffpe	FFPE	Preservation shift	False	0				1	7
+TCGA-UCS	UCS	stress_epic	EPIC	Platform shift	True	7	0.0	0.17045454545454544	-0.17045454545454544	1	7
+TCGA-ESCA	ESCA/STAD	stress_metastatic	Metastatic	Disease-context shift	False	0				1	30
+TCGA-ESCA	ESCA/STAD	stress_ffpe	FFPE	Preservation shift	True	30	0.9333333333333333	0.9722222222222222	-0.03888888888888886	1	30
+TCGA-ESCA	ESCA/STAD	stress_epic	EPIC	Platform shift	False	0				1	30
+TCGA-GBM	GBM/LGG	stress_metastatic	Metastatic	Disease-context shift	False	0				1	388
+TCGA-GBM	GBM/LGG	stress_ffpe	FFPE	Preservation shift	True	388	0.9922680412371134	0.9973118279569892	-0.00504378671987582	1	388
+TCGA-GBM	GBM/LGG	stress_epic	EPIC	Platform shift	False	0				1	388
+TCGA-LUAD	LUAD	stress_metastatic	Metastatic	Disease-context shift	False	0				1	41
+TCGA-LUAD	LUAD	stress_ffpe	FFPE	Preservation shift	False	0				1	41
+TCGA-LUAD	LUAD	stress_epic	EPIC	Platform shift	True	41	0.8536585365853658	0.773109243697479	0.08054929288788681	1	41
+TCGA-THYM	THYM	stress_metastatic	Metastatic	Disease-context shift	False	0				1	113
+TCGA-THYM	THYM	stress_ffpe	FFPE	Preservation shift	True	113	0.8761061946902655	0.5714285714285714	0.3046776232616941	1	113
+TCGA-THYM	THYM	stress_epic	EPIC	Platform shift	False	0				1	113

@@ -1,0 +1,6 @@
+metric	metric_label	value	n_samples	n_classes_in_truth
+macro_f1	Macro-F1	0.71541033649334	3689	26
+weighted_f1	Weighted-F1	0.8543283709237	3689	26
+balanced_accuracy	Balanced accuracy	0.7893791043166042	3689	26
+accuracy	Accuracy	0.838167525074546	3689	26
+auroc	AUROC	0.9774224887488288	3689	26

@@ -1,0 +1,43 @@
+priority	gse_id	tcga_label	pattern	note
+1	GSE171994	TCGA-HNSC	oropharyn|organ of origin:\s*(tonsil|tongue)|\bopscc\b	GSE-specific HNSC (oropharynx/tonsil/tongue metastasis cohort)
+1	GSE67116	TCGA-UCEC	genomic dna from endometrial sample|primary disease dx:\s*endometrial cancer	GSE-specific endometrial cancer cohort
+1	GSE60274	TCGA-GBM	disease state:\s*gbm|cultured glioma spheres	GSE-specific GBM glioma-sphere cohort
+1	GSE158075	TCGA-LUSC	diagnosis \(final clinical diagnosis for the patient\):\s*squamous cell carcinoma	GSE-specific LU lung cohort: explicit squamous diagnosis
+1	GSE158075	TCGA-LUAD	diagnosis \(final clinical diagnosis for the patient\):\s*adenocarcinoma	GSE-specific LU lung cohort: explicit adenocarcinoma diagnosis
+1	GSE113019	TCGA-LIHC	liver cancer #l\d+,\s*primary tumorous tissue|tissue:\s*liver cancer,\s*primary tumorous tissue	GSE-specific LIHC cohort: explicit primary liver tumorous tissue
+1	GSE53051	TCGA-PAAD	tissue:\s*pancreas.*state:\s*cancer.*notes:\s*adenocarcinoma|pancreas_cancer_	GSE-specific PAAD rows in mixed metastasis study
+1	GSE249157	TCGA-LUAD	metastatic site:\s*nsclc\s*adca|\bnsclc\s*adca\b|non small cell lung cancer.*adca	GSE249157 brain-metastasis cohort: NSCLC adenocarcinoma origin
+1	GSE249157	TCGA-LUSC	metastatic site:\s*nsclc\s*scc|\bnsclc\s*scc\b|non small cell lung cancer.*scc	GSE249157 brain-metastasis cohort: NSCLC squamous origin
+1	GSE156932	TCGA-KICH	rcc[-\s]?chromophobe|renal cell carcinoma[-\s]?chromophobe|chromophobe rcc	GSE156932 chromophobe RCC rows (high-confidence KICH mapping)
+1	GSE77804	TCGA-ACC	adrenocro?tical carcinoma|adrenal cortex carcinoma	GSE77804 adrenocortical carcinoma rows (high-confidence ACC mapping)
+8		TCGA-UVM	uveal\s+melanoma|choroidal\s+melanoma|ocular\s+melanoma	High-specificity UVM mapping; must precede generic melanoma->SKCM alias
+8		TCGA-MESO	malignant\s+pleural\s+mesothelioma|\bmesothelioma\b	High-specificity MESO mapping
+8		TCGA-UCS	uterine\s+carcinosarcoma|malignant\s+mixed\s+mullerian|mmmt\s*(uterus|uterine)?	High-specificity UCS mapping
+8		TCGA-KICH	chromophobe\s+renal|rcc[-\s]?chromophobe|\bchrcc\b	High-specificity KICH mapping
+8		TCGA-ACC	adrenocro?tical\s+carcinoma|adrenal\s+cortex\s+carcinoma	High-specificity ACC mapping
+10		TCGA-GBM	\bgbm\b|glioblast	sample text mentions GBM/glioblastoma
+10		TCGA-LGG	\blgg\b|low[\s-]?grade glioma|astrocytoma|oligodendroglioma	sample text mentions lower-grade glioma terms
+10		TCGA-BRCA	\bbrca\b|breast	sample text mentions breast
+10		TCGA-CESC	\bcesc\b|cervi(?:cal|x)	sample text mentions cervix/cervical
+10		TCGA-COAD	\bcoad\b|colon|colorectal	sample text mentions colon/colorectal
+10		TCGA-ESCA	\besca\b|esophag|barrett|\beac\b	sample text mentions esophagus/Barrett/EAC
+10		TCGA-HNSC	\bhnsc\b|head[\s-]?and[\s-]?neck|oropharyn|opscc	sample text mentions HNSC synonyms
+10		TCGA-KIRC	\bkirc\b|clear[\s-]?cell[\s-]?renal|ccrcc	sample text mentions clear cell renal
+10		TCGA-KIRP	\bkirp\b|papillary[\s-]?renal|prcc	sample text mentions papillary renal
+10		TCGA-LAML	\blaml\b|\baml\b|acute[\s-]?myeloid	sample text mentions AML
+10		TCGA-LIHC	\blihc\b|\bhcc\b|hepatocell	sample text mentions LIHC/HCC
+10		TCGA-LUAD	\bluad\b|lung[\s-]?adenocarcinoma	sample text mentions LUAD
+10		TCGA-LUSC	\blusc\b|lung[\s-]?squamous	sample text mentions LUSC
+10		TCGA-PAAD	\bpaad\b|pancreatic[\s-]?adenocarcinoma	sample text mentions PAAD
+10		TCGA-PCPG	\bpcpg\b|pheochromocyt|paragangliom	sample text mentions PCPG
+10		TCGA-PRAD	\bprad\b|prostate	sample text mentions prostate
+10		TCGA-SARC	\bsarc\b|sarcoma|ewing|osteosarcoma|synovial	sample text mentions sarcoma terms
+10		TCGA-SKCM	\bskcm\b|melanoma	sample text mentions melanoma
+10		TCGA-STAD	\bstad\b|gastric|stomach[\s-]?(?:adenocarcinoma|cancer)	sample text mentions gastric/stomach cancer
+10		TCGA-TGCT	\btgct\b|testicular|germ[\s-]?cell|seminoma|teratoma	sample text mentions TGCT terms
+10		TCGA-THCA	\bthca\b|thyroid|papillary[\s-]?thyroid|follicular[\s-]?thyroid	sample text mentions thyroid terms
+10		TCGA-THYM	\bthym\b|thymoma|thymic	sample text mentions thymic terms
+10		TCGA-UCEC	\bucec\b|endometrial|uterine[\s-]?corpus	sample text mentions endometrial terms
+10		TCGA-BLCA	\bblca\b|bladder|urothelial	sample text mentions bladder/urothelial
+20		TCGA-CHOL	\bchol\b|cholangiocarc|bile[\s-]?duct	sample text mentions cholangiocarcinoma/bile duct
+20		TCGA-OV	\bovarian\b|ovary|serous[\s-]?cystadenocarcinoma	sample text mentions ovarian/ovary terms

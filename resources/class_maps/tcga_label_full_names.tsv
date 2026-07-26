@@ -1,0 +1,28 @@
+tcga_label	full_name
+TCGA-ACC	Adrenocortical carcinoma
+TCGA-BLCA	Bladder urothelial carcinoma
+TCGA-BRCA	Breast invasive carcinoma
+TCGA-CESC	Cervical squamous cell carcinoma and endocervical adenocarcinoma
+TCGA-COAD	Colon adenocarcinoma
+TCGA-ESCA	Esophageal carcinoma
+TCGA-GBM	Glioblastoma multiforme
+TCGA-HNSC	Head and neck squamous cell carcinoma
+TCGA-KICH	Kidney chromophobe
+TCGA-KIRC	Kidney renal clear cell carcinoma
+TCGA-KIRP	Kidney renal papillary cell carcinoma
+TCGA-LAML	Acute myeloid leukemia
+TCGA-LIHC	Liver hepatocellular carcinoma
+TCGA-LUAD	Lung adenocarcinoma
+TCGA-LUSC	Lung squamous cell carcinoma
+TCGA-MESO	Mesothelioma
+TCGA-PAAD	Pancreatic adenocarcinoma
+TCGA-PCPG	Pheochromocytoma and paraganglioma
+TCGA-PRAD	Prostate adenocarcinoma
+TCGA-SARC	Sarcoma
+TCGA-SKCM	Skin cutaneous melanoma
+TCGA-TGCT	Testicular germ cell tumors
+TCGA-THCA	Thyroid carcinoma
+TCGA-THYM	Thymoma
+TCGA-UCEC	Uterine corpus endometrial carcinoma
+TCGA-UCS	Uterine carcinosarcoma
+TCGA-UVM	Uveal melanoma

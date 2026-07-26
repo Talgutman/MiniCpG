@@ -1,0 +1,26 @@
+{
+  "external_validation": {
+    "missing_probe_threshold_max": 5,
+    "public_accession_summary": "resources/external_public_accessions/external_public_accession_summary.tsv",
+    "source_policy": "canonical_ground_truth_first"
+  },
+  "locked_run_name": "paper_protocolb_v1_k030",
+  "notes": [
+    "Template generated from the locked manuscript run.",
+    "Populate local paths after downloading public inputs.",
+    "No raw data, sample-level curation tables, or private paths are stored in this template."
+  ],
+  "paths": {
+    "input_data_root": "<path_to_downloaded_public_methylation_data>",
+    "lockbox_metrics_tsv": "outputs/minicpg_reproduction/locked_model/metrics_lockbox.tsv",
+    "model_bundle_pkl": "outputs/minicpg_reproduction/locked_model/model_bundle.pkl",
+    "output_root": "outputs/minicpg_reproduction",
+    "panel_tsv": "resources/panels/stable_panel_rankrule_top30.tsv",
+    "project_root": "<path_to_minicpg_code_release>"
+  },
+  "version": {
+    "bucket": "external_main__paper_protocolb_v1_k030",
+    "model": "paper_protocolb_v1_k030__rare_class_rank_shift__extra_trees__mi3004",
+    "panel": "stable_panel_rankrule_top30__paper_protocolb_v1_k030"
+  }
+}
