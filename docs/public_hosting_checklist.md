@@ -1,13 +1,12 @@
-# Public Hosting Checklist
+# Public Release Record
 
-Recommended hosting pattern:
+Current public release:
 
-1. Create the public GitHub repository `talgutman/MiniCpG`.
-2. Upload the contents of this release directory as the repository root.
-3. Verify that `CITATION.cff` still points to `https://github.com/talgutman/MiniCpG`; update it only if a different host is chosen.
-4. Create a versioned release tag, for example `v0.1.0`.
-5. Archive the tagged release in Zenodo and obtain a DOI.
-6. If a Zenodo DOI is created before submission, optionally add the DOI to `docs/code_availability_statement.md`.
-7. Use the updated Code Availability statement in the manuscript.
+1. Repository: `https://github.com/talgutman/MiniCpG`.
+2. Version tag: `v0.1.0`.
+3. GitHub Release: `https://github.com/talgutman/MiniCpG/releases/tag/v0.1.0`.
+4. `CITATION.cff` points to the public repository.
+5. Zenodo DOI: not assigned in this release snapshot unless added later.
+6. If a Zenodo DOI is created before submission, add the DOI to `CITATION.cff`, this file, and `docs/code_availability_statement.md`, then create a new versioned release.
 
-Before public upload, confirm with the PI/lab/TAU that the academic and non-commercial research-use license is acceptable for this release.
+Confirm with the PI/lab/TAU that the academic and non-commercial research-use license is acceptable for public distribution.

@@ -38,7 +38,7 @@ Populate the placeholders in `config/paths.template.yaml` and `config/paper_prot
 
 ## Citation
 
-Please cite the associated MiniCpG manuscript and this code release. Citation metadata are provided in `CITATION.cff`; replace the placeholder repository URL after public deposition.
+Please cite the associated MiniCpG manuscript and this code release. Citation metadata are provided in `CITATION.cff`.
 
 ## Intended Use
 
