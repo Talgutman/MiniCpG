@@ -1,20 +1,28 @@
 [project]
 name = "minicpg"
-version = "0.1.0"
+version = "0.2.0.dev0"
 description = "Compact DNA methylation classifier for cancer type"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11,<3.13"
 dependencies = [
-  "numpy>=1.26",
-  "pandas>=2.1",
-  "pyarrow>=15.0",
-  "scipy>=1.11",
-  "scikit-learn>=1.4",
-  "tqdm>=4.66",
-  "pyyaml>=6.0",
-  "matplotlib>=3.8",
-  "seaborn>=0.13",
+  "numpy>=1.26,<2.3",
+  "pandas>=2.1,<3",
+  "scipy>=1.11,<2",
+  "scikit-learn==1.7.2",
 ]
+
+[project.optional-dependencies]
+analysis = [
+  "pyarrow>=15.0", "tqdm>=4.66", "pyyaml>=6.0",
+  "matplotlib>=3.8", "seaborn>=0.13", "networkx>=3",
+  "xgboost>=2.0", "statsmodels>=0.14", "shap>=0.46,<0.50", "numba>=0.61,<0.63",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+minicpg-predict = "minicpg.cli:main"
 
 [build-system]
 requires = ["hatchling>=1.21"]
@@ -22,3 +30,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/minicpg"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

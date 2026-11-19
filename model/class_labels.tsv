@@ -1,28 +1,28 @@
-class_index	tcga_label	full_name
-1	TCGA-ACC	Adrenocortical carcinoma
-2	TCGA-BLCA	Bladder urothelial carcinoma
-3	TCGA-BRCA	Breast invasive carcinoma
-4	TCGA-CESC	Cervical squamous cell carcinoma and endocervical adenocarcinoma
-5	TCGA-COAD	Colon adenocarcinoma
-6	TCGA-ESCA	Esophageal carcinoma
-7	TCGA-GBM	Glioblastoma multiforme
-8	TCGA-HNSC	Head and neck squamous cell carcinoma
-9	TCGA-KICH	Kidney chromophobe
-10	TCGA-KIRC	Kidney renal clear cell carcinoma
-11	TCGA-KIRP	Kidney renal papillary cell carcinoma
-12	TCGA-LAML	Acute myeloid leukemia
-13	TCGA-LIHC	Liver hepatocellular carcinoma
-14	TCGA-LUAD	Lung adenocarcinoma
-15	TCGA-LUSC	Lung squamous cell carcinoma
-16	TCGA-MESO	Mesothelioma
-17	TCGA-PAAD	Pancreatic adenocarcinoma
-18	TCGA-PCPG	Pheochromocytoma and paraganglioma
-19	TCGA-PRAD	Prostate adenocarcinoma
-20	TCGA-SARC	Sarcoma
-21	TCGA-SKCM	Skin cutaneous melanoma
-22	TCGA-TGCT	Testicular germ cell tumors
-23	TCGA-THCA	Thyroid carcinoma
-24	TCGA-THYM	Thymoma
-25	TCGA-UCEC	Uterine corpus endometrial carcinoma
-26	TCGA-UCS	Uterine carcinosarcoma
-27	TCGA-UVM	Uveal melanoma
+class_index	tcga_label	display_label	full_name
+1	TCGA-ACC	ACC	Adrenocortical carcinoma
+2	TCGA-BLCA	BLCA	Bladder urothelial carcinoma
+3	TCGA-BRCA	BRCA	Breast invasive carcinoma
+4	TCGA-CESC	CESC	Cervical squamous cell carcinoma and endocervical adenocarcinoma
+5	TCGA-COAD	COAD/READ	Colon and rectum adenocarcinoma
+6	TCGA-ESCA	ESCA/STAD	Esophageal carcinoma and stomach adenocarcinoma
+7	TCGA-GBM	GBM/LGG	Glioblastoma multiforme and lower-grade glioma
+8	TCGA-HNSC	HNSC	Head and neck squamous cell carcinoma
+9	TCGA-KICH	KICH	Kidney chromophobe
+10	TCGA-KIRC	KIRC	Kidney renal clear cell carcinoma
+11	TCGA-KIRP	KIRP	Kidney renal papillary cell carcinoma
+12	TCGA-LAML	LAML	Acute myeloid leukemia
+13	TCGA-LIHC	LIHC	Liver hepatocellular carcinoma
+14	TCGA-LUAD	LUAD	Lung adenocarcinoma
+15	TCGA-LUSC	LUSC	Lung squamous cell carcinoma
+16	TCGA-MESO	MESO	Mesothelioma
+17	TCGA-PAAD	PAAD	Pancreatic adenocarcinoma
+18	TCGA-PCPG	PCPG	Pheochromocytoma and paraganglioma
+19	TCGA-PRAD	PRAD	Prostate adenocarcinoma
+20	TCGA-SARC	SARC	Sarcoma
+21	TCGA-SKCM	SKCM	Skin cutaneous melanoma
+22	TCGA-TGCT	TGCT	Testicular germ cell tumors
+23	TCGA-THCA	THCA	Thyroid carcinoma
+24	TCGA-THYM	THYM	Thymoma
+25	TCGA-UCEC	UCEC	Uterine corpus endometrial carcinoma
+26	TCGA-UCS	UCS	Uterine carcinosarcoma
+27	TCGA-UVM	UVM	Uveal melanoma

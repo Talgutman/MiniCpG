@@ -242,6 +242,18 @@ def _to_float(x: str) -> float | None:
         return None
 
 
+def _normalize_panel_value(value: str) -> str:
+    """Keep numeric source precision; represent missing/nonfinite values as blank."""
+    text = str(value).strip()
+    if text.casefold() in {"", "na", "nan", "n/a", "null", "none", "."}:
+        return ""
+    try:
+        number = float(text)
+    except ValueError as exc:
+        raise ValueError(f"Unexpected nonnumeric panel value: {text!r}") from exc
+    return text if math.isfinite(number) else ""
+
+
 def _beta_from_signals(m_raw: str, u_raw: str) -> str:
     m = _to_float(m_raw)
     u = _to_float(u_raw)
@@ -650,7 +662,14 @@ def main() -> int:
             rr["signal_pair_available"] = str(int(flags.get("signal_pair_available", 0)))
             rr["mapped_measure"] = str(flags.get("mapped_measure", ""))
 
-            vals = sample_probe_vals.get(sid, {})
+            # A populated source cell can still be missing (e.g. GEO's literal NA).
+            # Normalize before counting coverage AND writing the matrix so they agree.
+            vals = {}
+            for probe, raw_value in sample_probe_vals.get(sid, {}).items():
+                try:
+                    vals[probe] = _normalize_panel_value(raw_value)
+                except ValueError as exc:
+                    raise ValueError(f"{gse_id}/{sid}, probe {probe}: {exc}") from exc
             present = [pr for pr in probes if pr in vals and str(vals[pr]).strip() != ""]
             missing = [pr for pr in probes if pr not in vals or str(vals.get(pr, "")).strip() == ""]
             rr["n_panel_found"] = str(len(present))

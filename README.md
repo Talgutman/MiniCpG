@@ -1,45 +1,44 @@
-# MiniCpG Code Release
+# MiniCpG
 
-This directory contains a public-code snapshot for the MiniCpG manuscript: a compact 30-CpG DNA methylation classifier for cancer-type assignment.
+MiniCpG assigns tumor types from a compact panel of 30 DNA methylation probes. The saved tissue model predicts 27 modeled classes using an ExtraTrees classifier and training-set median imputation.
 
-This release is provided for academic and non-commercial research use under the MiniCpG Academic and Non-commercial Research Use License (see `LICENSE`). Commercial use, clinical diagnostic use, and paid-service use require separate written permission.
+**Revision branch — not a published release.** This branch is being aligned with the revised CSBJ manuscript. Direct inference is covered by synthetic regression tests. The revised analysis workflows and aggregate results are still being reconciled; see [revision status](docs/revision_status.md). The published `v0.1.0` tag remains the original July 2026 snapshot.
 
-## Contents
+## Predict with the saved model
 
-- `scripts/`: pipeline, validation, benchmark, analysis, and figure-generation entry points.
-- `src/minicpg/`: release-native selector and registry used by the final locked pipeline.
-- `model/`: compressed trained MiniCpG K=30 model bundle and inference metadata.
-- `config/`: sanitized templates with placeholders for local data locations.
-- `resources/`: final panel, class maps, public accession summaries, and cfDNA summary inputs.
-- `examples/`: minimal 30-CpG input schema example for direct inference.
-- `results/`: small aggregate tables used as manuscript or supplement source data.
-- `docs/`: data-access notes, reproduction overview, manifest, and safety scan.
-
-Raw methylation matrices, sample-level curation files, sample-level predictions, local manuscript packages, and local development-only files are intentionally not included.
-
-## Minimal Setup
+From the repository root, using [uv](https://docs.astral.sh/uv/):
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .
-```
-
-## Direct Model Use
-
-```bash
-PYTHONPATH=src python scripts/predict_minicpg.py \
-  --model model/minicpg_k30_model_bundle.pkl.gz \
+uv sync --locked
+uv run --locked minicpg-predict \
   --input examples/example_input_30cpg.tsv \
-  --output examples/example_predictions.tsv
+  --output outputs/example_predictions.tsv \
+  --include-probabilities
 ```
 
-Populate the placeholders in `config/paths.template.yaml` and `config/paper_protocolb_v1.release.yaml` after downloading the permitted public inputs.
+The lockfile specifies the tested environment, including scikit-learn 1.7.2, which matches the saved model. Python 3.11 is the default; the package supports Python 3.11–3.12. The model is distributed in this repository, separately from the Python wheel. Use `--model /path/to/minicpg_k30_model_bundle.pkl.gz` when running outside the repository root. Load only trusted pickle files.
 
-## Citation
+Input is a TSV or CSV with one specimen per row, an optional unique `sample_id`, and probe columns matching `model/feature_order.tsv`. Without IDs, the reader assigns `row_1`, `row_2`, etc. Extra columns are ignored. The example is synthetic and does not represent a study specimen.
 
-Please cite the associated MiniCpG manuscript and this code release. Citation metadata are provided in `CITATION.cff`.
+- At least 25 of the 30 panel probes must have finite beta values in [0, 1].
+- Absent probe columns, blank/nonnumeric cells, infinities and out-of-range values count as missing.
+- Eligible rows use the stored training-set medians for missing values. Nothing is fitted on the input specimens.
+- Every row is retained. Rows below the coverage threshold have `status=insufficient_coverage` and blank prediction/probability fields.
+- Predictions use the original class probabilities and raw argmax. ESCA/STAD predictions are retained; no class is removed or reassigned.
 
-## Intended Use
+Output adds measured/missing probe counts, status, predicted label and maximum probability; `--include-probabilities` adds all modeled class probabilities. Internal TCGA identifiers retain the historical merge mapping; see `model/class_labels.tsv`.
 
-The included trained model is a research-use artifact for reproducibility and method evaluation. It is not a clinical diagnostic device or a substitute for validated pathology workflows.
+## Reproduction and development
+
+```bash
+uv sync --locked --extra analysis
+uv run --locked --extra analysis pytest
+```
+
+[Reproduction workflow](docs/reproduction_workflow.md) distinguishes checked code from historical scripts and revised workflows still awaiting packaging. [Analysis policies](docs/analysis_policies.md) records the cohort, missingness, label-space and statistical conventions to preserve. Optional MethyDeep execution requires its separately obtained model and TensorFlow environment; it is not part of the inference install.
+
+`results/` and the accession summaries in this branch are **historical v0.1.0 assets**, not the revised manuscript tables. Their old table/figure numbers must not be used for the revised supplement. No raw methylation data, specimen-level curation or predictions are distributed. See [data access](docs/data_access.md).
+
+## Citation and license
+
+Citation metadata are in `CITATION.cff`. Academic and non-commercial research use is governed by [LICENSE](LICENSE). Commercial use, clinical diagnostic use and paid-service use require separate written permission. The research model is not a clinical diagnostic device.

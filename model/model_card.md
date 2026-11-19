@@ -2,6 +2,8 @@
 
 This directory contains the locked MiniCpG K=30 inference artifact used for the manuscript analyses.
 
+The binary artifact is unchanged from v0.1.0. Load it with scikit-learn 1.7.2 using the repository lockfile. `artifact_manifest.json` records model, panel and label-file hashes.
+
 ## Files
 
 - `minicpg_k30_model_bundle.pkl.gz`: gzip-compressed Python pickle containing the fitted sklearn pipeline.
@@ -24,7 +26,7 @@ The model bundle contains a fitted median-imputation step, an ExtraTrees classif
 
 ## Input Format
 
-Provide a TSV or CSV with one row per sample and columns named by Illumina CpG probe IDs. A `sample_id` column is recommended. Extra columns are ignored; all 30 MiniCpG probes must be present. Missing beta values are allowed and are imputed by the fitted training-set medians stored in the model bundle.
+Provide a TSV or CSV with one row per sample and columns named by Illumina CpG probe IDs. A `sample_id` column is recommended. Extra columns are ignored. At least 25 panel probes per specimen must contain finite beta values in [0, 1]. Absent columns, nonnumeric/nonfinite values and out-of-range values count as missing. Eligible specimens use the fitted training-set medians stored in the model; ineligible rows retain an explicit status and have no prediction. Predictions use raw argmax over the original class space.
 
 ## Example
 

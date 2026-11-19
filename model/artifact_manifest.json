@@ -1,0 +1,17 @@
+{
+  "model_version": "paper_protocolb_v1_k030__rare_class_rank_shift__extra_trees__mi3004",
+  "panel_version": "stable_panel_rankrule_top30__paper_protocolb_v1_k030",
+  "source_release": "v0.1.0",
+  "source_commit": "07ad8f804a9558387d565688916757c10f36bef2",
+  "uncompressed_model_sha256": "91327bb83f315f317385d64ff9e1fe7ac99a34a719e69d95f858b00d4e0606de",
+  "locked_analysis_model_identity_verified": true,
+  "training_sklearn_version": "1.7.2",
+  "decision_policy": null,
+  "class_label_metadata": "Merged-class display labels clarified in this candidate; internal identifiers unchanged",
+  "files": {
+    "model/minicpg_k30_model_bundle.pkl.gz": "d93f97ead38086617c1c83559115943036eeb6d61bda95fc320d65ec8a350b77",
+    "resources/panels/stable_panel_rankrule_top30.tsv": "ad70eac21354a54e1b4955ac2f910ab3d07057570d8ce2c0b4eccba112be3a4f",
+    "model/feature_order.tsv": "3086d4e0334300bcaf195a79962c660313489716fa2a210d70897c24dbcf3ec0",
+    "model/class_labels.tsv": "a9ccae18c904e7899290f4475f1a78df166a690aac8319882b50d1f9be690611"
+  }
+}
