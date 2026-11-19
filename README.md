@@ -14,10 +14,10 @@ This repository accompanies “MiniCpG: Broad validation and characterization of
 
 ## Quick start
 
-Using [uv](https://docs.astral.sh/uv/), clone the paper’s code branch and run the synthetic prediction example:
+Using [uv](https://docs.astral.sh/uv/), clone the repository and run the synthetic prediction example:
 
 ```bash
-git clone --branch revision/csbj-20261119 https://github.com/Talgutman/MiniCpG.git
+git clone --branch main https://github.com/Talgutman/MiniCpG.git
 cd MiniCpG
 uv sync --locked
 uv run --locked minicpg-predict \
@@ -26,7 +26,7 @@ uv run --locked minicpg-predict \
   --include-probabilities
 ```
 
-If you already have this branch checked out, start at `uv sync --locked`. All commands in the documentation assume the repository root as the working directory. The example contains synthetic measurements; its predictions are for demonstrating usage.
+If you already have the repository checked out, start at `uv sync --locked`. All commands in the documentation assume the repository root as the working directory. The example contains synthetic measurements; its predictions are for demonstrating usage.
 
 To analyze your own data, replace the input and output paths. Python 3.11 is the default; Python 3.11–3.12 are supported. The lockfile includes scikit-learn 1.7.2, matching the saved model.
 
