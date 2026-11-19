@@ -1,0 +1,11 @@
+Scenario	Patients	Controls	Runs	USD per patient
+Standalone batch	96	16	2	78.75
+Continuously filled run	88	8	1	57.93
+Small batch	8	8	1	359.09
+Intermediate batch	24	8	1	138.22
+Three target pools	96	16	2	85.71
+Six target pools	96	16	2	106.46
+Ten patients repeated within existing runs	96	16	2	81.67
+Additional sequencing run	96	24	3	98.94
+Full index-well monetary allowance	96	16	2	85.95
+Six pools, extra handling, repeats and higher run fee	96	16	2	125.05

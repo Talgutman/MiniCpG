@@ -1,0 +1,38 @@
+{
+  "files": {
+    "model": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "external": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "predictions": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "canonical_master": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "canonical_inventory": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "heldout": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "recalls": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "development": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    }
+  },
+  "permutations": 999999,
+  "seed": 20261113
+}

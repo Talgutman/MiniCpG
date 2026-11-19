@@ -21,7 +21,6 @@ from sklearn.metrics import (
     f1_score,
     roc_auc_score,
 )
-from tensorflow.keras.models import load_model
 
 
 def parse_args() -> argparse.Namespace:
@@ -78,6 +77,10 @@ def _to_key(df: pd.DataFrame) -> pd.Series:
 
 def main() -> int:
     args = parse_args()
+    try:
+        from tensorflow.keras.models import load_model
+    except ImportError as exc:
+        raise SystemExit('MethyDeep inference requires its separate TensorFlow/Keras environment; see docs/workflows.md.') from exc
     panel_path = Path(args.panel_matrix)
     feature_path = Path(args.feature_csv)
     class_path = Path(args.class_csv)

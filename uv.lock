@@ -271,6 +271,9 @@ analysis = [
     { name = "tqdm" },
     { name = "xgboost" },
 ]
+cfdna-data = [
+    { name = "pybigwig" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -285,6 +288,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=1.26,<2.3" },
     { name = "pandas", specifier = ">=2.1,<3" },
     { name = "pyarrow", marker = "extra == 'analysis'", specifier = ">=15.0" },
+    { name = "pybigwig", marker = "extra == 'cfdna-data'", specifier = ">=0.3.22,<0.4" },
     { name = "pyyaml", marker = "extra == 'analysis'", specifier = ">=6.0" },
     { name = "scikit-learn", specifier = "==1.7.2" },
     { name = "scipy", specifier = ">=1.11,<2" },
@@ -490,6 +494,16 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/e3/66/dbe72f5fa21a92b645d56410bacac605defe63e5d3e9794b2fd8c7d77030/pyarrow-26.0.1-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:40aea57ab8bd3cf35a11e604cd7d0c7436dc90d1ce9b88b6711ef2f1a232968e", size = 55438656 },
     { url = "https://files.pythonhosted.org/packages/d1/b1/c91322fc4c1800c1f7dd78f911b1dd74187acaeb246d86478a0f064f6af5/pyarrow-26.0.1-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:73534fbda7f73cab0791b569b93112d4c9e1546cedd0f309d1f69889beb6a08f", size = 58625736 },
     { url = "https://files.pythonhosted.org/packages/30/61/d94decccacb4dd40a4ebeed0ff3b2cea8f0b680f50184ea7eb0264db779b/pyarrow-26.0.1-cp312-cp312-win_amd64.whl", hash = "sha256:9379f0d1056cad6866c4697aec83a15830202ec7e0bd52f8bd508b316260fa61", size = 29078866 },
+]
+
+[[package]]
+name = "pybigwig"
+version = "0.3.30"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ce/b0/85e0ec7095b3b2d7a17da0837ee13f24756c1b7f8d283e8c3b443e5e2826/pybigwig-0.3.30.tar.gz", hash = "sha256:0aadc9c43969c4cde2cd502902fe7931ba5e851462862e6c25d15758811ec6e0", size = 76124 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/84/88/fdd6341c8b35c77b8113701457eb43e6aa49e0bce3d2d4dac6132205781e/pybigwig-0.3.30-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:18504f12a5494ec9010cb1f0d6a4e40193b5ad562cff3f2879f49a912090e124", size = 190246 },
+    { url = "https://files.pythonhosted.org/packages/40/d0/f9a5727be3d2480c37abafe37f14ca6ecb458f19ce5f003a729018b61f40/pybigwig-0.3.30-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:b5d179ab61b76c3828df1fc163c9f52bf082a9d894a62c66155e5394badcac87", size = 191729 },
 ]
 
 [[package]]

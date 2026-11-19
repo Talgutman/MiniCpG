@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from split_integrity import read_rows, validate_partition, validate_folds, id_hash
+
 import pandas as pd
 import yaml
 
@@ -85,8 +87,8 @@ def maybe_copy(src_text: str, dst: Path) -> bool:
     if not src_raw:
         return False
     src = Path(src_raw)
-    if not src.exists():
-        return False
+    if not src.is_file():
+        raise FileNotFoundError(f"Configured reuse source is unavailable; refusing regeneration: {src}")
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
     return True
@@ -321,6 +323,8 @@ def prepare_stage_folds(
     out_path: Path,
 ) -> Path:
     existing_folds = str(stage_cfg.get("existing_outer_folds", "")).strip()
+    if existing_folds:
+        validate_folds(read_rows(dev_manifest), read_rows(existing_folds), int(stage_cfg["outer_repeats"]), int(stage_cfg["outer_splits"]))
     if maybe_copy(existing_folds, out_path):
         print(f"Reused existing folds: {out_path}")
         return out_path
@@ -346,6 +350,7 @@ def prepare_stage_folds(
         str(cfg["cohort"]["patient_id_col"]),
     ]
     run_cmd(build_folds_cmd, repo_root)
+    validate_folds(read_rows(dev_manifest), read_rows(out_path), int(stage_cfg["outer_repeats"]), int(stage_cfg["outer_splits"]))
     return out_path
 
 
@@ -354,6 +359,30 @@ def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
     cfg_path = Path(args.config)
     cfg = load_config(cfg_path)
+
+    split_cfg = cfg.get("split") or {}
+    split_mode = split_cfg.get("mode")
+    if split_mode not in {"reuse", "create"}:
+        raise ValueError("split.mode must explicitly be reuse or create")
+    existing_dev = str(split_cfg.get("existing_dev_manifest", "")).strip()
+    existing_lock = str(split_cfg.get("existing_lockbox_manifest", "")).strip()
+    if split_mode == "reuse":
+        for source in (existing_dev, existing_lock):
+            if not source or not Path(source).is_file():
+                raise FileNotFoundError(f"Locked split source unavailable; refusing regeneration: {source}")
+        partition = validate_partition(read_rows(existing_dev), read_rows(existing_lock))
+        expected_path = split_cfg.get("membership_lock")
+        if expected_path:
+            expected = read_json(Path(expected_path))
+            for key, value in partition.items():
+                if key.endswith("sha256") and expected.get(key) != value:
+                    raise ValueError(f"Configured sources differ from locked split: {key}")
+    elif existing_dev or existing_lock:
+        raise ValueError("split.mode=create cannot also request existing split sources")
+    for stage in (cfg["selection_stage"], cfg["confirm_stage"]):
+        source = str(stage.get("existing_outer_folds", "")).strip()
+        if source and not Path(source).is_file():
+            raise FileNotFoundError(f"Configured fold source unavailable: {source}")
 
     local_output_root = Path(str(cfg["project"]["local_output_root"]))
     root = Path(args.out_dir) if args.out_dir else (local_output_root / f"k_{int(args.k):03d}")
@@ -380,9 +409,28 @@ def main() -> int:
     paper_manifest = dirs["manifest"] / f"{manifest_prefix}_manifest.tsv"
     dev_manifest = dirs["manifest"] / f"{manifest_prefix}_dev.tsv"
     lockbox_manifest = dirs["manifest"] / f"{manifest_prefix}_lockbox.tsv"
-    existing_dev = str((cfg.get("split") or {}).get("existing_dev_manifest", "")).strip()
-    existing_lock = str((cfg.get("split") or {}).get("existing_lockbox_manifest", "")).strip()
-    reused_split = maybe_copy(existing_dev, dev_manifest) and maybe_copy(existing_lock, lockbox_manifest)
+    reused_split = split_mode == "reuse"
+    if reused_split:
+        # Read/validate both inputs before replacing either destination. Roll back
+        # both on a write failure; never mix a new DEV with an old held-out file.
+        dev_source, lock_source = Path(existing_dev), Path(existing_lock)
+        validate_partition(read_rows(dev_source), read_rows(lock_source), read_rows(paper_manifest))
+        sources = [dev_source.read_bytes(), lock_source.read_bytes()]
+        targets = [dev_manifest, lockbox_manifest]
+        previous = [p.read_bytes() if p.exists() else None for p in targets]
+        try:
+            for p, data in zip(targets, sources):
+                p.with_suffix(p.suffix + ".staged").write_bytes(data)
+            for p in targets:
+                p.with_suffix(p.suffix + ".staged").replace(p)
+        except Exception:
+            for p, data in zip(targets, previous):
+                if data is None:
+                    p.unlink(missing_ok=True)
+                else:
+                    p.write_bytes(data)
+                p.with_suffix(p.suffix + ".staged").unlink(missing_ok=True)
+            raise
     if reused_split:
         split_path = dirs["manifest"] / f"{manifest_prefix}_split_dev_lockbox.tsv"
         counts_path = dirs["manifest"] / f"{manifest_prefix}_dev_lockbox_counts.tsv"
@@ -422,6 +470,11 @@ def main() -> int:
             manifest_prefix,
         ]
         run_cmd(split_cmd, repo_root)
+
+    partition = validate_partition(read_rows(dev_manifest), read_rows(lockbox_manifest), read_rows(paper_manifest))
+    (dirs["manifest"] / "split_membership_lock.json").write_text(json.dumps({
+        "split_seed": cfg["split"]["seed"], "cv_model_seed": cfg["cv"]["seed"], **partition
+    }, indent=2) + "\n")
 
     stage1_folds_path = prepare_stage_folds(
         repo_root=repo_root,

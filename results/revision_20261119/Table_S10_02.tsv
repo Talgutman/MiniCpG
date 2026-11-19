@@ -1,0 +1,6 @@
+Study	Reported diagnosis	Specimens (n)	Correct (n)	Recall	Prediction destinations (counts)	Source
+GSE111200	tissue: Myxofibrosarcoma	41	41	1	SARC: 41	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE111200
+GSE140686	Other or unreported categories (pooled)	9	4	0.4444444444444444	BLCA: 1; GBM: 1; PCPG: 1; SARC: 4; SKCM: 1; UCEC: 1	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE140686
+GSE140686	Rhabdomyosarcoma (alveolar)	8	0	0	GBM: 8	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE140686
+GSE140686	Rhabdomyosarcoma (embryonal)	12	9	0.75	BRCA: 1; SARC: 9; UCS: 2	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE140686
+GSE90496	Other or unreported categories (pooled)	4	1	0.25	SARC: 1; SKCM: 2; TGCT: 1	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE90496

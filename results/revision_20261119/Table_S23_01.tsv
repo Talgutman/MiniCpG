@@ -1,0 +1,9 @@
+Analysis setup	Value
+dataset	PRJNA628686 / GSE149438
+total samples	297
+labels	6
+candidate CpG universe	2,732,642 CpGs present in at least 80% of PRJNA628686 samples
+evaluated panel size	100 CpGs maximum union across gate and subtype models
+evaluation	25 outer folds (5-fold CV repeated 5 times)
+normal specificity target	0.8
+scope note	cfDNA-native feature selection

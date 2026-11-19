@@ -1,0 +1,2 @@
+# A terminal tab represents an intentionally empty final TSV cell.
+*.tsv text eol=lf whitespace=-blank-at-eol

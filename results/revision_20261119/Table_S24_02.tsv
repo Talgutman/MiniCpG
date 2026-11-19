@@ -1,0 +1,12 @@
+Component and source	Quantity	Unit cost	Batch cost
+Filter tips [COSTREF:16]	6,092.00 tips	$0.1208	$736.12
+PCR plates and seals [COSTREF:17]	18.00 plates with seals	$4.2500	$76.50
+Storage tubes [COSTREF:17]	264.00 tubes	$0.0500	$13.20
+Minor buffers and chemicals [assumed]	112.00 libraries	$1.0000	$112.00
+Methylation control DNA [COSTREF:18]	1,540.00 ng DNA	$0.0372	$57.29
+PhiX [COSTREF:19]	4.00 µL stock	$31.8750	$127.50
+Sequencing service [COSTREF:17]	2.00 runs	$1499.0000	$2,998.00
+Demultiplexing [COSTREF:17]	2.00 runs	$50.0000	$100.00
+Hands-on bench labour [COSTREF:12]	11.65 hours	$55.5600	$647.27
+Basic analysis labour [COSTREF:12]	4.00 hours	$73.8300	$295.32
+Compute and storage [assumed]	1.00 batch	$25.0000	$25.00

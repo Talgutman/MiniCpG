@@ -1,0 +1,8 @@
+Cohort	Source study	Tumor class	Specimens (n)	Correct (n)	Median within-source dispersion	Mean distance to own development centroid	Mean distance to other development centroid	Specimens closer to other centroid (n)	Source
+TCGA development set	TCGA development set	SKCM	84		0.657725702561132	5.360941110954169e-16	0.9132492881020846	4	https://portal.gdc.cancer.gov/projects/TCGA-SKCM
+TCGA development set	TCGA development set	UVM	64		0.5078701587502421	2.264727838647783e-16	0.9132492881020845	3	https://portal.gdc.cancer.gov/projects/TCGA-UVM
+TCGA held-out test set	TCGA held-out test set	SKCM	20	20	0.6189575698799759	0.18205042792902945	0.9055714094406745	0	https://portal.gdc.cancer.gov/projects/TCGA-SKCM
+TCGA held-out test set	TCGA held-out test set	UVM	16	16	0.4623705986915082	0.23562752428178207	0.9469978519736724	0	https://portal.gdc.cancer.gov/projects/TCGA-UVM
+External primary	GSE202750	SKCM	29	26	0.58483149374499	0.32168597247483843	1.0135411071095837	3	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202750
+External primary	GSE270084	UVM	24	16	0.5235856071376119	0.6480548960775427	0.8038003410371288	9	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE270084
+External primary	GSE57362	UVM	63	26	0.9245052426046929	0.7170511068622772	0.454969778801895	36	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE57362

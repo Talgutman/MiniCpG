@@ -1,9 +1,0 @@
-# Local paths for reproducing MiniCpG analyses.
-# This file is intentionally a template and contains no author-local paths.
-
-paths:
-  code_root: <path_to_minicpg_code_release>
-  tcga_public_or_authorized_data_root: <path_to_tcga_methylation_inputs>
-  external_public_data_root: <path_to_geo_arrayexpress_downloads>
-  cfDNA_public_data_root: <path_to_prjna628686_or_cfmethdb_downloads>
-  output_root: outputs/minicpg_reproduction

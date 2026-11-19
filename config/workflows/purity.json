@@ -1,0 +1,20 @@
+{
+  "files": {
+    "manifest": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "predictions": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "metadata": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "purity": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    }
+  }
+}

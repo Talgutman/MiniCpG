@@ -1,0 +1,56 @@
+{
+  "files": {
+    "canonical_master": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "canonical_inventory": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "minicpg_matrix_main": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "predictions": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "minicpg_model": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "development_matrix": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "development_manifest": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "heldout_matrix": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "heldout_manifest": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "heldout_predictions": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "methydeep_predictions": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "methydeep_matrix_main": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "coverage_status": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    }
+  }
+}

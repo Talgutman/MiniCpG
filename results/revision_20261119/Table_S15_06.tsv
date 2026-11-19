@@ -1,0 +1,9 @@
+Study	Class	Preservation	Platform	Comparison context	Weighting
+GSE58999	BRCA	frozen	hm450	Matched primary and regional node; same surgery	Patient-balanced
+GSE73549	PRAD	ffpe	hm450	Source-QC-restricted pair-complete subset	Patient-balanced
+GSE114989	LUAD	frozen	epic	Matched primary regions and regional nodes; exploratory	Patient-balanced
+GSE144487	SKCM	frozen	epic	Normalized (ssNoob/BMIQ) versus raw-designated beta export	Paired specimen
+GSE105260	KIRC	frozen	hm450	SeSAMe versus SWAN-normalized reference beta values	Paired specimen
+GSE178610	UCEC	ffpe / frozen	epic	SeSAMe versus normalized reference betas; algorithm unspecified	Paired specimen
+GSE180060	LUAD	fresh	epic / hm450	SeSAMe versus quantile-normalized reference betas	Paired specimen
+GSE234379	HNSC	frozen	hm450	SeSAMe and BMIQ-normalized export each versus non-normalized reference betas	Paired specimen

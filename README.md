@@ -2,7 +2,7 @@
 
 MiniCpG assigns tumor types from a compact panel of 30 DNA methylation probes. The saved tissue model predicts 27 modeled classes using an ExtraTrees classifier and training-set median imputation.
 
-**Revision branch — not a published release.** This branch is being aligned with the revised CSBJ manuscript. Direct inference is covered by synthetic regression tests. The revised analysis workflows and aggregate results are still being reconciled; see [revision status](docs/revision_status.md). The published `v0.1.0` tag remains the original July 2026 snapshot.
+**Revision branch — not a published release.** This branch is being aligned with the revised CSBJ manuscript. The final-paper analysis workflows, trained model, examples and revised aggregate tables are packaged here; see [revision status](docs/revision_status.md) for validation scope and remaining provenance limits. The published `v0.1.0` tag remains the original July 2026 snapshot.
 
 ## Predict with the saved model
 
@@ -33,11 +33,12 @@ Output adds measured/missing probe counts, status, predicted label and maximum p
 ```bash
 uv sync --locked --extra analysis
 uv run --locked --extra analysis pytest
+uv run --locked python examples/run_synthetic_evaluation.py --out-dir outputs/synthetic_evaluation
 ```
 
-[Reproduction workflow](docs/reproduction_workflow.md) distinguishes checked code from historical scripts and revised workflows still awaiting packaging. [Analysis policies](docs/analysis_policies.md) records the cohort, missingness, label-space and statistical conventions to preserve. Optional MethyDeep execution requires its separately obtained model and TensorFlow environment; it is not part of the inference install.
+[Reproduction workflow](docs/workflows.md) provides the current analysis entry points, exact input contracts and examples. [Analysis policies](docs/analysis_policies.md) records the cohort, missingness, label-space and statistical conventions to preserve. Optional MethyDeep execution requires its separately obtained model and TensorFlow environment; it is not part of the inference install.
 
-`results/` and the accession summaries in this branch are **historical v0.1.0 assets**, not the revised manuscript tables. Their old table/figure numbers must not be used for the revised supplement. No raw methylation data, specimen-level curation or predictions are distributed. See [data access](docs/data_access.md).
+[Revised supplementary results](results/revision_20261119/README.md) contain all 25 tables as 71 aggregate TSV blocks. Superseded scripts and historical results have been removed from this branch; the original `v0.1.0` tag remains available. No raw methylation data, specimen-level curation or predictions are distributed. See [data access](docs/data_access.md).
 
 ## Citation and license
 

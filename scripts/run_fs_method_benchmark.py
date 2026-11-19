@@ -13,6 +13,8 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
+from split_integrity import validate_folds, validate_locked_development, validate_cached_training
+
 import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
@@ -1479,7 +1481,13 @@ def main() -> int:
 
     folds["outer_fold"] = folds["outer_fold"].astype(int)
     folds["repeat"] = folds["repeat"].astype(int)
-    manifest = manifest.merge(folds, on="sample_id", how="inner")
+    try:
+        validate_locked_development(manifest.to_dict("records"), manifest_path)
+        validate_folds(manifest.to_dict("records"), folds.to_dict("records"))
+    except ValueError as exc:
+        print(f"ERROR: split integrity: {exc}", file=sys.stderr)
+        return _return(1, error=f"split_integrity:{exc}")
+    manifest = manifest.merge(folds, on="sample_id", how="inner", validate="one_to_many")
 
     test_df = manifest[(manifest["repeat"] == args.repeat) & (manifest["outer_fold"] == args.fold)].copy()
     if test_df.empty:

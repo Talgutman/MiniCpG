@@ -1,8 +1,0 @@
-Table S8: Aggregate cleaned matched primary external validation performance for MiniCpG K=20 and MethyDeep									
-model	n_cpgs	evaluation_set	n_samples	n_classes_in_truth	macro_f1	balanced_accuracy	accuracy	auroc	note
-MiniCpG K=20	20	cleaned matched primary external validation subset	3514	25	0.6630752491470534	0.7399227220394502	0.7837222538417757	0.9674591229531962	Panel-size sensitivity analysis; not the primary locked MiniCpG model.
-MethyDeep	30	cleaned matched primary external validation subset	3514	25	0.6719813503578784	0.7676205126787334	0.7828685258964143	0.9687136278265553	Published 30-CpG comparator evaluated with the same cleaned matched-sample policy.
-MiniCpG K=20 minus MethyDeep		metric difference on cleaned matched subset	3514	25	-0.008906101210825024	-0.027697790639283237	0.0008537279453614266	-0.0012545048733590969	Positive values favor MiniCpG K=20.
-									
-Footnote	The K=20 model was evaluated only as a panel-size sensitivity analysis. MiniCpG refers to the locked K=30 model throughout the manuscript.								
-Source	<project_source_path_removed>								

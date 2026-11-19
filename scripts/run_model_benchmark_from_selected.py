@@ -12,6 +12,8 @@ from itertools import product
 from pathlib import Path
 from typing import Dict, Iterable, List, Sequence, Tuple
 
+from split_integrity import validate_folds, validate_locked_development, validate_cached_training
+
 import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
@@ -1533,7 +1535,13 @@ def main() -> int:
 
     folds["outer_fold"] = folds["outer_fold"].astype(int)
     folds["repeat"] = folds["repeat"].astype(int)
-    manifest = manifest.merge(folds, on="sample_id", how="inner")
+    try:
+        validate_locked_development(manifest.to_dict("records"), manifest_path)
+        validate_folds(manifest.to_dict("records"), folds.to_dict("records"))
+    except ValueError as exc:
+        print(f"ERROR: split integrity: {exc}", file=sys.stderr)
+        return _return(1, error=f"split_integrity:{exc}")
+    manifest = manifest.merge(folds, on="sample_id", how="inner", validate="one_to_many")
 
     test_df = manifest[(manifest["repeat"] == args.repeat) & (manifest["outer_fold"] == args.fold)].copy()
     if test_df.empty:
@@ -1545,6 +1553,12 @@ def main() -> int:
     if "sample_id" not in train_filtered_df.columns or "project_id" not in train_filtered_df.columns:
         print("ERROR: train_manifest_filtered missing sample_id/project_id", file=sys.stderr)
         return _return(1, error="missing_train_manifest_columns")
+    expected_train = manifest[(manifest["repeat"] == args.repeat) & (manifest["outer_fold"] != args.fold)]
+    try:
+        validate_cached_training(train_filtered_df.to_dict("records"), expected_train.to_dict("records"), test_df.to_dict("records"))
+    except ValueError as exc:
+        print(f"ERROR: split integrity: {exc}", file=sys.stderr)
+        return _return(1, error=f"split_integrity:{exc}")
     train_ids = train_filtered_df["sample_id"].astype(str).tolist()
 
     y_train = train_filtered_df.set_index("sample_id").loc[train_ids, "project_id"].astype(str).to_numpy()

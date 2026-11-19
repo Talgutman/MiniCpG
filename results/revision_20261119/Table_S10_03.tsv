@@ -1,0 +1,19 @@
+Cohort	Source study	Annotation field	Annotation value	Specimens (n)	Correct (n)	Assigned to SKCM (n)	Recall	Source
+External primary	GSE270084	histology	Mixed	16	10	6	0.625	https://pmc.ncbi.nlm.nih.gov/articles/PMC11312132/
+External primary	GSE270084	histology	Other or unreported categories (pooled)	8	6	2	0.75	https://pmc.ncbi.nlm.nih.gov/articles/PMC11312132/
+External primary	GSE270084	Reported methylation cluster	1	5	3	2	0.6	https://pmc.ncbi.nlm.nih.gov/articles/PMC11312132/
+External primary	GSE270084	Reported methylation cluster	2	9	6	3	0.6666666666666666	https://pmc.ncbi.nlm.nih.gov/articles/PMC11312132/
+External primary	GSE270084	Reported methylation cluster	3	10	7	3	0.7	https://pmc.ncbi.nlm.nih.gov/articles/PMC11312132/
+External primary	GSE57362	histology	Epithelioid	9	2	5	0.2222222222222222	https://pmc.ncbi.nlm.nih.gov/articles/PMC5603607/
+External primary	GSE57362	histology	Mixed	8	5	2	0.625	https://pmc.ncbi.nlm.nih.gov/articles/PMC5603607/
+External primary	GSE57362	histology	Spindle	9	5	4	0.5555555555555556	https://pmc.ncbi.nlm.nih.gov/articles/PMC5603607/
+External primary	GSE57362	histology	unknown	37	14	9	0.3783783783783784	https://pmc.ncbi.nlm.nih.gov/articles/PMC5603607/
+External primary	GSE57362	Reported methylation cluster	unknown	63	26	20	0.4126984126984127	https://pmc.ncbi.nlm.nih.gov/articles/PMC5603607/
+TCGA development set	TCGA development set	histology	Epithelioid	8				https://www.cbioportal.org/study/summary?id=uvm_tcga
+TCGA development set	TCGA development set	histology	Mixed	30				https://www.cbioportal.org/study/summary?id=uvm_tcga
+TCGA development set	TCGA development set	histology	Spindle	26				https://www.cbioportal.org/study/summary?id=uvm_tcga
+TCGA development set	TCGA development set	Reported methylation cluster	unknown	64				https://www.cbioportal.org/study/summary?id=uvm_tcga
+TCGA held-out test set	TCGA held-out test set	histology	Epithelioid	5	5	0	1	https://www.cbioportal.org/study/summary?id=uvm_tcga
+TCGA held-out test set	TCGA held-out test set	histology	Mixed	7	7	0	1	https://www.cbioportal.org/study/summary?id=uvm_tcga
+TCGA held-out test set	TCGA held-out test set	histology	Other or unreported categories (pooled)	4	4	0	1	https://www.cbioportal.org/study/summary?id=uvm_tcga
+TCGA held-out test set	TCGA held-out test set	Reported methylation cluster	unknown	16	16	0	1	https://www.cbioportal.org/study/summary?id=uvm_tcga

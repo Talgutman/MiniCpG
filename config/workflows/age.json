@@ -1,0 +1,12 @@
+{
+  "files": {
+    "membership": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "age_annotations": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    }
+  }
+}

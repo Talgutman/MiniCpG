@@ -1,0 +1,24 @@
+{
+  "files": {
+    "model": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "matrix": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "canonical_master": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "canonical_inventory": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    }
+  },
+  "canonical_filters": {
+    "include": "1",
+    "target_bucket": "main"
+  }
+}

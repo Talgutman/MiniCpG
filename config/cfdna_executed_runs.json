@@ -1,0 +1,61 @@
+{
+  "methylation": {
+    "status": "complete",
+    "created_at": "2026-06-17T10:36:26",
+    "dataset": "prjna628686",
+    "n_samples": 297,
+    "n_features": 2732642,
+    "n_folds": 25,
+    "target_specificity": 0.8,
+    "max_union": 100,
+    "value_mode": "methylation",
+    "subtype_selector": "ovr_union",
+    "config_subtype_metric": "subtype_macro_f1_gate_positive_cancers",
+    "pairwise_confusion_splits": 3,
+    "pairwise_confusion_weight_scale": 4.0,
+    "pairwise_confusion_model": "logistic_l2"
+  },
+  "coverage_control": {
+    "status": "complete",
+    "created_at": "2026-06-17T10:32:53",
+    "dataset": "prjna628686",
+    "n_samples": 297,
+    "n_features": 2732642,
+    "n_folds": 25,
+    "target_specificity": 0.8,
+    "max_union": 100,
+    "value_mode": "coverage",
+    "subtype_selector": "ovr_union",
+    "config_subtype_metric": "subtype_macro_f1_gate_positive_cancers",
+    "pairwise_confusion_splits": 3,
+    "pairwise_confusion_weight_scale": 4.0,
+    "pairwise_confusion_model": "logistic_l2"
+  },
+  "provenance_limits": [
+    "cfMethDB processed intermediate; exact upstream per-file software versions unavailable",
+    "Separate native cfDNA models and panel; not the tissue K30 model",
+    "Fold summaries are descriptive repeated-CV SD; own gate-positive subset for subtype metrics"
+  ],
+  "execution_parameters": {
+    "prjna_labels": [
+      "CRC",
+      "ESCA",
+      "GASTRIC",
+      "LIHC",
+      "Normal",
+      "PAAD"
+    ],
+    "normal_label": "Normal",
+    "budgets": "20:80,30:70,50:50,70:30,80:20",
+    "model_families": [
+      "extra_trees",
+      "logistic_l2"
+    ],
+    "outer_splits": 5,
+    "outer_repeats": 5,
+    "inner_splits": 4,
+    "seed": 20260616,
+    "target_specificity": 0.8,
+    "min_study_presence_fraction": 0.8
+  }
+}

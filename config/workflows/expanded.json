@@ -1,0 +1,205 @@
+{
+  "files": {
+    "class_axis": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "canonical_master": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "canonical_inventory": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "coverage": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "patient_units": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "minicpg": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "methydeep": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    }
+  },
+  "float_precision": "round_trip",
+  "prediction_inputs": [
+    "minicpg",
+    "methydeep"
+  ],
+  "bootstrap_replicates": 2000,
+  "evaluations": [
+    {
+      "name": "metastatic_minicpg_full",
+      "cohort_field": "domain",
+      "cohort_value": "metastatic",
+      "eligibility_field": "minicpg_eligible",
+      "canonical_filters": {
+        "domain_metastatic_status_v1": "include"
+      },
+      "models": [
+        "minicpg"
+      ],
+      "axis": "present",
+      "seed": 381530722,
+      "stratum_order": "sorted",
+      "sort_keys": true,
+      "require_full_auc": true,
+      "shared": false
+    },
+    {
+      "name": "metastatic_methydeep_full",
+      "cohort_field": "domain",
+      "cohort_value": "metastatic",
+      "eligibility_field": "methydeep_eligible",
+      "canonical_filters": {
+        "domain_metastatic_status_v1": "include"
+      },
+      "models": [
+        "methydeep"
+      ],
+      "axis": "present",
+      "seed": 3081621199,
+      "stratum_order": "sorted",
+      "sort_keys": true,
+      "require_full_auc": true,
+      "shared": false
+    },
+    {
+      "name": "metastatic_shared",
+      "cohort_field": "domain",
+      "cohort_value": "metastatic",
+      "eligibility_field": "shared_eligible",
+      "canonical_filters": {
+        "domain_metastatic_status_v1": "include"
+      },
+      "models": [
+        "minicpg",
+        "methydeep"
+      ],
+      "axis": "present",
+      "seed": 3628662219,
+      "stratum_order": "sorted",
+      "sort_keys": true,
+      "require_full_auc": true,
+      "shared": true
+    },
+    {
+      "name": "ffpe_minicpg_full",
+      "cohort_field": "domain",
+      "cohort_value": "ffpe",
+      "eligibility_field": "minicpg_eligible",
+      "canonical_filters": {
+        "domain_ffpe_status_v1": "include"
+      },
+      "models": [
+        "minicpg"
+      ],
+      "axis": "present",
+      "seed": 1863148756,
+      "stratum_order": "sorted",
+      "sort_keys": true,
+      "require_full_auc": true,
+      "shared": false
+    },
+    {
+      "name": "ffpe_methydeep_full",
+      "cohort_field": "domain",
+      "cohort_value": "ffpe",
+      "eligibility_field": "methydeep_eligible",
+      "canonical_filters": {
+        "domain_ffpe_status_v1": "include"
+      },
+      "models": [
+        "methydeep"
+      ],
+      "axis": "present",
+      "seed": 1279979765,
+      "stratum_order": "sorted",
+      "sort_keys": true,
+      "require_full_auc": true,
+      "shared": false
+    },
+    {
+      "name": "ffpe_shared",
+      "cohort_field": "domain",
+      "cohort_value": "ffpe",
+      "eligibility_field": "shared_eligible",
+      "canonical_filters": {
+        "domain_ffpe_status_v1": "include"
+      },
+      "models": [
+        "minicpg",
+        "methydeep"
+      ],
+      "axis": "present",
+      "seed": 4283876330,
+      "stratum_order": "sorted",
+      "sort_keys": true,
+      "require_full_auc": true,
+      "shared": true
+    },
+    {
+      "name": "epic_minicpg_full",
+      "cohort_field": "domain",
+      "cohort_value": "epic",
+      "eligibility_field": "minicpg_eligible",
+      "canonical_filters": {
+        "domain_epic_status_v1": "include"
+      },
+      "models": [
+        "minicpg"
+      ],
+      "axis": "present",
+      "seed": 2378159581,
+      "stratum_order": "sorted",
+      "sort_keys": true,
+      "require_full_auc": true,
+      "shared": false
+    },
+    {
+      "name": "epic_methydeep_full",
+      "cohort_field": "domain",
+      "cohort_value": "epic",
+      "eligibility_field": "methydeep_eligible",
+      "canonical_filters": {
+        "domain_epic_status_v1": "include"
+      },
+      "models": [
+        "methydeep"
+      ],
+      "axis": "present",
+      "seed": 2178710522,
+      "stratum_order": "sorted",
+      "sort_keys": true,
+      "require_full_auc": true,
+      "shared": false
+    },
+    {
+      "name": "epic_shared",
+      "cohort_field": "domain",
+      "cohort_value": "epic",
+      "eligibility_field": "shared_eligible",
+      "canonical_filters": {
+        "domain_epic_status_v1": "include"
+      },
+      "models": [
+        "minicpg",
+        "methydeep"
+      ],
+      "axis": "present",
+      "seed": 797127327,
+      "stratum_order": "sorted",
+      "sort_keys": true,
+      "require_full_auc": true,
+      "shared": true
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+Workflow	Repeat	Metric	Mean across five folds
+methylation	1	Normal specificity	0.72
+methylation	1	Cancer sensitivity	0.74878431372549
+methylation	1	Subtype accuracy (gate-positive)	0.5616381308037277
+methylation	1	Subtype macro-F1 (gate-positive)	0.5048020421271195
+methylation	2	Normal specificity	0.8911111111111112
+methylation	2	Cancer sensitivity	0.7370980392156863
+methylation	2	Subtype accuracy (gate-positive)	0.6122451398767188
+methylation	2	Subtype macro-F1 (gate-positive)	0.5494345102856343
+methylation	3	Normal specificity	0.7999999999999999
+methylation	3	Cancer sensitivity	0.7292549019607844
+methylation	3	Subtype accuracy (gate-positive)	0.6080651147098516
+methylation	3	Subtype macro-F1 (gate-positive)	0.5631377030262479
+methylation	4	Normal specificity	0.7355555555555556
+methylation	4	Cancer sensitivity	0.7170196078431373
+methylation	4	Subtype accuracy (gate-positive)	0.5833889602053914
+methylation	4	Subtype macro-F1 (gate-positive)	0.4899535661688037
+methylation	5	Normal specificity	0.7844444444444444
+methylation	5	Cancer sensitivity	0.7010980392156861
+methylation	5	Subtype accuracy (gate-positive)	0.5611002222207655
+methylation	5	Subtype macro-F1 (gate-positive)	0.5144251843787447
+coverage_control	1	Normal specificity	0.8911111111111112
+coverage_control	1	Cancer sensitivity	0.3783529411764705
+coverage_control	1	Subtype accuracy (gate-positive)	0.5360028860028859
+coverage_control	1	Subtype macro-F1 (gate-positive)	0.4922708402708403
+coverage_control	2	Normal specificity	0.7777777777777777
+coverage_control	2	Cancer sensitivity	0.4306666666666666
+coverage_control	2	Subtype accuracy (gate-positive)	0.471044921295802
+coverage_control	2	Subtype macro-F1 (gate-positive)	0.433907536907537
+coverage_control	3	Normal specificity	0.74
+coverage_control	3	Cancer sensitivity	0.4551372549019607
+coverage_control	3	Subtype accuracy (gate-positive)	0.5618168868168867
+coverage_control	3	Subtype macro-F1 (gate-positive)	0.5564222052457346
+coverage_control	4	Normal specificity	0.6755555555555556
+coverage_control	4	Cancer sensitivity	0.4352156862745098
+coverage_control	4	Subtype accuracy (gate-positive)	0.6037806637806639
+coverage_control	4	Subtype macro-F1 (gate-positive)	0.5869436119436119
+coverage_control	5	Normal specificity	0.6533333333333333
+coverage_control	5	Cancer sensitivity	0.4223529411764706
+coverage_control	5	Subtype accuracy (gate-positive)	0.528968253968254
+coverage_control	5	Subtype macro-F1 (gate-positive)	0.4699622599622599

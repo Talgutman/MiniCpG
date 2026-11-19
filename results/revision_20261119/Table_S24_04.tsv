@@ -1,0 +1,9 @@
+Stage	Hands-on allowance per batch	Elapsed-time basis and scheduling
+Controls and records	1.00 h	Assumed handling; can overlap passive incubation.
+Bisulfite conversion and recovery	1.50 h	Published Lightning thermal incubation: 68 min [COSTREF:23]. Allow approximately 2.5–3.5 h including setup and recovery; total stage duration is assumed.
+Target PCR setup and amplification	2.40 h	Lam cycling totals 91.3 min per plate before ramping [COSTREF:1]. Allow 105 min per wave. 576 PCRs occupy 6 plates; 3 blocks require 2 waves, or 3.5 h of instrument slots. Setup may overlap earlier waves.
+Combine products and target cleanup	1.20 h	Published cleanup includes incubation, magnetic separation, washes, drying and elution [COSTREF:1]. Allow 1.5–2 h including handling; this overall duration is assumed.
+Ligation, library PCR and cleanup	2.40 h	Published ligation: 30 min; library PCR: 32–43 min before ramping [COSTREF:1]. Allow 3–4 h including handling and cleanup; overall duration assumed.
+Quantification, QC and pooling	1.70 h	Allow 2–3 h with QC instruments available; includes fluorometry, representative sizing and pool qPCR. Overall duration assumed, not a service turnaround quote.
+Sequencing	Included in service fee	Approximately 39 h for classic MiSeq 2×250 sequencing, including cluster generation and base calling [COSTREF:20]. Instrument runs unattended overnight.
+Established pipeline and review	4.00 h	Basic analysis labour allowance from cost model. Assumes processing and QC can finish during this window; no measured MiniCpG wall-clock benchmark.

@@ -1,0 +1,10 @@
+Matching step	Samples
+TCGA held-out test set	1681
+No valid patient-level purity estimate	134
+Purity only from a different specimen or vial	4
+Retained specimen and vial matches	1543
+Correct predictions	1431
+Incorrect predictions	112
+Classes represented	27
+Samples informing class-stratified conditional estimate	1121
+Classes informing conditional estimate	18

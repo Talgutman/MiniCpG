@@ -1,5 +1,0 @@
-correctness_group	n_samples	fraction	minicpg_status	methydeep_status
-Both correct	2562	0.7290836653386454	Correct	Correct
-MiniCpG only	456	0.12976664769493454	Correct	Wrong
-MethyDeep only	189	0.053784860557768925	Wrong	Correct
-Both wrong	307	0.0873648264086511	Wrong	Wrong

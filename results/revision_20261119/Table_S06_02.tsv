@@ -1,0 +1,3 @@
+Analysis	N	Errors	OR	95% CI	p
+Specimen and vial matched (primary)	1543	112	1.158	1.042–1.288	0.0067
+Same sample type, ignoring vial (sensitivity)	1546	112	1.158	1.042–1.288	0.0066

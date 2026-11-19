@@ -1,0 +1,4 @@
+Source study	Tumor class	Specimens (n)	Observed probes (n)	Omitted probes	Mean distance to own development centroid	Mean distance to other development centroid	Development centroid separation	Missing dimensions: fraction of full squared shift
+GSE202750	SKCM	29	30	None	0.32168597247483843	1.0135411071095837	0.9132492881020845	0
+GSE270084	UVM	24	28	cg19817912;cg19780352	0.25433529257261683	0.7302175913513725	0.8754106907121166	0.8459755504457633
+GSE57362	UVM	63	30	None	0.7170511068622772	0.454969778801895	0.9132492881020845	0

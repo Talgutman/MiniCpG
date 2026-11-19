@@ -1,0 +1,17 @@
+Membership basis	Cohort combination	Specimens
+Eligible	EPIC	1190
+Eligible	FFPE	1275
+Eligible	FFPE + EPIC	1852
+Eligible	Metastatic	359
+Eligible	Metastatic + EPIC	304
+Eligible	Metastatic + FFPE	125
+Eligible	Metastatic + FFPE + EPIC	214
+Eligible	Primary	3723
+MiniCpG-evaluated	EPIC	1159
+MiniCpG-evaluated	FFPE	1275
+MiniCpG-evaluated	FFPE + EPIC	1783
+MiniCpG-evaluated	Metastatic	359
+MiniCpG-evaluated	Metastatic + EPIC	287
+MiniCpG-evaluated	Metastatic + FFPE	125
+MiniCpG-evaluated	Metastatic + FFPE + EPIC	214
+MiniCpG-evaluated	Primary	3683

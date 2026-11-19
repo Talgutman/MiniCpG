@@ -1,0 +1,7 @@
+Cohort	Total specimens	Paediatric, n (%)	Adult, n (%)	Age unknown, n (%)
+TCGA development set	6780	10 (0.1%)	6,678 (98.5%)	92 (1.4%)
+TCGA held-out test set	1681	4 (0.2%)	1,652 (98.3%)	25 (1.5%)
+External primary	3683	10 (0.3%)	1,594 (43.3%)	2,079 (56.4%)
+Metastatic	985	0 (0.0%)	340 (34.5%)	645 (65.5%)
+FFPE	3397	96 (2.8%)	1,389 (40.9%)	1,912 (56.3%)
+EPIC	3443	135 (3.9%)	1,325 (38.5%)	1,983 (57.6%)

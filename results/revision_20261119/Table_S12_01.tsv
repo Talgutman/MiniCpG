@@ -1,0 +1,5 @@
+Cohort	Curated records	Eligible	Excluded	Pending	MiniCpG evaluated	MethyDeep evaluated	Shared comparison
+Primary	20033	3723	16310	0	3683	3563	3496
+Metastatic	20033	1002	18741	290	985	848	848
+FFPE	20033	3466	16340	227	3397	3299	3276
+EPIC	20033	3560	16276	197	3443	3253	3253

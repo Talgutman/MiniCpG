@@ -1,0 +1,4 @@
+Scenario	Sequencing schedule	Earliest scheduled reviewed output in this example
+Filled run: 88 patients plus 8 controls	One run of 39 h	Day 4, after 76 h from Day 1 08:00
+Standalone: 96 patients plus 16 controls, two instruments	Two concurrent runs; independent instrument access assumed	Day 4, after 76 h; both run pools ready on Day 2
+Infinium methylation arrays	Manufacturer describes an approximately three-day extraction-to-intensity-file workflow [COSTREF:22]	Approximately Day 3 for intensity files; downstream QC/reporting depends on the laboratory

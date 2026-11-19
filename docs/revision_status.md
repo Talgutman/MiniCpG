@@ -1,42 +1,42 @@
 # Revision status
 
-Working version: `0.2.0.dev0`. This is an unpublished candidate based on `v0.1.0` (commit `07ad8f804a9558387d565688916757c10f36bef2`).
+Working version: `0.2.0.dev0`, an unpublished local candidate. The saved tissue model and consensus panel are unchanged. This tree contains the final-paper analysis code and aggregate results; superseded scripts and July result snapshots were removed from this branch. The original `v0.1.0` tag remains unchanged.
 
-## Implemented in this candidate
+## Analysis coverage and evidence
 
-- Direct tissue inference applies coverage and beta validity rules, preserves rejected rows and uses the unchanged saved model.
-- Class metadata describes the merged COAD/READ, ESCA/STAD and GBM/LGG classes without changing internal identifiers.
-- A dependency lock and synthetic regression tests cover the inference entry point.
-- Current extractor, cCRE coordinate and expression sample-count source fixes are included.
-- Documentation distinguishes historical aggregates from revised analyses and records the scientific conventions below.
+“Source checked” means the current calculation code and required helpers are packaged with input/command documentation; it does not mean training or the complete analysis was rerun. “Parity checked” means a stated numerical comparison against the adopted recorded outputs passed. All workflows require the original permitted inputs; manual source curation is not inferred from aggregate tables.
 
-## Migration checklist
-
-“Historical” means code exists but its complete revised workflow has not been verified. “Pending” means additional current code/configuration must be ported and checked. No scientific analysis needs to be rerun merely to migrate the code.
-
-| Analysis | Repository status | Remaining work |
+| Analysis | Packaged entry point/configuration | Validation scope |
 |---|---|---|
-| TCGA construction, splits and preprocessing | Historical scripts | Verify dependencies, input schemas and recorded fold configuration |
-| Pipeline selection and consensus panel | Historical scripts | Bind exact selector/search and inner decision-policy settings; verify registry coverage |
-| K20 sensitivity | Pending | Bind recovered K20 artifact/configuration; preserve the K100 decision |
-| Primary external and MethyDeep comparison | Extractor fixed; historical evaluation | Port adopted curation, original-prediction matching and grouped uncertainty |
-| Consensus versus single-split panels | Pending | Package panel/seed comparison and correlation workflows |
-| Methylation shift and recall | Pending | Package current mean-profile analysis |
-| Purity and classification errors | Pending | Package matching, conditional regression and sensitivity analysis |
-| Class similarity and pair confusion | Pending | Package mean geometry and whole-class-label permutation |
-| Study-specific errors and subtypes | Historical diagnostics | Reconcile current aggregate summaries and evidence |
-| Expanded domains and paired contrasts | Pending | Port independent membership flags and paired/patient-group workflows |
-| Genomic/context annotation | cCRE fix included | Bind manifests, enrichment background and annotation sources |
-| Tumor/lineage/composition scores | Historical partial code | Package current score decomposition and component definitions |
-| Normal-adjacent substitution | Historical script | Verify current inputs, pairs and uncertainty |
-| Separate normal-adjacent detection gate | Pending | Package learner/calibration configuration with seed caveat |
-| Expression and transcriptome background | Current exporter included | Complete sharding/aggregation recipe and input schema |
-| True-class SHAP | Pending | Package current convention and source bindings |
-| Native cell-free DNA and coverage control | Historical scripts | Bind the executed nested configuration and data-layer provenance |
-| Cost and turnaround scenarios | Pending | Package assumptions and machine-readable model |
-| Age subgroup evaluation | Pending | Package aggregate-only reporting |
-| PCA | Pending | Package fitting/projection and panel-data provenance |
+| TCGA construction, splits, fold preprocessing | Development pipeline, manifest/fold builders, split-integrity helpers | Current source and dependency closure; synthetic patient-leakage tests |
+| Selection, classifiers, consensus panel | Search YAML, benchmark/task/aggregation scripts, static rare-class selector | Actual search ranges preserved; selector source identical; synthetic final-fit/bundle test; no scientific development refit |
+| K20 sensitivity | `k20_reproduction.json`, same development/evaluation workflow | Executed settings/model hash recovered; binary and retraining not included |
+| Primary external / MethyDeep | Extraction, sanitation, canonical inference, `evaluate_external.py`, primary template | Saved-model tests; first 32 recorded bootstrap draws agree for full/shared and both weighting schemes |
+| Consensus versus single-split panels | Ten-seed definitions, training and summary runners | Adopted source calculations retained; input contracts/CLI checked; no 1,010-model refit |
+| Methylation shift | `analyze_class_geometry.py` | All observed class shifts and profiles agree with recorded values |
+| Purity and errors | `analyze_heldout_purity.py`, sensitivity runner | Matching/regression/permutation source retained; CLI checked; no full regression rerun |
+| Similarity / pair confusion | `analyze_class_geometry.py` | Observed association parity; permutation algorithm checked against independent SciPy calculations |
+| Study errors, dispersion and subtype context | Study aggregator, geometry diagnostics, `analyze_uvm_skcm_diagnostics.py` | Synthetic aggregation tests; recorded dispersion/UCS/UVM diagnostic tables compared; manual source annotations remain inputs |
+| Expanded domains / paired conditions | Expanded template, `evaluate_paired_conditions.py` | First 32 recorded domain bootstrap draws and cluster multiplicities agree; full paired aggregate outputs agree |
+| Genomic/context annotation | Location/cCRE annotation and prefilter-background enrichment | Source checked; cCRE coordinate regression tests |
+| Tumor, lineage and composition evidence | Decomposition, normal metadata/tissue identity, threshold sensitivity | Current source/CLI checked; no biological scan rerun |
+| Normal-adjacent substitution | Same-patient substitution runner | Source/CLI checked; original model retained |
+| Separate normal gate | Gate runner and bound-input template | Source checked; seed provenance limitation below |
+| Expression/transcriptome background | Scan, shard aggregator, summary | Current exporter source; finite-beta N regression test; no transcriptome rescan |
+| True-class SHAP | Locked-model SHAP/correlation runner | Current source and CLI checked; no complete SHAP rerun |
+| Native cell-free DNA / coverage control | Separate nested workflow, preparation helpers, executed configuration | Source/CLI checked; no nested retraining; upstream provenance limitation below |
+| Cost / turnaround | Cost calculator/configuration; Table S24 schedule | All batch/sensitivity costs agree numerically; turnaround is a proposed scenario |
+| Age representation | Cohort-bound aggregation; Table S25 | Synthetic overlap/unknown handling tests; approved aggregate export |
+| Sample/probe PCA | Hash-checked PCA runners | Current source and CLI checked; development-only fitting/projection rules retained |
 
-Current figure and supplementary table numbers differ from the historical release. Export revised aggregate sources only after confirming the final manuscript mapping. Keep raw matrices, specimen identifiers, linked clinical metadata, predictions, internal audits and backups outside the public tree.
+All 25 supplementary tables are exported as 71 aggregate TSV blocks with numeric source precision and hashes. They are data sources, not reformatted manuscript documents. The trained model, feature order, class metadata and synthetic inference/evaluation examples are included.
 
-Before publication: complete this checklist, test documented commands from a clean environment, audit the explicit release file list, regenerate the release manifest, reconcile the manuscript Code Availability statement, and create a new immutable tag. Do not move or replace `v0.1.0`.
+## Remaining limitations and publication steps
+
+- The normal-gate seed was reconstructed from commands/defaults rather than an explicit run receipt.
+- Exact upstream cfMethDB per-file software versions and some coverage-control inner-search receipts were not recovered. The processed data layer and separate native workflow are explicit.
+- Raw matrices, individual-level clinical metadata, curation, predictions and audit outputs are not redistributed. Reproduction requires those local inputs; this package does not claim a one-command download-to-paper rebuild.
+- The lockfile is the tested candidate environment, not a reconstruction of every historical Python/R/TensorFlow environment. TensorFlow/Keras for MethyDeep and upstream SeSAMe are separate.
+- Final publication still requires reconciling the manuscript Code Availability URL/version with the approved repository release and creating a new immutable tag. No public push, tag or manuscript edit is part of this local update.
+
+See [workflows](workflows.md), [command reference](cli_reference.md), and [source provenance](source_provenance.tsv).

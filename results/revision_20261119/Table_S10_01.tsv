@@ -1,0 +1,12 @@
+Cohort	Reported diagnosis	Morphology code	Specimens (n)	Correct (n)	Recall	Source
+TCGA development set	Dedifferentiated liposarcoma	8858/3	49			https://portal.gdc.cancer.gov/projects/TCGA-SARC
+TCGA development set	Fibromyxosarcoma	8811/3	22			https://portal.gdc.cancer.gov/projects/TCGA-SARC
+TCGA development set	Leiomyosarcoma, NOS	8890/3	82			https://portal.gdc.cancer.gov/projects/TCGA-SARC
+TCGA development set	Malignant fibrous histiocytoma	8830/3	8			https://portal.gdc.cancer.gov/projects/TCGA-SARC
+TCGA development set	Malignant peripheral nerve sheath tumor	9540/3	7			https://portal.gdc.cancer.gov/projects/TCGA-SARC
+TCGA development set	Other or unreported categories (pooled)		14			https://portal.gdc.cancer.gov/projects/TCGA-SARC
+TCGA development set	Undifferentiated sarcoma	8805/3	27			https://portal.gdc.cancer.gov/projects/TCGA-SARC
+TCGA held-out test set	Dedifferentiated liposarcoma	8858/3	9	9	1	https://portal.gdc.cancer.gov/projects/TCGA-SARC
+TCGA held-out test set	Leiomyosarcoma, NOS	8890/3	20	20	1	https://portal.gdc.cancer.gov/projects/TCGA-SARC
+TCGA held-out test set	Other or unreported categories (pooled)		16	15	0.9375	https://portal.gdc.cancer.gov/projects/TCGA-SARC
+TCGA held-out test set	Undifferentiated sarcoma	8805/3	7	7	1	https://portal.gdc.cancer.gov/projects/TCGA-SARC

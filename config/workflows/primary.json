@@ -1,0 +1,81 @@
+{
+  "files": {
+    "class_axis": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "canonical_master": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "canonical_inventory": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "coverage": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "patient_units": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "minicpg": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    },
+    "methydeep": {
+      "path": "<local input path>",
+      "sha256": "<bind with bind_analysis_inputs.py>"
+    }
+  },
+  "float_precision": null,
+  "prediction_inputs": [
+    "minicpg",
+    "methydeep"
+  ],
+  "bootstrap_replicates": 2000,
+  "evaluations": [
+    {
+      "name": "primary_full",
+      "cohort_field": "target_bucket",
+      "cohort_value": "main",
+      "eligibility_field": "minicpg_eligible",
+      "canonical_filters": {
+        "include": "1",
+        "target_bucket": "main"
+      },
+      "models": [
+        "minicpg"
+      ],
+      "axis": "all",
+      "seed": 20261103,
+      "stratum_order": "first_seen",
+      "sort_keys": false,
+      "require_full_auc": false,
+      "shared": false,
+      "runnerup_sensitivity": false
+    },
+    {
+      "name": "primary_shared",
+      "cohort_field": "target_bucket",
+      "cohort_value": "main",
+      "eligibility_field": "comparison_eligible",
+      "canonical_filters": {
+        "include": "1",
+        "target_bucket": "main"
+      },
+      "models": [
+        "minicpg",
+        "methydeep"
+      ],
+      "axis": "shared_fixed",
+      "seed": 20261103,
+      "stratum_order": "first_seen",
+      "sort_keys": false,
+      "require_full_auc": false,
+      "shared": true,
+      "runnerup_sensitivity": true
+    }
+  ]
+}

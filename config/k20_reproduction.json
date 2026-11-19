@@ -1,0 +1,27 @@
+{
+  "model_sha256": "b7bccd64552cd15915ffdacc602d2d0b351f363c91f3fd309bf2b9689187e570",
+  "status": "Recovered executed artifact metadata; model binary not redistributed in this candidate",
+  "candidate_spec.json": {
+    "prefilter_args": {
+      "prefilter_k": 3061,
+      "prefilter_method": "mi"
+    },
+    "selection_args": {
+      "hard_pair_power": 1.026506,
+      "hard_pair_top_n": 8,
+      "hard_pair_weight": 0.199865,
+      "pool_size": 230,
+      "rare_class_power": 0.501505,
+      "rare_class_weight": 0.038986,
+      "target_pair_coverage_weight": 0.344446,
+      "target_pair_weight": 0.024245
+    }
+  },
+  "best_params.json": {
+    "n_estimators": 400,
+    "max_features": 0.35,
+    "max_depth": null,
+    "min_samples_leaf": 1,
+    "class_weight": "balanced"
+  }
+}

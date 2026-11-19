@@ -1,0 +1,273 @@
+{
+  "parameters": {
+    "targets": 30,
+    "pools": 2,
+    "replicates": 3,
+    "pcr_ul": 25,
+    "enzyme_u_per_rxn": 0.625,
+    "dntp_ul_per_rxn": 0.5,
+    "primer_um": 0.2,
+    "primer_length_bases": 30,
+    "primer_delivered_pmol": 10000,
+    "reagent_overage": 0.1,
+    "target_bead_ratio": 1.8,
+    "ligation_beads_ul": 87,
+    "library_pcr_beads_ul": 45,
+    "methylation_levels": [
+      0,
+      10,
+      25,
+      50,
+      75,
+      90,
+      100
+    ],
+    "blank_controls": 1,
+    "control_input_ng": 100,
+    "raw_pairs_per_run": 12000000,
+    "distinct_barcodes": 96,
+    "target_depth": 1000,
+    "usable_fraction": 0.5,
+    "weakest_to_mean": 0.5,
+    "labor_hourly": 55.56,
+    "minor_buffer_allowance_per_library": 1,
+    "epic": 340.49
+  },
+  "unit_prices": {
+    "enzyme": 0.5168,
+    "dntp": 0.07775,
+    "primer": 0.00141,
+    "library_kit": 25.9375,
+    "indexes": 6.3125,
+    "beads": 0.031,
+    "qubit": 0.918,
+    "qubit_tube": 0.27,
+    "qpcr": 1.01,
+    "tips": 0.12083333333333333,
+    "plate": 3.0,
+    "seal": 1.25,
+    "tube": 0.05,
+    "conversion": 12.5,
+    "run": 1499,
+    "multiplexing": 50,
+    "controls": 0.0372,
+    "phix": 20.7
+  },
+  "references": [
+    {
+      "id": 1,
+      "title": "Lam et al. 2020 multiplex bisulphite PCR study",
+      "url": "https://doi.org/10.1186/s13148-020-00880-y",
+      "scope": "Two pools for 33 regions; triplicate amplification; methylation controls. Chemistry below is an adaptation, not their exact protocol."
+    },
+    {
+      "id": 2,
+      "title": "NEB EpiMark M0490 polymerase",
+      "url": "https://www.neb.com/products/m0490-epimark-hot-start-taq-dna-polymerase",
+      "scope": "USD323; 625U with buffer, nominally500 reactions of50\u00b5L."
+    },
+    {
+      "id": 3,
+      "title": "NEB EpiMark PCR guidelines",
+      "url": "https://www.neb.com/protocols/epimark-hot-start-taq-dna-polymerase-guidelines-for-pcr-reactions-m0490?pdf=true",
+      "scope": "25\u00b5L:0.625U enzyme,5\u00b5L buffer,0.5\u00b5L10mM-each dNTP; typical primer0.2\u00b5M. Multiplex performance remains untested."
+    },
+    {
+      "id": 4,
+      "title": "NEB N0447 dNTP mix",
+      "url": "https://www.neb.com/products/n0447-deoxynucleotide-dntp-solution-mix",
+      "scope": "USD311/4mL at10mM each."
+    },
+    {
+      "id": 5,
+      "title": "IDT oligonucleotide price matrix",
+      "url": "https://www.idtdna.com/pages/api/ComponentPriceMatrix",
+      "scope": "USD0.47/base at25nmol synthesis scale; delivered yield and primer length assumed separately."
+    },
+    {
+      "id": 6,
+      "title": "VWR NEBNext Ultra II DNA E7645L",
+      "url": "https://www.vwr.com/us/en/product/BP0000242006/nebnext-ultra-ii-dna-library-prep-kit-for-illumina",
+      "scope": "USD2490/96 preparations; end repair/dA tailing, ligation and library PCR. No beads or oligos."
+    },
+    {
+      "id": 7,
+      "title": "NEBNext Ultra II DNA manual",
+      "url": "https://intl.neb.com/-/media/nebus/files/manuals/manuale7645.pdf?hash=059B375ACDCABC792EBB0FF10B87E7B4&rev=8b4c7f67ccca4b4a805ceed982ef49b6",
+      "scope": "No-size-selection route at<=50ng:87\u00b5L post-ligation beads and45\u00b5L post-PCR beads. These quantities are buffer-specific."
+    },
+    {
+      "id": 8,
+      "title": "NEB E6440 unique dual index set",
+      "url": "https://www.neb.com/en-us/products/e6440-nebnext-multiplex-oligos-for-illumina-96-unique-dual-index-primer-pairs",
+      "scope": "USD606/96 preparations; adapters, USER and index primers included;96 distinct barcodes."
+    },
+    {
+      "id": 9,
+      "title": "NC State Genomic Sciences Laboratory fees",
+      "url": "https://research.ncsu.edu/gsl/2025-pricing/",
+      "scope": "Effective30May2024 INTERNAL anchors:AMPure310USD/10mL;D1000 TapeStation68USD/12; external rates require quotation."
+    },
+    {
+      "id": 10,
+      "title": "Fisher Qubit HS Q32854",
+      "url": "https://www.fishersci.com/shop/products/qubit-dsdna-hs-assay-kit-500/q32854",
+      "scope": "Regular displayed459USD/500 assays; temporary promotion excluded."
+    },
+    {
+      "id": 11,
+      "title": "Fisher Qubit tubes Q32856",
+      "url": "https://www.fishersci.com/shop/products/invitrogen-qubit-assay-tubes/q32856",
+      "scope": "Regular displayed135USD/500 tubes; temporary promotion excluded."
+    },
+    {
+      "id": 12,
+      "title": "NEBNext library quantification E7630",
+      "url": "https://www.neb.com/products/e7630-nebnext-library-quant-kit-for-illumina",
+      "scope": "USD505/500 reactions, standards included."
+    },
+    {
+      "id": 13,
+      "title": "Smithsonian NML consumables 2026",
+      "url": "https://striresearch.si.edu/molecular-laboratory/wp-content/uploads/sites/220/2026/02/NML-Consumable-Price-List-2026.pdf",
+      "scope": "Institutional prices:tips11.60USD/96;PCR plates30USD/10;seals1.25USD;1.5mL tubes25USD/500."
+    },
+    {
+      "id": 14,
+      "title": "UChicago Genomics fees",
+      "url": "https://voices.uchicago.edu/genomicsfacility/fees/",
+      "scope": "Posted external conversion12.50USD/sample;MiSeq v2 500-cycle1499USD/run;multiplexing50USD/lane. Page retrieved from search index after direct502; reconfirm quotation."
+    },
+    {
+      "id": 15,
+      "title": "UCSF Liver Center labour",
+      "url": "https://livercenter.ucsf.edu/price-list-gn",
+      "scope": "February2025 sample-processing nonmember55.56USD/hour. Hours below are assumptions."
+    },
+    {
+      "id": 16,
+      "title": "Zymo D5013 WGA methylation standards",
+      "url": "https://www.zymoresearch.com/products/human-methylated-non-methylated-wga-dna-set-dna-w-primers",
+      "scope": "USD372/set."
+    },
+    {
+      "id": 17,
+      "title": "Zymo D5013 manual",
+      "url": "https://files.zymoresearch.com/protocols/_d5013_human_wga_methylated_non-methylated_dna_set.pdf",
+      "scope": "5\u00b5g methylated plus5\u00b5g unmethylated DNA; used equally by symmetric standard series."
+    },
+    {
+      "id": 18,
+      "title": "Illumina MiSeq specifications",
+      "url": "https://www.illumina.com/documents/products/datasheets/datasheet_miseq.pdf",
+      "scope": "v2 nominal12\u201315M paired-end clusters; usable target depth not guaranteed."
+    },
+    {
+      "id": 19,
+      "title": "Illumina2024 Columbia price list",
+      "url": "https://www.finance.columbia.edu/sites/default/files/content/New%20pricefiles/Illumina%20Columbia%20Univ%20Customer%20Price%20List%202024.pdf",
+      "scope": "Historical list price PhiX FC-110-3001 USD207; quotation expired14February2025."
+    },
+    {
+      "id": 20,
+      "title": "Illumina PhiX product",
+      "url": "https://www.illumina.com/products/by-type/sequencing-kits/cluster-gen-sequencing-reagents/phix-control-v3.html",
+      "scope": "10\u00b5L PhiX control stock at10nM."
+    },
+    {
+      "id": 21,
+      "title": "Illumina MiSeq denaturation guide",
+      "url": "https://support-docs.illumina.com/IN/MiSeq_DnD/Content/MiSeq/DnD-MiSeq.htm?protocol=standard",
+      "scope": "2\u00b5L PhiX stock per preparation; low-diversity spike-in requires optimisation."
+    },
+    {
+      "id": 22,
+      "title": "Minnesota methylation microarrays",
+      "url": "https://genomics.umn.edu/service/illumina-methylation-microarrays",
+      "scope": "External EPIC savings-tier340.49USD/sample, multiples of8; service accounting differs from component budget."
+    }
+  ],
+  "batch_sizes": [
+    12,
+    24,
+    48,
+    88,
+    96
+  ],
+  "sensitivity": [
+    {
+      "scenario": "Central",
+      "changes": {}
+    },
+    {
+      "scenario": "Three target pools",
+      "changes": {
+        "pools": 3
+      }
+    },
+    {
+      "scenario": "Six target pools",
+      "changes": {
+        "pools": 6
+      }
+    },
+    {
+      "scenario": "Half or double hands on time",
+      "changes": {
+        "labor_multiplier": 0.5
+      }
+    },
+    {
+      "scenario": "Double hands on time",
+      "changes": {
+        "labor_multiplier": 2
+      }
+    },
+    {
+      "scenario": "Lower usable yield",
+      "changes": {
+        "usable_fraction": 0.3
+      }
+    },
+    {
+      "scenario": "Lower target uniformity",
+      "changes": {
+        "weakest_to_mean": 0.25
+      }
+    },
+    {
+      "scenario": "Half buffer allowance",
+      "changes": {
+        "minor_buffer_allowance_per_library": 0.5
+      }
+    },
+    {
+      "scenario": "Double buffer allowance",
+      "changes": {
+        "minor_buffer_allowance_per_library": 2
+      }
+    },
+    {
+      "scenario": "More tips",
+      "changes": {
+        "tip_multiplier": 1.5
+      }
+    },
+    {
+      "scenario": "Sequencing fee1800USD/run",
+      "changes": {
+        "run_fee": 1800
+      }
+    },
+    {
+      "scenario": "One run with higher output and extra indexes",
+      "changes": {
+        "raw_pairs_per_run": 15000000,
+        "distinct_barcodes": 192,
+        "extra_index_set_price": "Assumed same per-library rate as set1; not a quote for set2"
+      }
+    }
+  ],
+  "source_date": "2026-11-01",
+  "interpretation": "Conditional proposed workflow, not experimentally established"
+}

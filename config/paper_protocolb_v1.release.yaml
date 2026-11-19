@@ -1,82 +1,213 @@
-# MiniCpG release configuration template.
-# Fill the path placeholders after downloading public inputs.
-
+# Actual search ranges and seeds; replace input placeholders. See docs/workflows.md for reuse of locked splits.
 project:
   id: paper_protocolb_v1
-  output_root: outputs/minicpg_reproduction
-
+  local_output_root: outputs/reproduction/development
+  cluster_output_root: outputs/reproduction/development
 cohort:
+  source_manifest: <path_to_curated_HM450_primary_manifest>
   min_class_n: 50
   merge_policy: protocolb_three_merges
   label_col: project_id
-  record_identifier_col: <column_containing_unique_array_or_sample_record>
-  subject_identifier_col: <column_containing_patient_or_subject_identifier_if_available>
-
-data_access:
-  tcga_hm450_primary_tumor_manifest: <path_to_public_or_authorized_tcga_manifest>
-  tcga_hm450_beta_matrix: <path_to_tcga_hm450_beta_matrix_built_by_user>
-  external_public_data_dir: <path_to_downloaded_geo_arrayexpress_methylation_files>
-  external_public_accession_summary: resources/external_public_accessions/external_public_accession_summary.tsv
-  blacklist_cross_reactive: <path_to_downloaded_public_cross_reactive_probe_blacklist>
-  blacklist_snp_affected: <path_to_downloaded_public_snp_affected_probe_blacklist>
-  probe_annotation: <path_to_public_illumina_or_gencode_probe_annotation>
-
+  sample_id_col: sample_id
+  patient_id_col: patient_id
 split:
-  seed: 7
+  mode: create
+  seed: 42
   lockbox_fraction: 0.2
   stratify_by: project_id
-
+  existing_dev_manifest: ''
+  existing_lockbox_manifest: ''
+inputs:
+  probe_matrix: <path_to_probe_matrix>
+  blacklist_chen: <path_to_blacklist_chen>
+  blacklist_snp: <path_to_blacklist_snp>
+  probe_metadata: <path_to_probe_metadata>
 cv:
   inner_folds: 5
   seed: 7
-
 selection_stage:
   outer_splits: 5
   outer_repeats: 3
-
+  existing_outer_folds: ''
 confirm_stage:
   outer_splits: 5
   outer_repeats: 20
-
+  existing_outer_folds: ''
 training:
   class_weight_mode: balanced
   tune_metric: weighted_f1
-
 ks:
-  active: [30]
-  evaluated: [5, 10, 20, 30, 50, 100]
-
+  active:
+  - 30
+  future:
+  - 5
+  - 10
+  - 20
+  - 30
+  - 50
+  - 100
 prefilter:
   method: mi
   default_k: 3500
   logistic_k: 500
-
+  default_search:
+    kind: int
+    min: 3000
+    max: 3500
 fs_methods:
-  - rare_class_rank_shift
-  - mi_rank_baseline
-  - pairwise_hard_weighted_auc_stable
-
+- rare_class_rank_shift
+- mi_rank_baseline
+- pairwise_hard_weighted_auc_stable
 models:
-  - extra_trees
-  - random_forest
-  - linear_svm
-  - elastic_net_multinomial_logistic
-
+- extra_trees
+- random_forest
+- linear_svm
+- elastic_net_multinomial_logistic
+search:
+  fs_random_draws: 10
+  model_random_draws: 10
+  fs_spaces:
+    rare_class_rank_shift:
+      hard_pair_power:
+        kind: float
+        min: 1.0
+        max: 1.1
+      hard_pair_weight:
+        kind: float
+        min: 0.15
+        max: 0.2
+      hard_pair_top_n:
+        kind: choice
+        values:
+        - 8
+        - 9
+        - 10
+      pool_size:
+        kind: int
+        min: 210
+        max: 230
+      rare_class_power:
+        kind: float
+        min: 0.5
+        max: 0.6
+      rare_class_weight:
+        kind: float
+        min: 0.0
+        max: 0.05
+      target_pair_weight:
+        kind: float
+        min: 0.0
+        max: 0.07
+      target_pair_coverage_weight:
+        kind: float
+        min: 0.0
+        max: 0.6
+    pairwise_hard_weighted_auc_stable:
+      hardpair_baseline_topk:
+        kind: int
+        min: 400
+        max: 700
+      hardpair_cv_folds:
+        kind: constant
+        value: 3
+      hardpair_gamma:
+        kind: float
+        min: 2.0
+        max: 4.0
+      pairwise_top_per_pair:
+        kind: int
+        min: 20
+        max: 40
+      stable_alpha:
+        kind: float
+        min: 0.6
+        max: 0.8
+      stable_n_boot:
+        kind: int
+        min: 16
+        max: 32
+      stable_subsample_frac:
+        kind: float
+        min: 0.8
+        max: 0.95
+  model_spaces:
+    extra_trees:
+      n_estimators:
+        kind: int
+        min: 300
+        max: 800
+      max_features:
+        kind: choice
+        values:
+        - sqrt
+        - 0.2
+        - 0.35
+        - 0.5
+      min_samples_leaf:
+        kind: choice
+        values:
+        - 1
+        - 2
+        - 4
+      class_weight:
+        kind: constant
+        value: balanced
+    random_forest:
+      n_estimators:
+        kind: int
+        min: 300
+        max: 800
+      max_features:
+        kind: choice
+        values:
+        - sqrt
+        - 0.2
+        - 0.35
+        - 0.5
+      min_samples_leaf:
+        kind: choice
+        values:
+        - 1
+        - 2
+        - 4
+      class_weight:
+        kind: choice
+        values:
+        - balanced
+        - balanced_subsample
+    linear_svm:
+      C:
+        kind: log_float
+        min: 0.01
+        max: 30.0
+      class_weight:
+        kind: constant
+        value: balanced
+    elastic_net_multinomial_logistic:
+      C:
+        kind: log_float
+        min: 0.01
+        max: 30.0
+      l1_ratio:
+        kind: float
+        min: 0.05
+        max: 0.95
+      class_weight:
+        kind: constant
+        value: balanced
 stable_panel:
   method: rankrule
   builder: scripts/build_stable_panel_v1.py
-  selected_panel: resources/panels/stable_panel_rankrule_top30.tsv
-
+  variant_mode: none
 selection:
   primary_metric: macro_f1
   tie_break_1: weighted_f1
   tie_break_2: panel_stability
   tie_break_3: model_simplicity
-
 external:
   cache_mode: no_cache
   buckets:
-    - main
-    - stress_ffpe
-    - stress_epic
-    - stress_metastatic
+  - main
+  - stress_ffpe
+  - stress_epic
+  - stress_metastatic
