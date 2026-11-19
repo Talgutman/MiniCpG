@@ -24,7 +24,6 @@ from sklearn.pipeline import make_pipeline
 
 
 RANK_CACHE: dict[tuple[object, ...], np.ndarray] = {}
-PAIR_WEIGHT_CACHE: dict[tuple[object, ...], dict[tuple[str, str], float]] = {}
 
 
 @dataclass(frozen=True)
@@ -41,25 +40,22 @@ class Config:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset", choices=["gse186007", "prjna628686"], required=True)
+    parser.add_argument("--dataset", choices=["prjna628686"], required=True)
     parser.add_argument("--matrix", required=True, type=Path)
     parser.add_argument("--sample-metadata", required=True, type=Path)
     parser.add_argument("--stage-metadata", required=True, type=Path)
     parser.add_argument("--out-dir", required=True, type=Path)
-    parser.add_argument("--budgets", default="10:40,15:35,20:30,25:25,30:20,35:15,40:10")
-    parser.add_argument("--max-union", type=int, default=50)
+    parser.add_argument("--budgets", default="20:80,30:70,50:50,70:30,80:20")
+    parser.add_argument("--max-union", type=int, default=100)
     parser.add_argument("--value-mode", choices=["methylation", "coverage"], default="methylation")
     parser.add_argument("--model-families", default="extra_trees,logistic_l2")
-    parser.add_argument("--subtype-selector", choices=["anova", "ovr_union", "pairwise_confusion"], default="anova")
+    parser.add_argument("--subtype-selector", choices=["ovr_union"], default="ovr_union")
     parser.add_argument(
         "--config-subtype-metric",
-        choices=["subtype_macro_f1_all_cancers", "subtype_macro_f1_gate_positive_cancers"],
-        default="subtype_macro_f1_all_cancers",
+        choices=["subtype_macro_f1_gate_positive_cancers"],
+        default="subtype_macro_f1_gate_positive_cancers",
     )
-    parser.add_argument("--pairwise-confusion-splits", type=int, default=3)
-    parser.add_argument("--pairwise-confusion-weight-scale", type=float, default=4.0)
-    parser.add_argument("--pairwise-confusion-model", choices=["extra_trees", "logistic_l2"], default="logistic_l2")
-    parser.add_argument("--prjna-labels", default="CRC,LIHC,Normal,PAAD")
+    parser.add_argument("--prjna-labels", default="CRC,ESCA,GASTRIC,LIHC,Normal,PAAD")
     parser.add_argument("--prjna-normal-label", default="Normal")
     parser.add_argument("--target-specificity", type=float, default=0.80)
     parser.add_argument("--outer-splits", type=int, default=5)
@@ -115,23 +111,14 @@ def load_data(args: argparse.Namespace) -> tuple[np.ndarray, pd.DataFrame, list[
     matrix = np.load(args.matrix, mmap_mode="r")
     meta = read_tsv(args.sample_metadata).copy()
     stage = read_tsv(args.stage_metadata).copy()
-    if args.dataset == "gse186007":
-        meta["sample_id"] = meta["geo_accession"]
-        meta["label"] = meta["group"]
-        meta = meta.merge(stage[["geo_accession", "stage", "stage_broad"]], on="geo_accession", how="left")
-        meta["stage_raw"] = meta["stage"].fillna("")
-        meta["stage_group"] = meta["stage_broad"].fillna("missing")
-        labels = ["CRC", "HEA", "PDAC"]
-        normal_label = "HEA"
-    else:
-        meta["sample_id"] = meta["Geoid"]
-        meta["label"] = meta["analysis_label"]
-        stage_cols = ["Geoid", "geo_stage"]
-        extra_stage = stage[[col for col in stage_cols if col in stage.columns]].copy()
-        meta = meta.merge(extra_stage, on="Geoid", how="left")
-        meta["stage_raw"] = meta.get("geo_stage", "").fillna("")
-        meta["stage_group"] = [normalize_prjna_stage(stage_value, label) for stage_value, label in zip(meta["stage_raw"], meta["label"], strict=True)]
-        labels, normal_label = parse_prjna_labels(args)
+    meta["sample_id"] = meta["Geoid"]
+    meta["label"] = meta["analysis_label"]
+    stage_cols = ["Geoid", "geo_stage"]
+    extra_stage = stage[[col for col in stage_cols if col in stage.columns]].copy()
+    meta = meta.merge(extra_stage, on="Geoid", how="left")
+    meta["stage_raw"] = meta.get("geo_stage", "").fillna("")
+    meta["stage_group"] = [normalize_prjna_stage(stage_value, label) for stage_value, label in zip(meta["stage_raw"], meta["label"], strict=True)]
+    labels, normal_label = parse_prjna_labels(args)
     keep = meta["label"].isin(labels)
     meta = meta.loc[keep].reset_index(drop=True)
     row_idx = np.flatnonzero(keep.to_numpy())
@@ -352,138 +339,6 @@ def rank_multiclass_ovr_union(
     return ranked_array[:max_k]
 
 
-def estimate_pairwise_confusion_weights(
-    matrix: np.ndarray,
-    rows: np.ndarray,
-    y: np.ndarray,
-    max_k: int,
-    args: argparse.Namespace,
-) -> dict[tuple[str, str], float]:
-    classes = np.array(sorted(set(y)))
-    base_weights = {(str(a), str(b)): 1.0 for i, a in enumerate(classes) for b in classes[i + 1 :]}
-    if len(classes) < 2:
-        return base_weights
-    cache_base = rank_cache_base(
-        "pairwise_confusion_weights",
-        matrix,
-        rows,
-        y,
-        args.block_size,
-        args.min_train_present_fraction,
-        args.min_train_present_per_class,
-    )
-    cache_key = (
-        *cache_base,
-        int(max_k),
-        int(args.pairwise_confusion_splits),
-        float(args.pairwise_confusion_weight_scale),
-        args.pairwise_confusion_model,
-        int(args.seed),
-    )
-    cached = PAIR_WEIGHT_CACHE.get(cache_key)
-    if cached is not None:
-        return cached
-
-    min_class_count = int(pd.Series(y).value_counts().min())
-    n_splits = min(args.pairwise_confusion_splits, min_class_count)
-    if n_splits < 2:
-        PAIR_WEIGHT_CACHE[cache_key] = base_weights
-        return base_weights
-
-    confusion = pd.DataFrame(0, index=classes, columns=classes, dtype=float)
-    splitter = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=args.seed + 991)
-    for split_i, (train_local, val_local) in enumerate(splitter.split(np.zeros(len(y)), y), start=1):
-        train_rows = rows[train_local]
-        val_rows = rows[val_local]
-        y_train = y[train_local]
-        y_val = y[val_local]
-        features = rank_multiclass_anova(
-            matrix,
-            train_rows,
-            y_train,
-            max(max_k, 1),
-            block_size=args.block_size,
-            min_fraction=args.min_train_present_fraction,
-            min_per_class=args.min_train_present_per_class,
-            value_mode=args.value_mode,
-        )
-        model = make_model(args.pairwise_confusion_model, args.seed + 70000 + split_i, args.n_estimators, args.n_jobs)
-        model.fit(extract_values(matrix, train_rows, features, args.value_mode), y_train)
-        pred = model.predict(extract_values(matrix, val_rows, features, args.value_mode))
-        for true_label, pred_label in zip(y_val, pred, strict=True):
-            confusion.loc[true_label, pred_label] += 1
-
-    weights: dict[tuple[str, str], float] = {}
-    for i, a in enumerate(classes):
-        for b in classes[i + 1 :]:
-            support = float(confusion.loc[a].sum() + confusion.loc[b].sum())
-            errors = float(confusion.loc[a, b] + confusion.loc[b, a])
-            hardness = errors / support if support else 0.0
-            weights[(str(a), str(b))] = 1.0 + args.pairwise_confusion_weight_scale * hardness
-    PAIR_WEIGHT_CACHE[cache_key] = weights
-    return weights
-
-
-def rank_multiclass_pairwise_confusion(
-    matrix: np.ndarray,
-    rows: np.ndarray,
-    y: np.ndarray,
-    max_k: int,
-    args: argparse.Namespace,
-) -> np.ndarray:
-    kind = (
-        "multiclass_pairwise_confusion:"
-        f"{args.pairwise_confusion_splits}:"
-        f"{args.pairwise_confusion_weight_scale}:"
-        f"{args.pairwise_confusion_model}"
-    )
-    cached = cached_rank(
-        kind,
-        matrix,
-        rows,
-        y,
-        max_k,
-        args.block_size,
-        args.min_train_present_fraction,
-        args.min_train_present_per_class,
-    )
-    if cached is not None:
-        return cached
-    requested_k = cache_request_k(max_k)
-    classes = np.array(sorted(set(y)))
-    masks = [y == label for label in classes]
-    pair_weights = estimate_pairwise_confusion_weights(matrix, rows, y, requested_k, args)
-    scores = np.full(matrix.shape[1], -np.inf, dtype=np.float32)
-    for start in range(0, matrix.shape[1], args.block_size):
-        end = min(matrix.shape[1], start + args.block_size)
-        block = np.asarray(matrix[np.ix_(rows, np.arange(start, end, dtype=np.int64))], dtype=np.float32)
-        counts, sums, sumsq = group_stats(block, masks)
-        eligible = eligible_mask(counts, len(rows), args.min_train_present_fraction, args.min_train_present_per_class)
-        with np.errstate(divide="ignore", invalid="ignore"):
-            means = sums / counts
-            vars_ = (sumsq - counts * means**2) / np.maximum(counts - 1, 1)
-            block_scores = np.zeros(end - start, dtype=np.float32)
-            for i, a in enumerate(classes):
-                for j, b in enumerate(classes[i + 1 :], start=i + 1):
-                    weight = pair_weights[(str(a), str(b))]
-                    pooled = np.sqrt((vars_[i] + vars_[j]) / 2.0)
-                    effect = np.abs(means[i] - means[j]) / pooled
-                    block_scores += np.where(np.isfinite(effect), weight * effect, 0.0).astype(np.float32)
-        scores[start:end] = np.where(np.isfinite(block_scores) & eligible, block_scores, -np.inf).astype(np.float32)
-    ranked = top_indices(scores, requested_k)
-    store_rank(
-        kind,
-        matrix,
-        rows,
-        y,
-        args.block_size,
-        args.min_train_present_fraction,
-        args.min_train_present_per_class,
-        ranked,
-    )
-    return ranked[:max_k]
-
-
 def rank_subtype_features(
     matrix: np.ndarray,
     rows: np.ndarray,
@@ -491,17 +346,6 @@ def rank_subtype_features(
     max_k: int,
     args: argparse.Namespace,
 ) -> np.ndarray:
-    if args.subtype_selector == "anova":
-        return rank_multiclass_anova(
-            matrix,
-            rows,
-            y,
-            max_k,
-            block_size=args.block_size,
-            min_fraction=args.min_train_present_fraction,
-            min_per_class=args.min_train_present_per_class,
-            value_mode=args.value_mode,
-        )
     if args.subtype_selector == "ovr_union":
         return rank_multiclass_ovr_union(
             matrix,
@@ -513,8 +357,6 @@ def rank_subtype_features(
             min_per_class=args.min_train_present_per_class,
             value_mode=args.value_mode,
         )
-    if args.subtype_selector == "pairwise_confusion":
-        return rank_multiclass_pairwise_confusion(matrix, rows, y, max_k, args)
     raise ValueError(args.subtype_selector)
 
 
@@ -1039,9 +881,6 @@ def main() -> int:
         "value_mode": args.value_mode,
         "subtype_selector": args.subtype_selector,
         "config_subtype_metric": args.config_subtype_metric,
-        "pairwise_confusion_splits": args.pairwise_confusion_splits,
-        "pairwise_confusion_weight_scale": args.pairwise_confusion_weight_scale,
-        "pairwise_confusion_model": args.pairwise_confusion_model,
         "budgets": args.budgets,
         "model_families": parse_csv_strings(args.model_families),
         "outer_splits": args.outer_splits,

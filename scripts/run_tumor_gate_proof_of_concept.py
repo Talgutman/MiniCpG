@@ -28,30 +28,16 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedShuffleSplit
 
 
-DEFAULT_OUT = "outputs/paper_protocolb_v1/post_presentation_tumor_gate_20260531"
-DEFAULT_DEV_TUMOR = (
-    "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/"
-    "tcga_tumor_panel_matrices_current/tcga_dev_panel_matrix.tsv"
-)
-DEFAULT_TEST_TUMOR = (
-    "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/"
-    "tcga_tumor_panel_matrices_current/tcga_lockbox_panel_matrix.tsv"
-)
-DEFAULT_NORMAL = (
-    "outputs/paper_protocolb_v1/post_presentation_normal_biology_20260527/"
-    "module6_locked_minicpg_on_normals/locked_minicpg_normal_forced_predictions.tsv"
-)
-DEFAULT_MODEL = "outputs/paper_protocolb_v1/k_030/lockbox_eval_final/model_bundle.pkl"
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--active-manifest", default="config/active_locked_run.json")
-    p.add_argument("--dev-tumor", default=DEFAULT_DEV_TUMOR)
-    p.add_argument("--test-tumor", default=DEFAULT_TEST_TUMOR)
-    p.add_argument("--normal", default=DEFAULT_NORMAL)
-    p.add_argument("--model-bundle", default=DEFAULT_MODEL)
-    p.add_argument("--out-dir", default=DEFAULT_OUT)
+    p.add_argument("--dev-tumor", required=True)
+    p.add_argument("--test-tumor", required=True)
+    p.add_argument("--normal", required=True)
+    p.add_argument("--model-bundle", required=True)
+    p.add_argument("--out-dir", required=True)
     p.add_argument("--seed", type=int, default=20260531)
     p.add_argument("--n-threshold-repeats", type=int, default=200)
     p.add_argument("--threshold-calibration-size", type=float, default=0.25)

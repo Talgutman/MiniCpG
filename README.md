@@ -1,14 +1,24 @@
 # MiniCpG
 
-MiniCpG assigns tumor types from a compact panel of 30 DNA methylation probes. The saved tissue model predicts 27 modeled classes using an ExtraTrees classifier and training-set median imputation.
+MiniCpG classifies tumor tissue using a compact panel of 30 DNA methylation probes. The trained model predicts 27 tumor classes using an ExtraTrees classifier and imputation fitted on the development data.
 
-**Revision branch — not a published release.** This branch is being aligned with the revised CSBJ manuscript. The final-paper analysis workflows, trained model, examples and revised aggregate tables are packaged here; see [revision status](docs/revision_status.md) for validation scope and remaining provenance limits. The published `v0.1.0` tag remains the original July 2026 snapshot.
+This repository accompanies “MiniCpG: Broad validation and characterization of a 30-CpG cancer classifier” and provides the trained model, analysis code and aggregate supplementary results. The current code version is `0.2.0.dev0`.
 
-## Predict with the saved model
+| I want to… | Start here |
+|---|---|
+| Predict tumor type from my methylation data | [Quick start](#quick-start) and [input requirements](#input-and-output) |
+| Try complete or partially measured inputs | [Prediction examples](examples/README.md) |
+| Reproduce an analysis from the paper | [Reproduction guide](docs/reproduction_workflow.md) |
+| Find supplementary numerical results | [Results index](results/revision_20261119/README.md) |
+| Inspect the model or validation evidence | [Model description](model/model_card.md) · [Reproduction requirements](docs/reproduction_requirements.md) |
 
-From the repository root, using [uv](https://docs.astral.sh/uv/):
+## Quick start
+
+Using [uv](https://docs.astral.sh/uv/), clone the paper’s code branch and run the synthetic prediction example:
 
 ```bash
+git clone --branch revision/csbj-20261119 https://github.com/Talgutman/MiniCpG.git
+cd MiniCpG
 uv sync --locked
 uv run --locked minicpg-predict \
   --input examples/example_input_30cpg.tsv \
@@ -16,30 +26,31 @@ uv run --locked minicpg-predict \
   --include-probabilities
 ```
 
-The lockfile specifies the tested environment, including scikit-learn 1.7.2, which matches the saved model. Python 3.11 is the default; the package supports Python 3.11–3.12. The model is distributed in this repository, separately from the Python wheel. Use `--model /path/to/minicpg_k30_model_bundle.pkl.gz` when running outside the repository root. Load only trusted pickle files.
+If you already have this branch checked out, start at `uv sync --locked`. All commands in the documentation assume the repository root as the working directory. The example contains synthetic measurements; its predictions are for demonstrating usage.
 
-Input is a TSV or CSV with one specimen per row, an optional unique `sample_id`, and probe columns matching `model/feature_order.tsv`. Without IDs, the reader assigns `row_1`, `row_2`, etc. Extra columns are ignored. The example is synthetic and does not represent a study specimen.
+To analyze your own data, replace the input and output paths. Python 3.11 is the default; Python 3.11–3.12 are supported. The lockfile includes scikit-learn 1.7.2, matching the saved model.
 
-- At least 25 of the 30 panel probes must have finite beta values in [0, 1].
-- Absent probe columns, blank/nonnumeric cells, infinities and out-of-range values count as missing.
-- Eligible rows use the stored training-set medians for missing values. Nothing is fitted on the input specimens.
-- Every row is retained. Rows below the coverage threshold have `status=insufficient_coverage` and blank prediction/probability fields.
-- Predictions use the original class probabilities and raw argmax. ESCA/STAD predictions are retained; no class is removed or reassigned.
+## Input and output
 
-Output adds measured/missing probe counts, status, predicted label and maximum probability; `--include-probabilities` adds all modeled class probabilities. Internal TCGA identifiers retain the historical merge mapping; see `model/class_labels.tsv`.
+Input is a TSV or CSV with one specimen per row and probe columns named as in [feature_order.tsv](model/feature_order.tsv). An optional `sample_id` column must contain unique, nonempty identifiers. If it is omitted, rows receive identifiers such as `row_1`. Extra columns are ignored.
 
-## Reproduction and development
+- A specimen needs at least **25 of the 30 probes** measured as finite beta values between 0 and 1.
+- Absent probe columns, blank or nonnumeric cells, infinities and out-of-range values count as missing.
+- Eligible specimens have missing values filled with the saved training-set medians. No preprocessing is fitted on the new specimens.
+- The prediction is the class with the highest model probability across all 27 outputs.
 
-```bash
-uv sync --locked --extra analysis
-uv run --locked --extra analysis pytest
-uv run --locked python examples/run_synthetic_evaluation.py --out-dir outputs/synthetic_evaluation
-```
+The output contains one row for every input specimen: its identifier, measured/missing probe counts, status, predicted class and maximum probability. `--include-probabilities` adds one probability column per modeled class. Specimens below the coverage threshold have `status=insufficient_coverage` and blank prediction/probability fields.
 
-[Reproduction workflow](docs/workflows.md) provides the current analysis entry points, exact input contracts and examples. [Analysis policies](docs/analysis_policies.md) records the cohort, missingness, label-space and statistical conventions to preserve. Optional MethyDeep execution requires its separately obtained model and TensorFlow environment; it is not part of the inference install.
+Predictions use The Cancer Genome Atlas (TCGA) identifiers. [class_labels.tsv](model/class_labels.tsv) maps them to tumor names, including the combined COAD/READ, ESCA/STAD and GBM/LGG classes. See the [model description](model/model_card.md) for bundle contents and compatibility.
 
-[Revised supplementary results](results/revision_20261119/README.md) contain all 25 tables as 71 aggregate TSV blocks. Superseded scripts and historical results have been removed from this branch; the original `v0.1.0` tag remains available. No raw methylation data, specimen-level curation or predictions are distributed. See [data access](docs/data_access.md).
+The model is included in the repository and source distribution. A Python-wheel installation requires a separate model path, supplied as `--model /path/to/minicpg_k30_model_bundle.pkl.gz`. Load only trusted model bundles.
+
+## Paper analyses and results
+
+The [reproduction guide](docs/reproduction_workflow.md) explains how to choose an analysis, prepare its inputs and run it. The [workflow recipes](docs/workflows.md) contain commands and configuration requirements; the [command reference](docs/cli_reference.md) lists script arguments.
+
+[Supplementary results](results/revision_20261119/README.md) cover Tables S1–S25 as 71 aggregate TSV blocks. Study-level measurements, clinical metadata and specimen-level predictions are obtained separately; see [data access](docs/data_access.md). The [reproduction requirements](docs/reproduction_requirements.md) explain the data and software needed for these workflows.
 
 ## Citation and license
 
-Citation metadata are in `CITATION.cff`. Academic and non-commercial research use is governed by [LICENSE](LICENSE). Commercial use, clinical diagnostic use and paid-service use require separate written permission. The research model is not a clinical diagnostic device.
+Citation metadata are in [CITATION.cff](CITATION.cff). Academic and non-commercial research use is governed by [LICENSE](LICENSE). Commercial use, clinical diagnostic use and paid-service use require separate written permission. MiniCpG is a research model, not a clinical diagnostic device.

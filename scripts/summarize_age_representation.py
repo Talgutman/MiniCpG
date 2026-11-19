@@ -20,7 +20,7 @@ def main():
     out=bound.output_dir(args.out_dir)
     for label,group in [('cohort',['cohort']),('study_class',['cohort','gse_id','tcga_label'])]:
         joined.groupby(group+['age_category']).size().rename('n').reset_index().to_csv(out/(label+'_age_counts.tsv'),sep='\t',index=False)
-    bound.finish(out,{'workflow':'age_representation','definition':'Paediatric <18 years; adult >=18; unresolved, conflicting and crossing age bands remain unknown','population':'Explicit supplied membership, not inferred from historical bucket labels'})
+    bound.finish(out,{'workflow':'age_representation','definition':'Paediatric <18 years; adult >=18; unresolved, conflicting and crossing age bands remain unknown','population':'Explicit cohort membership supplied with the input data'})
 
 
 if __name__=='__main__':main()

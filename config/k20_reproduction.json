@@ -1,6 +1,6 @@
 {
   "model_sha256": "b7bccd64552cd15915ffdacc602d2d0b351f363c91f3fd309bf2b9689187e570",
-  "status": "Recovered executed artifact metadata; model binary not redistributed in this candidate",
+  "status": "Reported 20-CpG sensitivity settings; fitted binary supplied separately",
   "candidate_spec.json": {
     "prefilter_args": {
       "prefilter_k": 3061,

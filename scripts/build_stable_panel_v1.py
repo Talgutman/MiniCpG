@@ -28,7 +28,7 @@ class FoldSelection:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build stable panel v1 from fold-level selected probe files.")
     parser.add_argument("--selected-run-dir", required=True, help="Run dir containing repeat*/fold*/<method>/ files.")
-    parser.add_argument("--method", default="mrmr", help="Selection method folder under each fold (default: mrmr).")
+    parser.add_argument("--method", default="rare_class_rank_shift", help="Selection method folder under each fold (default: rare_class_rank_shift).")
     parser.add_argument("--rank-k", type=int, default=200, help="Max ranked probes to load from selected_order_K<k>.tsv.")
     parser.add_argument("--panel-k", type=int, default=30, help="Target stable panel size and top-K frequency definition.")
     parser.add_argument(

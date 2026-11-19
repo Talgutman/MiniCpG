@@ -12,21 +12,16 @@ import numpy as np
 import pandas as pd
 
 
-DEFAULT_MODEL = "outputs/paper_protocolb_v1/k_030/lockbox_eval_final/model_bundle.pkl"
-DEFAULT_NORMAL_AUDIT = "outputs/paper_protocolb_v1/post_presentation_normal_biology_20260527/module0_metadata_audit/normal_sample_metadata_audit.tsv"
-DEFAULT_DEV = "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/tcga_tumor_panel_matrices_current/tcga_dev_panel_matrix.tsv"
-DEFAULT_DECOMP = "outputs/paper_protocolb_v1/post_presentation_normal_biology_20260527/module2_5_probe_biology_decomposition/probe_biology_decomposition_compact.tsv"
-DEFAULT_OUT = "outputs/paper_protocolb_v1/post_presentation_normal_biology_20260527/module6_locked_minicpg_on_normals"
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--mode", choices=["compute", "plot", "all"], default="all")
-    p.add_argument("--model-bundle", default=DEFAULT_MODEL)
-    p.add_argument("--normal-audit", default=DEFAULT_NORMAL_AUDIT)
-    p.add_argument("--tcga-dev", default=DEFAULT_DEV)
-    p.add_argument("--decomposition", default=DEFAULT_DECOMP)
-    p.add_argument("--out-dir", default=DEFAULT_OUT)
+    p.add_argument("--model-bundle", required=True)
+    p.add_argument("--normal-audit", required=True)
+    p.add_argument("--tcga-dev", required=True)
+    p.add_argument("--decomposition", required=True)
+    p.add_argument("--out-dir", required=True)
     return p.parse_args()
 
 

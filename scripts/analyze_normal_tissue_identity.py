@@ -11,15 +11,13 @@ import numpy as np
 import pandas as pd
 
 
-DEFAULT_AUDIT = "outputs/paper_protocolb_v1/post_presentation_normal_biology_20260527/module0_metadata_audit/normal_sample_metadata_audit.tsv"
-DEFAULT_OUT = "outputs/paper_protocolb_v1/post_presentation_normal_biology_20260527/module1_normal_tissue_identity"
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--mode", choices=["compute", "plot", "all"], default="all")
-    p.add_argument("--normal-audit", default=DEFAULT_AUDIT)
-    p.add_argument("--out-dir", default=DEFAULT_OUT)
+    p.add_argument("--normal-audit", required=True)
+    p.add_argument("--out-dir", required=True)
     p.add_argument("--random-state", type=int, default=17)
     p.add_argument("--n-estimators", type=int, default=500)
     return p.parse_args()

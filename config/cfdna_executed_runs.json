@@ -1,7 +1,6 @@
 {
   "methylation": {
     "status": "complete",
-    "created_at": "2026-06-17T10:36:26",
     "dataset": "prjna628686",
     "n_samples": 297,
     "n_features": 2732642,
@@ -10,14 +9,10 @@
     "max_union": 100,
     "value_mode": "methylation",
     "subtype_selector": "ovr_union",
-    "config_subtype_metric": "subtype_macro_f1_gate_positive_cancers",
-    "pairwise_confusion_splits": 3,
-    "pairwise_confusion_weight_scale": 4.0,
-    "pairwise_confusion_model": "logistic_l2"
+    "config_subtype_metric": "subtype_macro_f1_gate_positive_cancers"
   },
   "coverage_control": {
     "status": "complete",
-    "created_at": "2026-06-17T10:32:53",
     "dataset": "prjna628686",
     "n_samples": 297,
     "n_features": 2732642,
@@ -26,10 +21,7 @@
     "max_union": 100,
     "value_mode": "coverage",
     "subtype_selector": "ovr_union",
-    "config_subtype_metric": "subtype_macro_f1_gate_positive_cancers",
-    "pairwise_confusion_splits": 3,
-    "pairwise_confusion_weight_scale": 4.0,
-    "pairwise_confusion_model": "logistic_l2"
+    "config_subtype_metric": "subtype_macro_f1_gate_positive_cancers"
   },
   "provenance_limits": [
     "cfMethDB processed intermediate; exact upstream per-file software versions unavailable",

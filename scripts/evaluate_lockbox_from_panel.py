@@ -26,35 +26,31 @@ from run_model_benchmark_from_selected import (
     read_selected,
     tune_extra_trees,
     tune_random_forest,
-    tune_gaussian_nb,
-    tune_hist_gradient_boosting,
     tune_lr_multinomial,
-    tune_mlp_shallow,
     tune_svm_linear,
-    tune_xgb_shallow,
 )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="One-shot lockbox evaluation from a fixed panel.")
     parser.add_argument("--probe-matrix", required=True, help="Probe matrix parquet path.")
-    parser.add_argument("--dev-manifest", required=True, help="Dev manifest TSV (sample_id, project_id).")
-    parser.add_argument("--lockbox-manifest", required=True, help="Lockbox manifest TSV (sample_id, project_id).")
+    parser.add_argument(
+        "--dev-manifest", required=True, help="Dev manifest TSV (sample_id, project_id)."
+    )
+    parser.add_argument(
+        "--lockbox-manifest", required=True, help="Lockbox manifest TSV (sample_id, project_id)."
+    )
     parser.add_argument("--panel-tsv", required=True, help="Panel TSV with probe_id column.")
     parser.add_argument("--k", type=int, default=30, help="Probe count to use from panel.")
     parser.add_argument("--out-dir", required=True, help="Output directory.")
     parser.add_argument(
         "--model",
-        default="xgb_shallow",
+        default="extra_trees",
         choices=[
             "lr_multinomial",
             "svm_linear",
-            "xgb_shallow",
-            "mlp_shallow",
             "extra_trees",
             "random_forest",
-            "hist_gradient_boosting",
-            "gaussian_nb",
             "linear_svm",
             "elastic_net_multinomial_logistic",
         ],
@@ -62,85 +58,57 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--class-weight-mode",
-        default="none",
+        default="balanced",
         choices=["none", "balanced"],
         help="Training class-weight mode for models that support it.",
     )
     parser.add_argument(
         "--tune-metric",
-        default="weighted_f1",
+        default="macro_f1",
         choices=["macro_f1", "weighted_f1", "accuracy", "balanced_accuracy"],
         help="Metric optimized in inner CV tuning.",
     )
     parser.add_argument("--seed", type=int, default=7, help="Random seed.")
-    parser.add_argument("--inner-folds", type=int, default=5, help="Inner CV folds for tuning on dev.")
+    parser.add_argument(
+        "--inner-folds", type=int, default=5, help="Inner CV folds for tuning on dev."
+    )
     parser.add_argument("--lr-c-grid", default="0.01,0.03,0.1,0.3,1,3,10,30", help="LR C grid.")
-    parser.add_argument("--lr-l1-grid", default="0.1,0.5,0.9", help="LR l1_ratio grid (elastic-net).")
-    parser.add_argument("--svm-c-grid", default="0.01,0.03,0.1,0.3,1,3,10,30", help="Linear SVM C grid.")
-    parser.add_argument("--xgb-max-depth-grid", default="2,3,4", help="XGBoost max_depth grid.")
-    parser.add_argument("--xgb-n-estimators-grid", default="120,240", help="XGBoost n_estimators grid.")
-    parser.add_argument("--xgb-learning-rate-grid", default="0.05,0.1", help="XGBoost learning_rate grid.")
-    parser.add_argument("--xgb-subsample", type=float, default=0.8, help="XGBoost subsample.")
-    parser.add_argument("--xgb-colsample-bytree", type=float, default=0.8, help="XGBoost colsample_bytree.")
-    parser.add_argument("--xgb-min-child-weight", type=float, default=1.0, help="XGBoost min_child_weight.")
-    parser.add_argument("--xgb-reg-lambda", type=float, default=1.0, help="XGBoost reg_lambda.")
-    parser.add_argument("--et-n-estimators-grid", default="200,400", help="ExtraTrees n_estimators grid.")
-    parser.add_argument("--et-max-features-grid", default="sqrt,0.2,0.35", help="ExtraTrees max_features grid.")
     parser.add_argument(
-        "--et-max-depth-grid",
+        "--lr-l1-grid", default="0.1,0.5,0.9", help="LR l1_ratio grid (elastic-net)."
+    )
+    parser.add_argument(
+        "--svm-c-grid", default="0.01,0.03,0.1,0.3,1,3,10,30", help="Linear SVM C grid."
+    )
+    parser.add_argument(
+        "--et-n-estimators-grid", default="200,400", help="ExtraTrees n_estimators grid."
+    )
+    parser.add_argument(
+        "--et-max-features-grid", default="sqrt,0.2,0.35", help="ExtraTrees max_features grid."
+    )
+    parser.add_argument(
+        "--et-max-depth-grid", default="0,10,20", help="ExtraTrees max_depth grid (use 0 for None)."
+    )
+    parser.add_argument(
+        "--et-min-samples-leaf-grid", default="1,3,5", help="ExtraTrees min_samples_leaf grid."
+    )
+    parser.add_argument(
+        "--rf-n-estimators-grid", default="200,400", help="RandomForest n_estimators grid."
+    )
+    parser.add_argument(
+        "--rf-max-features-grid", default="sqrt,0.2,0.35", help="RandomForest max_features grid."
+    )
+    parser.add_argument(
+        "--rf-max-depth-grid",
         default="0,10,20",
-        help="ExtraTrees max_depth grid (use 0 for None).",
+        help="RandomForest max_depth grid (use 0 for None).",
     )
     parser.add_argument(
-        "--et-min-samples-leaf-grid",
-        default="1,3,5",
-        help="ExtraTrees min_samples_leaf grid.",
+        "--rf-min-samples-leaf-grid", default="1,3,5", help="RandomForest min_samples_leaf grid."
     )
-    parser.add_argument("--rf-n-estimators-grid", default="200,400", help="RandomForest n_estimators grid.")
-    parser.add_argument("--rf-max-features-grid", default="sqrt,0.2,0.35", help="RandomForest max_features grid.")
-    parser.add_argument("--rf-max-depth-grid", default="0,10,20", help="RandomForest max_depth grid (use 0 for None).")
-    parser.add_argument("--rf-min-samples-leaf-grid", default="1,3,5", help="RandomForest min_samples_leaf grid.")
+    parser.add_argument("--n-jobs", type=int, default=8, help="Parallel workers for tree fitting.")
     parser.add_argument(
-        "--hgb-learning-rate-grid",
-        default="0.03,0.1",
-        help="HistGradientBoosting learning_rate grid.",
+        "--compute-auroc", action="store_true", help="Compute macro and per-class AUROC."
     )
-    parser.add_argument(
-        "--hgb-max-iter-grid",
-        default="100,200",
-        help="HistGradientBoosting max_iter grid.",
-    )
-    parser.add_argument(
-        "--hgb-max-depth-grid",
-        default="0,3,6",
-        help="HistGradientBoosting max_depth grid (use 0 for None).",
-    )
-    parser.add_argument(
-        "--hgb-max-leaf-nodes-grid",
-        default="15,31",
-        help="HistGradientBoosting max_leaf_nodes grid.",
-    )
-    parser.add_argument(
-        "--hgb-min-samples-leaf-grid",
-        default="20",
-        help="HistGradientBoosting min_samples_leaf grid.",
-    )
-    parser.add_argument(
-        "--gnb-var-smoothing-grid",
-        default="1e-9,1e-8,1e-7",
-        help="GaussianNB var_smoothing grid.",
-    )
-    parser.add_argument(
-        "--mlp-hidden-layer-grid",
-        default="64,128",
-        help="MLP hidden layer sizes (single-layer width values).",
-    )
-    parser.add_argument("--mlp-alpha-grid", default="1e-5,1e-4,1e-3", help="MLP alpha grid.")
-    parser.add_argument("--mlp-learning-rate-init-grid", default="1e-3,3e-4", help="MLP learning_rate_init grid.")
-    parser.add_argument("--mlp-max-iter", type=int, default=400, help="MLP max_iter.")
-    parser.add_argument("--mlp-early-stopping", action="store_true", help="Enable MLP early stopping.")
-    parser.add_argument("--n-jobs", type=int, default=8, help="XGBoost n_jobs for fit/tune.")
-    parser.add_argument("--compute-auroc", action="store_true", help="Compute macro and per-class AUROC.")
     parser.add_argument(
         "--fit-decision-policy",
         action="store_true",
@@ -191,17 +159,14 @@ def _read_panel(panel_path: Path, k: int) -> list[str]:
 
 def main() -> int:
     args = parse_args()
-
     probe_matrix = Path(args.probe_matrix)
     dev_manifest_path = Path(args.dev_manifest)
     lock_manifest_path = Path(args.lockbox_manifest)
     panel_path = Path(args.panel_tsv)
     out_dir = Path(args.out_dir)
-
     for p in [probe_matrix, dev_manifest_path, lock_manifest_path, panel_path]:
         if not p.exists():
             raise SystemExit(f"Missing input: {p}")
-
     print("[lockbox] loading manifests/panel", flush=True)
     dev = _read_manifest(dev_manifest_path)
     lock = _read_manifest(lock_manifest_path)
@@ -209,17 +174,17 @@ def main() -> int:
     validate_locked_development(dev.to_dict("records"), dev_manifest_path, lock.to_dict("records"))
     out_dir.mkdir(parents=True, exist_ok=True)
     probes = _read_panel(panel_path, args.k)
-
     dev_ids = dev["sample_id"].astype(str).tolist()
     lock_ids = lock["sample_id"].astype(str).tolist()
     y_dev = dev.set_index("sample_id").loc[dev_ids, "project_id"].astype(str).to_numpy()
     y_lock = lock.set_index("sample_id").loc[lock_ids, "project_id"].astype(str).to_numpy()
-    all_classes = sorted(set(dev["project_id"].astype(str).tolist()) | set(lock["project_id"].astype(str).tolist()))
+    all_classes = sorted(
+        set(dev["project_id"].astype(str).tolist()) | set(lock["project_id"].astype(str).tolist())
+    )
     print(
         f"[lockbox] dev_n={len(dev_ids)} lockbox_n={len(lock_ids)} classes={len(all_classes)} probes={len(probes)}",
         flush=True,
     )
-
     t_read_start = time.perf_counter()
     pf = pq.ParquetFile(probe_matrix)
     print("[lockbox] reading selected probe matrix", flush=True)
@@ -227,11 +192,14 @@ def main() -> int:
     X_lock = read_selected(pf, lock_ids, probes)
     t_read = time.perf_counter() - t_read_start
     print(f"[lockbox] read done in {t_read:.2f}s", flush=True)
-
     t_tune_start = time.perf_counter()
     requested_model = str(args.model).strip()
     model_name = canonical_model_name(requested_model)
-    class_weight_mode = "balanced" if requested_model in {"linear_svm", "elastic_net_multinomial_logistic"} else args.class_weight_mode
+    class_weight_mode = (
+        "balanced"
+        if requested_model in {"linear_svm", "elastic_net_multinomial_logistic"}
+        else args.class_weight_mode
+    )
     print(
         f"[lockbox] tuning model={requested_model} cw={class_weight_mode} tune_metric={args.tune_metric} inner_folds={args.inner_folds}",
         flush=True,
@@ -244,14 +212,8 @@ def main() -> int:
     rf_max_features_grid = parse_list_mixed_max_features(args.rf_max_features_grid)
     rf_max_depth_grid = parse_list_ints_or_none(args.rf_max_depth_grid)
     rf_min_samples_leaf_grid = parse_list_ints(args.rf_min_samples_leaf_grid)
-    hgb_learning_rate_grid = parse_list_floats(args.hgb_learning_rate_grid)
-    hgb_max_iter_grid = parse_list_ints(args.hgb_max_iter_grid)
-    hgb_max_depth_grid = parse_list_ints_or_none(args.hgb_max_depth_grid)
-    hgb_max_leaf_nodes_grid = parse_list_ints(args.hgb_max_leaf_nodes_grid)
-    hgb_min_samples_leaf_grid = parse_list_ints(args.hgb_min_samples_leaf_grid)
-    gnb_var_smoothing_grid = parse_list_floats(args.gnb_var_smoothing_grid)
     if model_name == "lr_multinomial":
-        model, inner_df, best_params = tune_lr_multinomial(
+        (model, inner_df, best_params) = tune_lr_multinomial(
             X_train=X_dev,
             y_train=y_dev,
             all_classes=all_classes,
@@ -261,10 +223,14 @@ def main() -> int:
             seed=args.seed,
             tune_metric=args.tune_metric,
             class_weight_mode=class_weight_mode,
-            penalties=(["elasticnet"] if requested_model == "elastic_net_multinomial_logistic" else ["l2", "elasticnet"]),
+            penalties=(
+                ["elasticnet"]
+                if requested_model == "elastic_net_multinomial_logistic"
+                else ["l2", "elasticnet"]
+            ),
         )
     elif model_name == "svm_linear":
-        model, inner_df, best_params = tune_svm_linear(
+        (model, inner_df, best_params) = tune_svm_linear(
             X_train=X_dev,
             y_train=y_dev,
             all_classes=all_classes,
@@ -274,26 +240,8 @@ def main() -> int:
             tune_metric=args.tune_metric,
             class_weight_mode=class_weight_mode,
         )
-    elif model_name == "xgb_shallow":
-        model, inner_df, best_params = tune_xgb_shallow(
-            X_train=X_dev,
-            y_train=y_dev,
-            all_classes=all_classes,
-            max_depth_grid=parse_list_ints(args.xgb_max_depth_grid),
-            n_estimators_grid=parse_list_ints(args.xgb_n_estimators_grid),
-            learning_rate_grid=parse_list_floats(args.xgb_learning_rate_grid),
-            subsample=args.xgb_subsample,
-            colsample_bytree=args.xgb_colsample_bytree,
-            min_child_weight=args.xgb_min_child_weight,
-            reg_lambda=args.xgb_reg_lambda,
-            inner_folds=args.inner_folds,
-            seed=args.seed,
-            n_jobs=args.n_jobs,
-            tune_metric=args.tune_metric,
-            class_weight_mode=class_weight_mode,
-        )
     elif model_name == "extra_trees":
-        model, inner_df, best_params = tune_extra_trees(
+        (model, inner_df, best_params) = tune_extra_trees(
             X_train=X_dev,
             y_train=y_dev,
             all_classes=all_classes,
@@ -305,10 +253,10 @@ def main() -> int:
             seed=args.seed,
             n_jobs=args.n_jobs,
             tune_metric=args.tune_metric,
-            class_weight=("balanced" if class_weight_mode == "balanced" else None),
+            class_weight="balanced" if class_weight_mode == "balanced" else None,
         )
     elif model_name == "random_forest":
-        model, inner_df, best_params = tune_random_forest(
+        (model, inner_df, best_params) = tune_random_forest(
             X_train=X_dev,
             y_train=y_dev,
             all_classes=all_classes,
@@ -320,51 +268,12 @@ def main() -> int:
             seed=args.seed,
             n_jobs=args.n_jobs,
             tune_metric=args.tune_metric,
-            class_weight=("balanced" if class_weight_mode == "balanced" else None),
-        )
-    elif model_name == "hist_gradient_boosting":
-        model, inner_df, best_params = tune_hist_gradient_boosting(
-            X_train=X_dev,
-            y_train=y_dev,
-            all_classes=all_classes,
-            learning_rate_grid=hgb_learning_rate_grid,
-            max_iter_grid=hgb_max_iter_grid,
-            max_depth_grid=hgb_max_depth_grid,
-            max_leaf_nodes_grid=hgb_max_leaf_nodes_grid,
-            min_samples_leaf_grid=hgb_min_samples_leaf_grid,
-            inner_folds=args.inner_folds,
-            seed=args.seed,
-            tune_metric=args.tune_metric,
-        )
-    elif model_name == "gaussian_nb":
-        model, inner_df, best_params = tune_gaussian_nb(
-            X_train=X_dev,
-            y_train=y_dev,
-            all_classes=all_classes,
-            var_smoothing_grid=gnb_var_smoothing_grid,
-            inner_folds=args.inner_folds,
-            seed=args.seed,
-            tune_metric=args.tune_metric,
-        )
-    elif model_name == "mlp_shallow":
-        model, inner_df, best_params = tune_mlp_shallow(
-            X_train=X_dev,
-            y_train=y_dev,
-            all_classes=all_classes,
-            hidden_layer_grid=parse_list_ints(args.mlp_hidden_layer_grid),
-            alpha_grid=parse_list_floats(args.mlp_alpha_grid),
-            learning_rate_init_grid=parse_list_floats(args.mlp_learning_rate_init_grid),
-            max_iter=args.mlp_max_iter,
-            early_stopping=args.mlp_early_stopping,
-            inner_folds=args.inner_folds,
-            seed=args.seed,
-            tune_metric=args.tune_metric,
+            class_weight="balanced" if class_weight_mode == "balanced" else None,
         )
     else:
         raise SystemExit(f"Unsupported model: {requested_model}")
     t_tune = time.perf_counter() - t_tune_start
     print(f"[lockbox] tuning done in {t_tune:.2f}s", flush=True)
-
     decision_policy = None
     if args.fit_decision_policy:
         print("[lockbox] fitting decision policy from dev OOF probabilities", flush=True)
@@ -391,13 +300,12 @@ def main() -> int:
         with (out_dir / "decision_policy.json").open("w", encoding="utf-8") as fh:
             json.dump(decision_policy, fh, indent=2)
         print(
-            f"[lockbox] decision policy type={decision_policy.get('type','')} metric={decision_policy.get('metric','')}",
+            f"[lockbox] decision policy type={decision_policy.get('type', '')} metric={decision_policy.get('metric', '')}",
             flush=True,
         )
-
     t_eval_start = time.perf_counter()
     print("[lockbox] evaluating on lockbox", flush=True)
-    metrics, cm_df, auc_df, fitted_model = evaluate_model(
+    (metrics, cm_df, auc_df, fitted_model) = evaluate_model(
         model_name=model_name,
         model=model,
         X_train=X_dev,
@@ -411,13 +319,13 @@ def main() -> int:
     )
     t_eval = time.perf_counter() - t_eval_start
     print(f"[lockbox] eval done in {t_eval:.2f}s", flush=True)
-
     inner_df.to_csv(out_dir / "innercv_results.tsv", sep="\t", index=False)
     with (out_dir / "best_params.json").open("w", encoding="utf-8") as fh:
         json.dump(best_params, fh, indent=2)
-    pd.DataFrame({"probe_id": probes}).to_csv(out_dir / f"selected_probes_K{args.k}.tsv", sep="\t", index=False)
+    pd.DataFrame({"probe_id": probes}).to_csv(
+        out_dir / f"selected_probes_K{args.k}.tsv", sep="\t", index=False
+    )
     cm_df.to_csv(out_dir / f"confusion_matrix_K{args.k}.tsv", sep="\t")
-
     metrics_row = {
         "model": args.model,
         "panel_file": str(panel_path),
@@ -430,22 +338,12 @@ def main() -> int:
         **metrics,
     }
     pd.DataFrame([metrics_row]).to_csv(out_dir / "metrics_lockbox.tsv", sep="\t", index=False)
-
-    if args.compute_auroc and not auc_df.empty:
+    if args.compute_auroc and (not auc_df.empty):
         auc_df.to_csv(out_dir / f"auc_by_class_K{args.k}.tsv", sep="\t", index=False)
-
     timing = pd.DataFrame(
-        [
-            {
-                "t_read_selected_matrix": t_read,
-                "t_tune_model": t_tune,
-                "t_eval_model": t_eval,
-            }
-        ]
+        [{"t_read_selected_matrix": t_read, "t_tune_model": t_tune, "t_eval_model": t_eval}]
     )
     timing.to_csv(out_dir / "timing.tsv", sep="\t", index=False)
-
-    # Save a deployable artifact bundle for downstream external inference.
     artifact = {
         "model": fitted_model,
         "model_name": args.model,
@@ -459,7 +357,6 @@ def main() -> int:
     artifact_path = out_dir / "model_bundle.pkl"
     with artifact_path.open("wb") as fh:
         pickle.dump(artifact, fh, protocol=pickle.HIGHEST_PROTOCOL)
-
     artifact_meta = {
         "split_membership_at_fit": split_fingerprint,
         "model_name": args.model,
@@ -481,7 +378,6 @@ def main() -> int:
     }
     with (out_dir / "model_bundle_meta.json").open("w", encoding="utf-8") as fh:
         json.dump(artifact_meta, fh, indent=2)
-
     print("[lockbox] writing outputs complete", flush=True)
     print(f"Wrote: {out_dir / 'metrics_lockbox.tsv'}")
     print(f"Wrote: {artifact_path}")

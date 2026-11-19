@@ -39,7 +39,7 @@ training:
 ks:
   active:
   - 30
-  future:
+  screened:
   - 5
   - 10
   - 20
@@ -208,6 +208,3 @@ external:
   cache_mode: no_cache
   buckets:
   - main
-  - stress_ffpe
-  - stress_epic
-  - stress_metastatic

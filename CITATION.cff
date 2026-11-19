@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use MiniCpG, please cite the associated manuscript and this code release."
+message: "If you use MiniCpG, please cite the associated manuscript and the code version used."
 title: "MiniCpG: Broad validation and characterization of a 30-CpG cancer classifier"
 authors:
   - family-names: "Gutman"
@@ -8,11 +8,11 @@ authors:
     given-names: "Tamir"
 version: "0.2.0.dev0"
 license: "LicenseRef-MiniCpG-Academic-NonCommercial"
-repository-code: "https://github.com/talgutman/MiniCpG"
+repository-code: "https://github.com/Talgutman/MiniCpG"
 keywords:
   - "DNA methylation"
   - "cancer classification"
   - "tumor type"
   - "minimal CpG panel"
   - "machine learning"
-abstract: "MiniCpG is a compact 30-CpG DNA methylation classifier for cancer-type assignment, provided with the trained model and compact probe panel; this development version is being aligned with the revised manuscript for academic and non-commercial research use."
+abstract: "MiniCpG is a 30-CpG DNA methylation classifier for tumor-type assignment. This repository provides the trained tissue model, analysis workflows, synthetic examples and aggregate manuscript results for academic and non-commercial research use."

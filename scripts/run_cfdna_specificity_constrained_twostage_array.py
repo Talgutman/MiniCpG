@@ -34,25 +34,22 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=["fold", "merge"], required=True)
     parser.add_argument("--fold-id", type=int)
-    parser.add_argument("--dataset", choices=["gse186007", "prjna628686"], required=True)
+    parser.add_argument("--dataset", choices=["prjna628686"], required=True)
     parser.add_argument("--matrix", required=True, type=Path)
     parser.add_argument("--sample-metadata", required=True, type=Path)
     parser.add_argument("--stage-metadata", required=True, type=Path)
     parser.add_argument("--out-dir", required=True, type=Path)
-    parser.add_argument("--budgets", default="10:40,15:35,20:30,25:25,30:20,35:15,40:10")
-    parser.add_argument("--max-union", type=int, default=50)
+    parser.add_argument("--budgets", default="20:80,30:70,50:50,70:30,80:20")
+    parser.add_argument("--max-union", type=int, default=100)
     parser.add_argument("--value-mode", choices=["methylation", "coverage"], default="methylation")
     parser.add_argument("--model-families", default="extra_trees,logistic_l2")
-    parser.add_argument("--subtype-selector", choices=["anova", "ovr_union", "pairwise_confusion"], default="anova")
+    parser.add_argument("--subtype-selector", choices=["ovr_union"], default="ovr_union")
     parser.add_argument(
         "--config-subtype-metric",
-        choices=["subtype_macro_f1_all_cancers", "subtype_macro_f1_gate_positive_cancers"],
-        default="subtype_macro_f1_all_cancers",
+        choices=["subtype_macro_f1_gate_positive_cancers"],
+        default="subtype_macro_f1_gate_positive_cancers",
     )
-    parser.add_argument("--pairwise-confusion-splits", type=int, default=3)
-    parser.add_argument("--pairwise-confusion-weight-scale", type=float, default=4.0)
-    parser.add_argument("--pairwise-confusion-model", choices=["extra_trees", "logistic_l2"], default="logistic_l2")
-    parser.add_argument("--prjna-labels", default="CRC,LIHC,Normal,PAAD")
+    parser.add_argument("--prjna-labels", default="CRC,ESCA,GASTRIC,LIHC,Normal,PAAD")
     parser.add_argument("--prjna-normal-label", default="Normal")
     parser.add_argument("--target-specificity", type=float, default=0.80)
     parser.add_argument("--outer-splits", type=int, default=5)
@@ -239,9 +236,6 @@ def merge(args: argparse.Namespace) -> int:
         "value_mode": args.value_mode,
         "subtype_selector": args.subtype_selector,
         "config_subtype_metric": args.config_subtype_metric,
-        "pairwise_confusion_splits": args.pairwise_confusion_splits,
-        "pairwise_confusion_weight_scale": args.pairwise_confusion_weight_scale,
-        "pairwise_confusion_model": args.pairwise_confusion_model,
     }
     (args.out_dir / "run_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     print(f"Wrote {args.out_dir}")

@@ -1,12 +1,35 @@
-# Revised analysis workflows
+# Paper analysis workflows
 
-This candidate packages the adopted numerical workflows and aggregate supplementary results. It does not download or redistribute individual-level inputs. Run commands from the repository root with Python 3.11 and `uv sync --locked --extra analysis`. Training, transcriptome scans and sequencing-matrix extraction require suitable compute resources; submit those jobs to your scheduler. No retraining is needed for saved-model inference or to inspect the included tables.
+Run commands from the repository root after `uv sync --locked --extra analysis`. Each section below corresponds to an analysis in the main paper or Supplementary Methods (SM1–SM8). The [command reference](cli_reference.md) lists arguments; [scientific conventions](analysis_policies.md) explains cohort, prediction and statistical rules.
 
-The [command reference](cli_reference.md) lists each entry point's arguments. [Analysis policies](analysis_policies.md) explains the scientific conventions. Superseded plotting scripts and July results are excluded from this tree. The unchanged v0.1.0 tag retains that history. This package supplies analysis outputs; manuscript layout/figure assembly is outside its scope.
+The saved model is sufficient for prediction. Reproducing analyses requires the measurements and curated metadata described in [data access](data_access.md). Training, expression scans and sequencing-matrix extraction require suitable compute resources.
 
-## Input binding and a runnable example
+## Workflow index
 
-New evaluation commands use a JSON configuration whose `files` object maps an input name to a path and SHA256 digest. Relative paths resolve against the configuration file, not the current directory. Templates in `config/workflows/` deliberately contain placeholders. Bind every listed input to your local file; for example:
+| Paper analysis | Methods and reported outputs | Recipe |
+|---|---|---|
+| Development, consensus selection and 20-CpG sensitivity | SM2; Fig. 2; Fig. S1; Tables S1, S4 | [Development](#development-and-reduced-panel-sensitivity) |
+| Primary external validation and MethyDeep | SM1–SM3; Fig. 3; Tables S2–S3, S12 | [External evaluation](#primary-external-validation-and-methydeep) |
+| Consensus versus single-split panels | SM2–SM3; Fig. S5; Table S5 | [Panel comparison](#consensus-versus-single-split-panels) |
+| Methylation shift, confusion, purity and study-specific errors | SM5; Fig. 4; Figs. S6–S7; Tables S6–S11 | [Error analyses](#error-patterns-geometry-and-purity) |
+| Metastatic, FFPE and EPIC cohorts; paired clinical/processing comparisons | SM1, SM3–SM4; Fig. 5; Tables S3, S12–S15 | [Additional cohorts](#expanded-domains-and-paired-conditions) |
+| Genomic context, biological scores, normal-adjacent analyses, expression and attribution | SM6; Fig. 6; Figs. S8–S11; Tables S16–S22 | [Biological context](#genomic-and-biological-context) |
+| Exploratory cfDNA-specific models and coverage control | SM7; Fig. 7; Table S23 | [Cell-free DNA](#native-cell-free-dna) |
+| Cost and turnaround assumptions | SM8; Table S24 | [Assay estimate](#assay-cost-and-turnaround) |
+| Age representation | SM1; Table S25 | [Age summaries](#age-representation) |
+| Sample and probe principal components | Figs. S2–S3 | [PCA](#sample-and-probe-pca) |
+
+## Synthetic evaluation example
+
+To run MiniCpG with the saved classifier, start with the [prediction examples](../examples/README.md). The example below demonstrates the separate evaluation workflow: it creates synthetic predictions and calculates metrics and clustered uncertainty. It does not run the trained classifier or reproduce study findings.
+
+```bash
+uv run --locked python examples/run_synthetic_evaluation.py --out-dir outputs/synthetic_evaluation
+```
+
+## Record input files and hashes
+
+Evaluation commands use a JSON configuration whose `files` object maps an input name to a path and SHA256 digest. Relative paths resolve against the configuration file, not the current directory. Templates in `config/workflows/` deliberately contain placeholders. Bind every listed input to your local file; for example:
 
 ```bash
 uv run --locked python scripts/bind_analysis_inputs.py \
@@ -20,19 +43,9 @@ uv run --locked python scripts/summarize_study_errors.py \
   --config work/study_errors.json --out-dir outputs/study_errors
 ```
 
-For configurations with many files, generate the same `files` dictionary in Python using `minicpg.analysis_io.sha256`. Do not remove required inputs to bypass a mismatch. The bound runners reject changed inputs and nonempty output directories and write `provenance.json`. Some original CLI scripts retain their own hash checks or manifests; use explicit arguments and fresh output directories for those scripts too. Keep specimen-level outputs local.
+For configurations with many files, generate the same `files` dictionary in Python using `minicpg.analysis_io.sha256`. Do not remove required inputs to bypass a mismatch. The bound runners reject changed inputs and nonempty output directories and write `provenance.json`. Other CLI scripts use their own hash checks or manifests; use explicit arguments and fresh output directories for those scripts too. Keep specimen-level outputs local.
 
-This demonstration runs without study data:
-
-```bash
-uv run --locked python examples/run_synthetic_evaluation.py --out-dir outputs/synthetic_evaluation
-uv run --locked python scripts/calculate_assay_cost.py \
-  --config config/assay_cost.json --out-dir outputs/assay_cost
-```
-
-The synthetic example illustrates input contracts and clustered uncertainty; its numbers are not study findings. Cost outputs are calculations under the supplied assumptions, not a validated assay quote.
-
-## Common table schemas
+## Common input tables
 
 All tables below are tab-delimited unless noted. Preserve specimen order when reproducing a frozen bootstrap stream.
 
@@ -47,18 +60,18 @@ All tables below are tab-delimited unless noted. Preserve specimen order when re
 | Class axis | One `tcga_label` per row, in the declared modeled-class order |
 | TCGA panel matrix | `sample_id`, `project_id`, then panel CpGs; development and held-out manifests must retain their locked patient separation |
 
-Use the exact adopted curation snapshot together with its measurement inventory. The code validates supplied identities; it cannot reconstruct manual diagnosis, tissue, source-availability or patient-identity adjudication from an accession list. Supplementary Table S12 supplies aggregate study information, not a specimen-membership substitute.
+Use the evaluated curation snapshot together with its measurement inventory. The code validates supplied identities; it cannot reconstruct manual diagnosis, tissue, source-availability or patient-identity adjudication from an accession list. Supplementary Table S12 supplies aggregate study information, not a specimen-membership substitute.
 
 ## Development and reduced-panel sensitivity
 
-`config/paper_protocolb_v1.release.yaml` preserves the executed search ranges, split seed 42, inner-CV seed 7, initial 5×3 outer folds and confirmation 5×20 outer folds. Replace its input placeholders. The template explicitly requests a **new** split; to reproduce an existing run, set `split.mode: reuse`, supply `split.existing_dev`/`existing_lockbox`, and set the stages' `existing_outer_folds` to the frozen assignments. Never silently regenerate a missing frozen assignment.
+`config/paper_protocolb_v1.release.yaml` preserves the executed search ranges, split seed 42, inner-CV seed 7, initial 5×3 outer folds and confirmation 5×20 outer folds. The initial comparison used K = 5, 10, 20, 30, 50 and 100; confirmation used the selected K = 30 configuration. Replace its input placeholders. The template explicitly requests a **new** split; to reproduce an existing run, set `split.mode: reuse`, supply `split.existing_dev_manifest`/`existing_lockbox_manifest`, and set the stages' `existing_outer_folds` to the frozen assignments. Never silently regenerate a missing frozen assignment.
 
 ```bash
 uv run --locked --extra analysis python scripts/run_paper_k_pipeline.py \
   --config work/development.yaml --k 30 --out-dir outputs/development_k30 --seed 7
 ```
 
-This prepares manifests and task lists. Execute their feature-selection tasks with `run_paper_fs_task.py`, aggregate with `aggregate_paper_fs_candidates.py`, execute model tasks with `run_paper_model_task.py`, aggregate with `aggregate_paper_model_candidates.py`, and construct the locked confirmation manifests with `build_paper_stage2_locked_manifests.py`. Use the emitted task manifests and CLI reference for the task indices. `build_stable_panel_v1.py` constructs the selection-frequency consensus panel. Fold preprocessing is fitted within training folds. The public static registry contains the adopted rare-class rank-shift selector; built-in selectors/models remain in the benchmark scripts. Patient split, fold and cached-training membership checks are included.
+This prepares manifests and task lists for one panel size. For the initial comparison, repeat it with each screened `--k` value and a separate output directory. Execute their feature-selection tasks with `run_paper_fs_task.py`, aggregate with `aggregate_paper_fs_candidates.py`, execute model tasks with `run_paper_model_task.py`, aggregate with `aggregate_paper_model_candidates.py`, and construct the locked confirmation manifests with `build_paper_stage2_locked_manifests.py`. Use the emitted task manifests and CLI reference for the task indices. `build_stable_panel_v1.py` constructs the selection-frequency consensus panel. Fold preprocessing is fitted within training folds. The selector registry and benchmark scripts implement the feature-selection and classifier families described in SM2. Patient split, fold and cached-training membership checks are included.
 
 After selecting the pipeline and constructing its consensus panel, `evaluate_lockbox_from_panel.py` fits the final model on development data and evaluates the held-out set once. Its input Parquet matrix has `probe_id` rows and sample-ID columns; both manifests must include `sample_id`, `patient_id`, `project_id`. For the adopted model, use ExtraTrees, balanced class weights, macro-F1 tuning, five inner folds and seed 7. The executed final estimator is recorded in `config/panel_estimator.json`. Do not enable `--fit-decision-policy` for the final model. For example, a fixed-parameter fit after selection is:
 
@@ -75,9 +88,9 @@ uv run --locked --extra analysis python scripts/evaluate_lockbox_from_panel.py \
 
 This fixed-parameter command reproduces the fitting step given the selected settings; it does not repeat the earlier search. Use the source search grids for the full development procedure. For reduced-panel sensitivity, `evaluate_external_from_bundle.py` accepts its uncompressed fitted bundle and an already sanitized, coverage-filtered panel matrix (including `target_bucket`). Keep `--pre-impute none`; its emitted predictions feed the current paired evaluator. Its filename `external_predictions_allow_missing1.tsv` is retained for source compatibility and does not define the supplied cohort's coverage threshold.
 
-The input methylation matrix must already be processed and annotated. This Python environment does not reconstruct the upstream TCGA SeSAMe/R environment or download TCGA measurements. Record those versions and input hashes separately. The YAML is a portable search recipe, not a claim that a new run reproduces every historical artifact byte-for-byte.
+The input methylation matrix must already be processed and annotated. This Python environment does not reconstruct the upstream TCGA SeSAMe/R environment or download TCGA measurements. Record those versions and input hashes separately. The YAML defines the search; exact reproduction also requires the evaluated split and fold assignments.
 
-`config/k20_reproduction.json` records the recovered K20 selector settings, estimator parameters and executed model hash. Use the same development workflow with `--k 20` and the recovered configuration for this sensitivity; its fitted binary is not redistributed here. Evaluate supplied K20 predictions through `evaluate_external.py` with the same primary cohort/axis conventions. The separate K100 development coverage decision is unchanged.
+`config/k20_reproduction.json` records the K20 selector settings, estimator parameters and executed model hash. Use the same development workflow with `--k 20` and its configuration for this sensitivity; its fitted binary is not redistributed here. Evaluate supplied K20 predictions through `evaluate_external.py` with the same primary cohort/axis conventions.
 
 ## Primary external validation and MethyDeep
 
@@ -92,11 +105,11 @@ uv run --locked python scripts/evaluate_external.py \
 
 The template preserves original predictions, the fixed full/shared macro-F1 axes, paired truth-stratified patient-cluster draws, specimen and patient-balanced estimates, and a separately named ESCA/STAD runner-up sensitivity. Primary AUROC averages evaluable truth classes. Missing probability columns and class axes are recorded. Do not renormalize predictions or remove an output class in the principal comparison. `float_precision: null`, unsorted selected rows and `first_seen` stratum ordering preserve the adopted primary bootstrap stream.
 
-MethyDeep execution uses `run_methydeep_inference.py` with its separately obtained `RF_feature45.csv`, `targer_names.csv` and SavedModel. Use a compatible legacy TensorFlow/Keras SavedModel environment; TensorFlow is intentionally not in the tissue-inference lock. The runner's `--help` is available without TensorFlow. It uses the top 30 probes, requires 27 measurements, and imputes using the specimen's measured-panel mean. Its standalone historical summary is not the matched revised comparison: pass original predictions to `evaluate_external.py` for that comparison.
+MethyDeep execution uses `run_methydeep_inference.py` with its separately obtained `RF_feature45.csv`, `targer_names.csv` and SavedModel. Use a compatible TensorFlow/Keras SavedModel environment; TensorFlow is intentionally not in the tissue-inference lock. The runner's `--help` is available without TensorFlow. It uses the top 30 probes, requires 27 measurements, and imputes using the specimen's measured-panel mean. Pass its original specimen-level predictions to `evaluate_external.py` to calculate the matched comparison with the paper’s class axis and resampling rules.
 
 ## Expanded domains and paired conditions
 
-Bind `config/workflows/expanded.json` and use the same evaluator. Each metastatic, FFPE and EPIC membership flag is independent; a specimen can belong to multiple cohorts. This template uses present-truth class axes, full-axis AUROC availability checks, sorted strata and the recorded domain/subset seeds. Do not replace these memberships with the historical disjoint `stress_*` buckets.
+Bind `config/workflows/expanded.json` and use the same evaluator. Each metastatic, FFPE and EPIC membership flag is independent; a specimen can belong to multiple cohorts. This template uses present-truth class axes, full-axis AUROC availability checks, sorted strata and the recorded domain/subset seeds.
 
 `evaluate_paired_conditions.py` uses `config/workflows/paired.json` for the adopted same-patient primary/regional-node and same-specimen processing contrasts. Input names in that template are literal file keys. Prediction files use the common schema; clinical membership additionally has `patient_namespace_and_id` and `sample_role` (`primary`/`metastatic`); IDAT membership has specimen keys; beta-difference inputs have `gse_id`, `model`, `difference`; `PROTOCOL.txt` describes and binds the comparison. `canonical_master_scope.tsv` supplies export-comparison membership. The two export comparisons remain study-specific (GSE144487 and GSE234379).
 
@@ -109,11 +122,11 @@ The source retains patient aggregation, common four-way eligibility and 20,000 p
 
 ## Consensus versus single-split panels
 
-`config/single_split_panels.json` contains the adopted consensus plus single-split probe definitions, ten classifier seeds and maximum missingness. `config/panel_estimator.json` binds the fixed ExtraTrees parameters and canonical seed. These are the ten-seed analysis definitions, not the superseded three-seed experiment.
+`config/single_split_panels.json` contains the adopted consensus plus single-split probe definitions, ten classifier seeds and maximum missingness. `config/panel_estimator.json` binds the fixed ExtraTrees parameters and canonical seed.
 
-`train_panel_comparison.py --config work/panel_training.json --out-dir outputs/panel_task_0 --task 0` fits one of ten task shards, using full development data only. Repeat tasks 0–9 on appropriate compute. The `panel_training.json` template names the required union matrices, locked model and reference predictions. Union matrices are pandas pickles with `sample_id`, `project_id` and all required CpGs; external matrices use the common schema. Pickles must come from trusted sources. The model input for this legacy port is an **uncompressed** bundle. For example, `gzip -dc model/minicpg_k30_model_bundle.pkl.gz > work/model_bundle.pkl` preserves its bytes; verify against `model/artifact_manifest.json`.
+`train_panel_comparison.py --config work/panel_training.json --out-dir outputs/panel_task_0 --task 0` fits one of ten task shards, using full development data only. Repeat tasks 0–9 on appropriate compute. The `panel_training.json` template names the required union matrices, locked model and reference predictions. Bind `panel_plan` to `config/single_split_panels.json` and `estimator_plan` to `config/panel_estimator.json`. Union matrices are pandas pickles with `sample_id`, `project_id` and all required CpGs; external matrices use the common schema. Pickles must come from trusted sources. The model input for this runner is an **uncompressed** bundle. For example, `gzip -dc model/minicpg_k30_model_bundle.pkl.gz > work/model_bundle.pkl` preserves its bytes; verify against `model/artifact_manifest.json`.
 
-Only specimens satisfying every compared panel's coverage criterion enter a common matrix. Do not impute first and then decide coverage. Reference predictions are used to check the consensus model at its canonical seed. The supplementary shifted-panel sensitivity retains its original disjoint buckets, separately from expanded-domain evaluation.
+Only specimens satisfying every compared panel's coverage criterion enter a common matrix. Do not impute first and then decide coverage. Reference predictions are used to check the consensus model at its canonical seed.
 
 Bind `config/workflows/panel_summary.json`, including one input key `{panel_id}_{seed}_main` per prediction file, then run:
 
@@ -122,7 +135,7 @@ uv run --locked python scripts/summarize_panel_comparison.py \
   --config work/panel_summary.json --out-dir outputs/panel_comparison --bucket main
 ```
 
-The plan order begins with consensus. All predictions must have identical specimen order, truth and original argmax. `units` uses the patient-unit schema. The runner averages across classifier seeds, computes ranks and selection-frequency associations, and uses paired clustered uncertainty. To summarize a shifted sensitivity, construct the analogous input keys ending in its bucket and use only `shifted_panels`. Internal output fields named `alternative_*` are retained for source compatibility; the manuscript term is “single-split panels.”
+The plan order begins with consensus. All predictions must have identical specimen order, truth and original argmax. `units` uses the patient-unit schema. The runner averages across classifier seeds, computes ranks and selection-frequency associations, and uses paired clustered uncertainty. Output fields named `alternative_*` refer to the single-split panels.
 
 ## Error patterns, geometry and purity
 
@@ -133,7 +146,7 @@ uv run --locked python scripts/analyze_class_geometry.py \
   --config work/geometry.json --out-dir outputs/class_geometry
 ```
 
-All class profiles are arithmetic means across the locked probes after the saved training-median imputation. Pair confusion uses both directions and both class denominators, retaining zero-confusion pairs. The primary test permutes whole class labels jointly across rows and columns; it does not treat class pairs as independent observations. Methylation-shift Spearman p-values remain nominal. The full configured permutation run is compute work; the packaging check only reran a short null simulation and verified all observed profiles/shifts.
+All class profiles are arithmetic means across the locked probes after the saved training-median imputation. Pair confusion uses both directions and both class denominators, retaining zero-confusion pairs. The primary test permutes whole class labels jointly across rows and columns; it does not treat class pairs as independent observations. Methylation-shift Spearman p-values remain nominal.
 
 `analyze_heldout_purity.py --config work/purity.json --out-dir outputs/purity` accepts a held-out manifest (`sample_id`, `file_uuid`), predictions (`sample_id`, `tcga_label`, `y_pred`), specimen metadata (`file_uuid`, `sample_submitter_id`, `sample_type`), and ABSOLUTE estimates (`sample`, `purity`). It prioritizes exact specimen/vial matching, keeps relaxed matches as sensitivities, fits class-conditional logistic regression and performs the within-class permutation check. Run `check_heldout_purity_sensitivity.py --analysis-dir outputs/purity` afterward. Sample-level matches stay local.
 
@@ -141,7 +154,7 @@ All class profiles are arithmetic means across the locked probes after the saved
 
 ## Genomic and biological context
 
-The following source entry points retain their scientific calculations. Supply every input argument explicitly; defaults refer to the authors' former directory layout. See the command reference for complete argument names.
+Supply the input and output paths listed by each command. The sequence below follows the biological analyses in SM6; see the command reference for complete argument names.
 
 | Component | Entry points and input contracts |
 |---|---|
@@ -149,11 +162,11 @@ The following source entry points retain their scientific calculations. Supply e
 | Context enrichment | `analyze_panel_context_enrichment_from_cv_prefilters.py`: annotation, annotated panel and per-fold MI-prefilter TSV glob; background is the development prefilters. |
 | Tumor–normal / lineage | `analyze_panel_tumor_normal.py`, `analyze_panel_lineage_normals.py`, `audit_normal_metadata_composition.py`, `analyze_normal_tissue_identity.py`: separately curated normal matrices, tumor split matrices and matched metadata. Normal eligibility must distinguish tissues with development tumors. |
 | Composition | `analyze_immune_purity_probe_associations.py`: panel matrices and specimen-linked covariates; its outputs feed `analyze_probe_biology_decomposition.py`. |
-| Evidence decomposition | `analyze_probe_biology_decomposition.py`: normal-lineage/audit, biology master, development/held-out tumor matrices, unpaired and matched tumor–normal summaries, and pooled/within-class composition associations. `analyze_biological_threshold_sensitivity.py` evaluates support-rule sensitivity. |
+| Evidence decomposition | `analyze_probe_biology_decomposition.py`: normal-lineage/audit, biology master, development/held-out tumor matrices, unpaired and matched tumor–normal summaries, and pooled/within-class composition associations. |
 | Same-patient substitution | `run_matched_normal_substitution_minicpg.py`: uncompressed locked model, held-out tumor matrix/manifest and normal matrix with `patient_id`, `sample_id`, `sample_type_code` and probe values. It requires same-patient normal-adjacent specimens, not external healthy controls. |
 | Separate normal gate | `run_tumor_gate_proof_of_concept.py`: explicit `--dev-tumor`, `--test-tumor`, `--normal`, `--model-bundle`, `--out-dir`, and `--active-manifest work/normal_gate.json` bound from the supplied template. The normal audit supplies `has_development_tumor` and `locked_model_normal_primary_subset`. This is a separate fitted detection experiment, not a rejection rule added to the released tumor classifier. |
 
-The normal-gate seed 20260531 was reconstructed from the original command/default, not an explicit historical run receipt. Preserve this provenance limitation. Development and held-out roles remain distinct; do not replace the archived support thresholds with rules optimized on the reported external outcomes.
+The normal-gate configuration uses seed 20260531. Keep development and held-out patients separate. `analyze_locked_minicpg_on_normals.py` prepares the normal-sample predictions used for the gate’s fixed-classifier confidence comparators; it requires the normal metadata audit, development matrix and biological decomposition outputs.
 
 For expression, run `analyze_panel_meth_expr_transcriptome_null.py` with `--probe-gene-pairs-tsv`, `--expression-metadata-tsv`, `--tcga-dev-matrix-tsv`, `--tcga-lockbox-matrix-tsv`, and `--out-dir`. It supports `--focus-projects` and `--shard-by-project` for jobs; aggregate using `aggregate_panel_meth_expr_transcriptome_null_shards.py`, then summarize with `summarize_panel_meth_expr_transcriptome_null.py`. Inputs are annotated probe/gene pairs and project-resolved RNA-seq metadata pointing to local expression files. The finite-beta correlation N is distinct from the broader expression overlap N. Transcriptome backgrounds and linked-gene support are calculated within project.
 
@@ -165,7 +178,7 @@ This is a separate nested workflow and panel, not inference with the tissue mode
 
 For data preparation, `filter_cfmethdb_presence_candidates_by_study_fraction.py` applies the label-blind 80% study-presence filter to merged presence-atlas shards. Supply the actual study denominator. `extract_cfmethdb_candidate_matrix_np_chunk.py` reads candidate coordinates (`feature_id`, `chrom`, `start`, `end`) and a sample manifest (`Geoid`, `analysis_label`, `studyid`, `bigwig_url`), downloading BigWigs into an explicit cache directory. This extraction optionally requires `uv sync --locked --extra analysis --extra cfdna-data` and curl. `combine_cfmethdb_candidate_matrix_np_chunks.py` creates the NumPy matrix and aligned metadata. The atlas itself and source annotation need to be obtained/constructed from the permitted upstream source. Exact upstream per-file software versions were not recoverable.
 
-The analysis input matrix is a specimen-by-feature `.npy` array; metadata rows must align exactly and contain `Geoid`, `analysis_label`. Stage metadata contains `Geoid`, `geo_stage`. Supply explicit K100 parameters because the historical script defaults describe a different experiment:
+The analysis input matrix is a specimen-by-feature `.npy` array; metadata rows must align exactly and contain `Geoid`, `analysis_label`. Stage metadata contains `Geoid`, `geo_stage`. The defaults follow the reported 100-CpG analysis. The complete command is:
 
 ```bash
 uv run --locked --extra analysis python scripts/run_cfdna_specificity_constrained_twostage_array.py \
@@ -181,13 +194,24 @@ uv run --locked --extra analysis python scripts/run_cfdna_specificity_constraine
   --target-specificity 0.80 --outer-splits 5 --outer-repeats 5 --inner-splits 4 --seed 20260616
 ```
 
-Run fold IDs 1–25, then the same command with `--mode merge` (omit `--fold-id`). Repeat with `--value-mode coverage` and a separate output directory for the coverage-indicator control. Report repeated-CV means/SDs as descriptive summaries, not independent-fold confidence intervals. Each workflow's subtype result is conditional on its own gate-positive samples. The historical coverage-control inner-search file inventory is incomplete; do not invent missing per-fold receipts.
+Run fold IDs 1–25, then the same command with `--mode merge` (omit `--fold-id`). Repeat with `--value-mode coverage` and a separate output directory for the coverage-indicator control. Report repeated-CV means/SDs as descriptive summaries, not independent-fold confidence intervals. Each workflow's subtype result is conditional on its own gate-positive samples.
 
-## Age, costs and PCA
+## Age representation
 
-`summarize_age_representation.py` with `config/workflows/age.json` uses explicit membership (`cohort`, specimen keys, `tcga_label`) and source-curated `age_category` (`adult`, `paediatric`, `unknown`). Paediatric means <18; adult means ≥18. Unresolved/crossing bands remain unknown, including missing annotations. Independent cohort memberships can overlap. This produces representation counts; it is not a powered age-specific validation analysis. Table S25 preserves the approved cohort-bound age audit.
+`summarize_age_representation.py` with `config/workflows/age.json` uses explicit membership (`cohort`, specimen keys, `tcga_label`) and source-curated `age_category` (`adult`, `paediatric`, `unknown`). Paediatric means <18; adult means ≥18. Unresolved/crossing bands remain unknown, including missing annotations. Independent cohort memberships can overlap. This produces representation counts; it is not a powered age-specific validation analysis. Table S25 reports the cohort-specific counts.
+
+## Assay cost and turnaround
 
 `calculate_assay_cost.py` derives batch and sensitivity totals from `config/assay_cost.json`; references and price/overhead assumptions are included. Table S24 also contains the proposed turnaround schedule. That schedule is an assumption-based protocol scenario, not an empirical runtime benchmark.
+
+```bash
+uv run --locked python scripts/calculate_assay_cost.py \
+  --config config/assay_cost.json --out-dir outputs/assay_cost
+```
+
+The outputs summarize costs under the supplied assumptions; they are not a validated assay quote.
+
+## Sample and probe PCA
 
 For sample PCA, create a fresh run directory with `inputs/` containing `panel.tsv`, `split_lock.json`, `dev_manifest.tsv`, `heldout_manifest.tsv`, `dev_matrix.tsv`, `heldout_matrix.tsv`, and `input_hashes.json` mapping each filename to its digest. Panel rows include `probe_id`, `panel_rank_rule`; matrix columns are `sample_id`, `project_id`, then probes in panel rank order. The split lock contains `dev_samples`, `heldout_samples`, `dev_sample_sha256`, `heldout_sample_sha256`; identifier hashes are SHA256 of sorted unique IDs joined by newline, without a trailing newline.
 
@@ -198,8 +222,8 @@ uv run --locked python scripts/analyze_probe_pca_20261106.py --run-dir work/prob
 
 Probe PCA additionally needs `fold_presence.tsv` (`fold_id` plus binary probe columns), panel `n_folds_top_panel`/`selection_rate_top_panel`, and `annotations.tsv` with probe/rank/frequency/context fields. Use separate directories for sample and probe PCA. Both scripts verify hashes/membership. Sample PCA fits imputation and centering on development data and projects held-out specimens. Probe PCA uses development class means and includes the within-probe-centered sensitivity. These descriptive projections are conditional on supervised feature selection.
 
-## Packaged results and validation limits
+## Aggregate results
 
-`results/revision_20261119/tables.json` maps all supplementary tables to aggregate TSV blocks. Its manifest records exact file hashes. Values are exported from approved numeric table sources without re-rounding. Historical title/notes text retained in some source blocks is not a replacement for the latest manuscript Methods or captions.
+The [results index](../results/revision_20261119/README.md) links Tables S1–S25 to machine-readable TSV files. `tables.json` records their titles and blocks; `manifest.tsv` records file hashes. The tables contain aggregate results, with specimen-level inputs and outputs kept separately.
 
-Packaging validation includes synthetic regression tests; exact source/helper checks; command imports/help; recorded-bootstrap parity for primary/expanded evaluation; paired-result parity; observed geometry/shift parity; cost-model parity; and all aggregate table readbacks. It does not rerun development, panel refits, biological scans or native cfDNA training. Data access, upstream processing and manual source curation remain explicit prerequisites. See [revision status](revision_status.md) for per-analysis evidence and publication steps.
+See [reproduction requirements](reproduction_requirements.md) for software and data prerequisites. The example data demonstrate usage; they do not reproduce the paper’s numerical findings.

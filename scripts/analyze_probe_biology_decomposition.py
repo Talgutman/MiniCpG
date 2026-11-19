@@ -11,18 +11,6 @@ import numpy as np
 import pandas as pd
 
 
-DEFAULT_OUT = "outputs/paper_protocolb_v1/post_presentation_normal_biology_20260527/module2_5_probe_biology_decomposition"
-DEFAULT_NORMAL = "outputs/paper_protocolb_v1/post_presentation_normal_biology_20260527/module1_normal_tissue_identity/probe_normal_lineage_evidence.tsv"
-DEFAULT_NORMAL_AUDIT = "outputs/paper_protocolb_v1/post_presentation_normal_biology_20260527/module0_metadata_audit/normal_sample_metadata_audit.tsv"
-DEFAULT_BIOLOGY = "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/integrated_probe_gene_calls_current/panel_probe_biology_master.tsv"
-DEFAULT_DEV = "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/tcga_tumor_panel_matrices_current/tcga_dev_panel_matrix.tsv"
-DEFAULT_LOCKBOX = "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/tcga_tumor_panel_matrices_current/tcga_lockbox_panel_matrix.tsv"
-DEFAULT_TN_DEV = "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/tumor_normal_dev_all24_current/tumor_normal_probe_summary.tsv"
-DEFAULT_TN_LOCKBOX = "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/tumor_normal_lockbox_all24_current/tumor_normal_probe_summary.tsv"
-DEFAULT_MATCHED_DEV = "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/tumor_normal_dev_all24_current/matched_pair_probe_summary.tsv"
-DEFAULT_MATCHED_LOCKBOX = "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/tumor_normal_lockbox_all24_current/matched_pair_probe_summary.tsv"
-DEFAULT_COMPOSITION = "outputs/paper_protocolb_v1/k_030/immune_purity_panelwide_current/probe_association_summary.tsv"
-DEFAULT_WITHIN_COMPOSITION = "outputs/paper_protocolb_v1/k_030/immune_purity_panelwide_current/within_class_probe_covariate_correlations.tsv"
 
 
 KEY_COLS = {"sample_id", "project_id", "patient_id", "sample_type", "sample_type_code", "source_split"}
@@ -30,18 +18,18 @@ KEY_COLS = {"sample_id", "project_id", "patient_id", "sample_type", "sample_type
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--out-dir", default=DEFAULT_OUT)
-    p.add_argument("--normal-lineage", default=DEFAULT_NORMAL)
-    p.add_argument("--normal-audit", default=DEFAULT_NORMAL_AUDIT)
-    p.add_argument("--biology-master", default=DEFAULT_BIOLOGY)
-    p.add_argument("--tcga-dev", default=DEFAULT_DEV)
-    p.add_argument("--tcga-lockbox", default=DEFAULT_LOCKBOX)
-    p.add_argument("--tumor-normal-dev", default=DEFAULT_TN_DEV)
-    p.add_argument("--tumor-normal-lockbox", default=DEFAULT_TN_LOCKBOX)
-    p.add_argument("--matched-dev", default=DEFAULT_MATCHED_DEV)
-    p.add_argument("--matched-lockbox", default=DEFAULT_MATCHED_LOCKBOX)
-    p.add_argument("--composition", default=DEFAULT_COMPOSITION)
-    p.add_argument("--within-composition", default=DEFAULT_WITHIN_COMPOSITION)
+    p.add_argument("--out-dir", required=True)
+    p.add_argument("--normal-lineage", required=True)
+    p.add_argument("--normal-audit", required=True)
+    p.add_argument("--biology-master", required=True)
+    p.add_argument("--tcga-dev", required=True)
+    p.add_argument("--tcga-lockbox", required=True)
+    p.add_argument("--tumor-normal-dev", required=True)
+    p.add_argument("--tumor-normal-lockbox", required=True)
+    p.add_argument("--matched-dev", required=True)
+    p.add_argument("--matched-lockbox", required=True)
+    p.add_argument("--composition", required=True)
+    p.add_argument("--within-composition", required=True)
     p.add_argument("--composition-breadth-rho", type=float, default=0.30)
     p.add_argument("--composition-min-samples", type=int, default=30)
     return p.parse_args()

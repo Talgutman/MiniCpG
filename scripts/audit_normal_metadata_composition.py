@@ -10,49 +10,19 @@ from pathlib import Path
 import pandas as pd
 
 
-DEFAULT_OUT = "outputs/paper_protocolb_v1/post_presentation_normal_biology_20260527/module0_metadata_audit"
-DEFAULT_NORMAL_INV = "outputs/paper_protocolb_v1/k_030/lineage_normals_tcga_only_current/normal_reference_sample_inventory.tsv"
-DEFAULT_NORMAL_GDC_INV = (
-    "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/lineage_calibration_current/"
-    "tcga_normals_all24_prefilter_union_gdc_current/tcga_gdc_file_inventory.tsv"
-)
-DEFAULT_TUMOR_DEV = (
-    "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/"
-    "tcga_tumor_panel_matrices_current/tcga_dev_panel_matrix.tsv"
-)
-DEFAULT_TUMOR_LOCKBOX = (
-    "outputs/paper_protocolb_v1/k_030/biological_interpretation_current/"
-    "tcga_tumor_panel_matrices_current/tcga_lockbox_panel_matrix.tsv"
-)
-DEFAULT_ABSOLUTE = (
-    "outputs/paper_protocolb_v1/k_030/immune_purity_current/reference_data/"
-    "TCGA_mastercalls.abs_tables_JSedit.fixed.txt"
-)
-DEFAULT_LEUK = (
-    "outputs/paper_protocolb_v1/k_030/immune_purity_current/reference_data/"
-    "TCGA_all_leuk_estimate.masked.20170107.tsv"
-)
-DEFAULT_CIBERSORT = (
-    "outputs/paper_protocolb_v1/k_030/immune_purity_current/reference_data/"
-    "TCGA.Kallisto.fullIDs.cibersort.relative.tsv"
-)
-DEFAULT_QUALITY = (
-    "outputs/paper_protocolb_v1/k_030/immune_purity_current/reference_data/"
-    "merged_sample_quality_annotations.tsv"
-)
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--out-dir", default=DEFAULT_OUT)
-    p.add_argument("--normal-inventory", default=DEFAULT_NORMAL_INV)
-    p.add_argument("--normal-gdc-inventory", default=DEFAULT_NORMAL_GDC_INV)
-    p.add_argument("--tumor-dev", default=DEFAULT_TUMOR_DEV)
-    p.add_argument("--tumor-lockbox", default=DEFAULT_TUMOR_LOCKBOX)
-    p.add_argument("--absolute", default=DEFAULT_ABSOLUTE)
-    p.add_argument("--leukocyte", default=DEFAULT_LEUK)
-    p.add_argument("--cibersort", default=DEFAULT_CIBERSORT)
-    p.add_argument("--quality", default=DEFAULT_QUALITY)
+    p.add_argument("--out-dir", required=True)
+    p.add_argument("--normal-inventory", required=True)
+    p.add_argument("--normal-gdc-inventory", required=True)
+    p.add_argument("--tumor-dev", required=True)
+    p.add_argument("--tumor-lockbox", required=True)
+    p.add_argument("--absolute", required=True)
+    p.add_argument("--leukocyte", required=True)
+    p.add_argument("--cibersort", required=True)
+    p.add_argument("--quality", required=True)
     return p.parse_args()
 
 

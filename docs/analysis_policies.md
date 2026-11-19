@@ -1,31 +1,47 @@
-# Revised analysis policies
+# Scientific conventions
 
-These are scientific contracts for the repository migration. They do not imply that every corresponding workflow has been packaged or rerun.
+These conventions define the analyses reported in the paper. Use them with the [workflow recipes](workflows.md); the [reproduction requirements](reproduction_requirements.md) list the necessary data and software.
 
-## Tissue model and comparison
+## Tissue classifier and matched comparison
 
-The locked model uses the 30-probe consensus panel, a stored training-median imputer and raw argmax across its original 27 classes. External specimens need at least 25 valid panel probes. MethyDeep requires at least 27 measured probes and uses the specimen's mean across its measured panel probes for missing values. Comparisons use the identical scoreable specimens for both models. The merged GBM/LGG and COAD/READ labels are shared. ESCA/STAD reference specimens are excluded from the matched comparison because MethyDeep lacks that class; original MiniCpG ESCA/STAD predictions remain and count as errors. Runner-up reassignment is a separate sensitivity analysis.
+The saved MiniCpG model uses the 30-probe consensus panel, stored training-set medians and the highest-probability class across its original 27 outputs. External specimens need at least 25 valid panel measurements. The two 30-probe panels do not overlap. MethyDeep requires at least 27 measured probes and fills missing values with the specimen's mean across its measured panel probes.
 
-Development prediction-policy selection occurs within the development procedure. It must not be applied retrospectively to the locked model. Consensus-panel ties use selection frequency, Borda score, mean rank, then probe identifier. Reader-facing descriptions use “single-split panels”; historical filenames and model identifiers remain unchanged.
+The matched comparison uses identical scoreable specimens. GBM/LGG and COAD/READ are combined classes in both models. ESCA/STAD reference specimens are excluded because MethyDeep lacks that class; MiniCpG ESCA/STAD predictions are retained and counted as errors. Reassigning those predictions to a remaining class is a separate sensitivity analysis.
 
-## Cohorts and evaluation
+During development, prediction-policy selection occurs within the development procedure. The final saved model uses no additional decision policy. The consensus panel is ranked by selection frequency, with ties resolved by Borda score, mean rank and probe identifier.
 
-Primary external eligibility is HM450 primary tumors without documented FFPE preservation. This does not establish confirmed frozen preservation for every specimen. Its adopted membership and predictions remain fixed during expanded-domain analyses.
+## Cohort definitions
 
-Metastatic, FFPE and EPIC evaluations use independent membership flags. A specimen may belong to multiple cohorts, but appears once within each. Pending entries are not scored. Do not define these cohorts through the old mutually exclusive bucket field or report pooled-union performance.
+The primary external cohort consists of HM450 primary tumors without documented formalin-fixed paraffin-embedded (FFPE) preservation. This criterion does not establish confirmed frozen preservation for every specimen. Its membership and predictions stay fixed during the additional domain analyses.
 
-Primary macro-F1 uses the fixed modeled class axis, including absent-reference classes with zero F1. Matched comparisons preserve their specified shared axis. Expanded-domain metrics use the original subset's present-reference class axis. Prediction columns remain intact even where a class has no reference specimens. AUROC availability must be reported explicitly when a reference class lacks probability support.
+Metastatic, FFPE and EPIC-array evaluations use independent membership flags. A specimen may belong to multiple cohorts but appears once within each; pending entries are not scored. Each cohort is evaluated separately.
 
-Patient-balanced point estimates use inverse within-subset specimen multiplicity. Patient-group bootstrap uncertainty is a separate operation; paired comparisons share draws. Preserve the recorded resampling unit, stratification, seeds and replicate counts for each analysis. Do not substitute specimen bootstrap for a patient-group analysis.
+Primary–regional-lymph-node comparisons use samples from the same patients. Author-export and IDAT preprocessing comparisons estimate differences between complete processing workflows. They do not isolate normalization effects or reconstruct the historical TCGA processing environment exactly.
 
-Controlled primary–regional-lymph-node contrasts use samples from the same patients. Author-export and IDAT preprocessing comparisons estimate workflow differences, not isolated normalization effects or an exact reconstruction of historical TCGA preprocessing.
+## Metrics and uncertainty
 
-## Error and biological analyses
+Primary macro-F1 uses the fixed modeled class axis, including absent-reference classes with zero F1. Matched comparisons use their specified shared axis. Expanded-domain metrics use the classes represented in the original evaluated subset. All prediction columns are retained, including outputs without reference specimens. AUROC availability is reported when a reference class lacks probability support.
 
-Class geometry uses arithmetic mean beta profiles over the locked panel with stored training-median imputation, and Euclidean distances. Pair-confusion inference permutes whole class labels. Methylation shift is the mean absolute difference between external and held-out TCGA class mean profiles. Do not restore earlier median-profile analyses.
+Patient-balanced point estimates weight each specimen by the inverse of its patient's specimen count within the subset. Bootstrap uncertainty instead resamples patient groups; paired model comparisons use the same draws. The configurations preserve each analysis's resampling units, strata, seeds and replicate counts.
 
-cCRE intervals use the manifest's zero-based, half-open coordinates. Expression correlation sample counts exclude nonfinite beta values and are distinct from project-level expression overlap counts. Preserve the specified multiple-testing families, normal-reference reuse, composition-component sums and true-class SHAP convention.
+## Error patterns and biological context
 
-## Separate cell-free DNA workflow and limitations
+Class profiles are arithmetic mean beta values over the saved panel after training-median imputation. Class similarity uses Euclidean distances, and pair-confusion inference permutes whole class labels. Methylation shift is the mean absolute difference between external and held-out TCGA class profiles.
 
-The exploratory cell-free DNA analysis uses separate detection and subtype models, nested repeated validation and a total panel budget of 100 probes. The coverage-only control uses observed/missing indicators. Confusion matrices pool held-out prediction occurrences across repeats; reported fold standard deviations are descriptive, not confidence intervals. Exact upstream per-file cfMethDB software versions are not recoverable from the available provenance. The historical normal-adjacent gate seed is reconstructed from commands/defaults, not an explicit run receipt. Neither limitation should be hidden by inventing a configuration.
+Candidate cis-regulatory element (cCRE) intervals use the annotation manifest's zero-based, half-open coordinates. Expression-correlation sample counts exclude nonfinite beta values and therefore differ from the broader project-level expression overlap counts. The biological workflows preserve their specified multiple-testing families, normal-reference reuse and composition-score definitions. SHAP summaries use the contribution to the reference tumor class.
+
+Normal-adjacent substitution uses the saved tissue classifier. Normal-adjacent detection uses a separate fitted gate; it does not add a rejection rule to that classifier.
+
+## Native cell-free DNA
+
+The exploratory cell-free DNA analysis uses separate detection and subtype models, nested repeated validation and a total panel budget of 100 probes. Its coverage control uses observed/missing indicators. Confusion matrices pool held-out prediction occurrences across repeats, and fold standard deviations are descriptive summaries rather than confidence intervals. Each workflow's subtype result is conditional on its own gate-positive samples.
+
+## Names used in the code
+
+| Identifier | Meaning in this repository |
+|---|---|
+| `dev` / `DEV` | TCGA development set |
+| `lockbox` | TCGA held-out test set |
+| `stable_panel` in saved filenames | The consensus panel; names are retained for artifact compatibility |
+| `alternative_*` in panel-comparison outputs | Single-split panels |
+| `main` in external input tables | Primary external cohort |

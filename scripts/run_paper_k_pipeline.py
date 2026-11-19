@@ -42,9 +42,6 @@ def ensure_dirs(root: Path) -> dict[str, Any]:
         "search_space": root / "search_space",
         "lockbox_eval": root / "lockbox_eval",
         "external_main": root / "external_main",
-        "external_stress_ffpe": root / "external_stress_ffpe",
-        "external_stress_epic": root / "external_stress_epic",
-        "external_stress_metastatic": root / "external_stress_metastatic",
         "summary": root / "summary",
     }
     for path in top_level.values():
@@ -675,9 +672,6 @@ def main() -> int:
                     "aggregate_stage2_locked_model",
                     "evaluate_lockbox",
                     "evaluate_external_main",
-                    "evaluate_external_stress_ffpe",
-                    "evaluate_external_stress_epic",
-                    "evaluate_external_stress_metastatic",
                 ],
             },
         },

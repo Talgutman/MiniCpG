@@ -18,8 +18,7 @@ from split_integrity import validate_folds, validate_locked_development, validat
 import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import RFE, f_classif, mutual_info_classif
+from sklearn.feature_selection import f_classif, mutual_info_classif
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -54,15 +53,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--fold", type=int, required=True, help="Outer fold index.")
     parser.add_argument("--k", type=int, default=30, help="Final probe count per method.")
     parser.add_argument(
-        "--prefilter-method",
-        default="anova",
-        help="Prefilter method before heavy selectors. Built-ins: anova,mi,domain_robust_anova.",
+        "--prefilter-method", default="mi", help="Mutual-information prefilter used in SM2."
     )
     parser.add_argument(
-        "--prefilter-k",
-        type=int,
-        default=10000,
-        help="Prefilter size before heavy selectors.",
+        "--prefilter-k", type=int, default=3500, help="Prefilter size before heavy selectors."
     )
     parser.add_argument(
         "--candidate-spec-json",
@@ -71,42 +65,34 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--methods",
-        default="anova,mi,sparse_lr,rf_importance,rf_rfe,mrmr",
-        help=(
-            "Comma-separated methods to run from: "
-            "anova,mi,sparse_lr,rf_importance,rf_rfe,mrmr,"
-            "pairwise_anova_freq,pairwise_anova_rank,"
-            "pairwise_auc_maximin,pairwise_rank_fusion,pairwise_auc_diverse_max,"
-            "pairwise_hard_weighted,pairwise_hard_weighted_stable,"
-            "pairwise_hard_weighted_diverse,"
-            "pairwise_hard_weighted_auc,pairwise_hard_weighted_auc_stable,"
-            "pairwise_hard_weighted_auc_diverse,domain_robust_anova"
-        ),
+        default="rare_class_rank_shift,mi_rank_baseline,pairwise_hard_weighted_auc_stable",
+        help="Comma-separated selectors: rare_class_rank_shift,mi_rank_baseline,pairwise_hard_weighted_auc_stable.",
     )
-    parser.add_argument("--chunk-size", type=int, default=5000, help="Probe chunk size for ANOVA scanning.")
-    parser.add_argument("--inner-folds", type=int, default=3, help="Inner CV folds for classifier C tuning.")
+    parser.add_argument(
+        "--chunk-size", type=int, default=5000, help="Probe chunk size for ANOVA scanning."
+    )
+    parser.add_argument(
+        "--inner-folds", type=int, default=3, help="Inner CV folds for classifier C tuning."
+    )
     parser.add_argument("--seed", type=int, default=7, help="Random seed.")
     parser.add_argument("--c-grid", default="0.1,1,10", help="Classifier C grid.")
-    parser.add_argument("--sample-missing-thresh", type=float, default=0.2, help="Sample missingness threshold.")
-    parser.add_argument("--probe-missing-thresh", type=float, default=0.1, help="Probe missingness threshold.")
-    parser.add_argument("--blacklist-chen", required=True, help="Chen cross-reactive blacklist CSV.")
-    parser.add_argument("--blacklist-snp", required=True, help="minfi SNP-affected probes list.")
-    parser.add_argument("--probe-metadata", required=True, help="Probe metadata TSV with chromosome column.")
-    parser.add_argument("--exclude-sex-chr", action="store_true", default=True, help="Exclude chrX/chrY probes.")
-    parser.add_argument("--no-exclude-sex-chr", dest="exclude_sex_chr", action="store_false")
-    parser.add_argument("--rf-n-estimators", type=int, default=300, help="Trees for RF importance.")
-    parser.add_argument("--rf-rfe-n-estimators", type=int, default=120, help="Trees for RF-RFE estimator.")
-    parser.add_argument("--rf-rfe-step", type=float, default=0.5, help="RFE elimination step.")
-    parser.add_argument("--sparse-c-grid", default="0.1,1,10", help="Feature-selection sparse LR C grid.")
-    parser.add_argument("--sparse-l1-grid", default="0.1,0.5,0.9", help="Feature-selection sparse LR l1_ratio grid.")
-    parser.add_argument("--sparse-inner-folds", type=int, default=3, help="Inner CV folds for sparse LR selector.")
-    parser.add_argument("--mrmr-bins", type=int, default=16, help="Discretization bins for mRMR redundancy MI.")
     parser.add_argument(
-        "--mrmr-n-jobs",
-        type=int,
-        default=1,
-        help="Thread workers for mRMR redundancy updates.",
+        "--sample-missing-thresh", type=float, default=0.2, help="Sample missingness threshold."
     )
+    parser.add_argument(
+        "--probe-missing-thresh", type=float, default=0.1, help="Probe missingness threshold."
+    )
+    parser.add_argument(
+        "--blacklist-chen", required=True, help="Chen cross-reactive blacklist CSV."
+    )
+    parser.add_argument("--blacklist-snp", required=True, help="minfi SNP-affected probes list.")
+    parser.add_argument(
+        "--probe-metadata", required=True, help="Probe metadata TSV with chromosome column."
+    )
+    parser.add_argument(
+        "--exclude-sex-chr", action="store_true", default=True, help="Exclude chrX/chrY probes."
+    )
+    parser.add_argument("--no-exclude-sex-chr", dest="exclude_sex_chr", action="store_false")
     parser.add_argument(
         "--pairwise-top-per-pair",
         type=int,
@@ -149,31 +135,13 @@ def parse_args() -> argparse.Namespace:
         default=0.5,
         help="Mixing weight between base pairwise score and stability frequency.",
     )
+    parser.add_argument("--n-jobs", type=int, default=1, help="Worker count.")
     parser.add_argument(
-        "--diverse-pool-k",
-        type=int,
-        default=1000,
-        help="Candidate pool size for diversity-constrained greedy selection.",
+        "--compute-auroc", action="store_true", help="Compute macro and per-class AUROC."
     )
-    parser.add_argument(
-        "--diverse-lambda",
-        type=float,
-        default=0.2,
-        help="Penalty weight for correlation redundancy in diversity selector.",
-    )
-    parser.add_argument(
-        "--domain-penalty-lambda",
-        type=float,
-        default=1.0,
-        help="Penalty weight against domain/TSS association for domain_robust_anova.",
-    )
-    parser.add_argument("--n-jobs", type=int, default=1, help="Parallel workers for RF.")
-    parser.add_argument("--compute-auroc", action="store_true", help="Compute macro and per-class AUROC.")
     parser.add_argument("--run-id", default="", help="Run identifier for heartbeat tracking.")
     parser.add_argument(
-        "--heartbeat-path",
-        default="",
-        help="Path to JSONL heartbeat file for cluster monitoring.",
+        "--heartbeat-path", default="", help="Path to JSONL heartbeat file for cluster monitoring."
     )
     parser.add_argument(
         "--heartbeat-interval",
@@ -193,6 +161,7 @@ def _safe_heartbeat_emit(
     run_id = str(run_id).strip()
     heartbeat_path = str(heartbeat_path).strip()
     if not run_id or not heartbeat_path:
+
         def no_emit(*_: object, **__: object) -> None:
             return
 
@@ -320,11 +289,18 @@ def plugin_prefilter(
         raise ValueError(f"Prefilter plugin {name} returned unsupported payload type")
     if isinstance(score_df, pd.Series):
         score_df = score_df.rename_axis("probe_id").reset_index(name="score")
-    if not isinstance(score_df, pd.DataFrame) or not {"probe_id", "score"}.issubset(score_df.columns):
-        raise ValueError(f"Prefilter plugin {name} must return score_df with probe_id and score columns")
+    if not isinstance(score_df, pd.DataFrame) or not {"probe_id", "score"}.issubset(
+        score_df.columns
+    ):
+        raise ValueError(
+            f"Prefilter plugin {name} must return score_df with probe_id and score columns"
+        )
     if not isinstance(meta, dict):
         meta = {}
-    return score_df.sort_values("score", ascending=False), {str(k): float(v) if isinstance(v, (int, float, np.integer, np.floating)) else v for k, v in meta.items()}
+    return score_df.sort_values("score", ascending=False), {
+        str(k): float(v) if isinstance(v, (int, float, np.integer, np.floating)) else v
+        for k, v in meta.items()
+    }
 
 
 def plugin_selector(
@@ -372,7 +348,9 @@ def plugin_selector(
     if not isinstance(selected_raw, list):
         raise ValueError(f"Selector plugin {name} returned invalid selected_probes")
     selected_probes = [str(v) for v in selected_raw if str(v).strip()]
-    score_df = result.get("score_df", result.get("scores", pd.DataFrame(columns=["probe_id", "score"])))
+    score_df = result.get(
+        "score_df", result.get("scores", pd.DataFrame(columns=["probe_id", "score"]))
+    )
     if isinstance(score_df, pd.Series):
         score_df = score_df.rename_axis("probe_id").reset_index(name="score")
     extra_json = result.get("extra_json", result.get("meta", {}))
@@ -385,7 +363,9 @@ def plugin_selector(
     return selected_probes, score_df, extra_json
 
 
-def canonical_selected_order_df(selected_probes: Sequence[str], score_df: pd.DataFrame) -> pd.DataFrame:
+def canonical_selected_order_df(
+    selected_probes: Sequence[str], score_df: pd.DataFrame
+) -> pd.DataFrame:
     probe_list = [str(v) for v in selected_probes if str(v).strip()]
     if not probe_list:
         raise ValueError("selected_probes is empty")
@@ -589,70 +569,9 @@ def score_mi_full(
     return out, {"t_read_train_matrix_mi_prefilter": t_read, "t_mi_prefilter_scoring": t_score}
 
 
-def score_domain_robust_anova_full(
-    pf: pq.ParquetFile,
-    train_ids: List[str],
-    y_train: np.ndarray,
-    probe_set: set[str],
-    chunk_size: int,
-    penalty_lambda: float,
-) -> Tuple[pd.DataFrame, Dict[str, float]]:
-    scores: List[Tuple[str, float]] = []
-    y_int, _ = pd.factorize(y_train)
-    tss = derive_tss_labels(train_ids)
-    tss_int, _ = pd.factorize(tss)
-    t_read = 0.0
-    t_score = 0.0
-
-    for df in read_matrix_rows(pf, train_ids, probe_set):
-        for start in range(0, len(df), chunk_size):
-            chunk = df.iloc[start : start + chunk_size]
-
-            t0 = time.perf_counter()
-            X = chunk[train_ids].to_numpy(dtype=np.float32).T
-            t_read += time.perf_counter() - t0
-
-            t1 = time.perf_counter()
-            med = np.nanmedian(X, axis=0)
-            keep = ~np.isnan(med)
-            if not keep.any():
-                t_score += time.perf_counter() - t1
-                continue
-
-            probe_ids = chunk["probe_id"].astype(str).to_numpy()[keep]
-            if not keep.all():
-                X = X[:, keep]
-                med = med[keep]
-
-            nan_mask = np.isnan(X)
-            if nan_mask.any():
-                X[nan_mask] = np.take(med, np.where(nan_mask)[1])
-
-            rel, _ = f_classif(X, y_int)
-            rel = np.nan_to_num(rel, nan=0.0, neginf=0.0, posinf=0.0)
-            if len(np.unique(tss_int)) <= 1:
-                dom = np.zeros_like(rel, dtype=np.float64)
-            else:
-                dom, _ = f_classif(X, tss_int)
-                dom = np.nan_to_num(dom, nan=0.0, neginf=0.0, posinf=0.0)
-            score = rel - (float(penalty_lambda) * dom)
-            scores.extend(zip(probe_ids.tolist(), score.tolist()))
-            t_score += time.perf_counter() - t1
-
-    if not scores:
-        raise ValueError("No domain-robust ANOVA scores computed")
-
-    out = pd.DataFrame(scores, columns=["probe_id", "score"])
-    out = out.groupby("probe_id", as_index=False)["score"].max()
-    out = out.sort_values("score", ascending=False).reset_index(drop=True)
-    return out, {
-        "t_read_train_matrix_domain_prefilter": t_read,
-        "t_domain_prefilter_scoring": t_score,
-        "domain_penalty_lambda": float(penalty_lambda),
-    }
-
-
-def compute_auc_by_class(y_true: np.ndarray, proba: np.ndarray, classes: np.ndarray) -> List[Dict[str, float]]:
+def compute_auc_by_class(
+    y_true: np.ndarray, proba: np.ndarray, classes: np.ndarray
+) -> List[Dict[str, float]]:
     rows = []
     for idx, cls in enumerate(classes):
         y_bin = (y_true == cls).astype(int)
@@ -664,165 +583,6 @@ def compute_auc_by_class(y_true: np.ndarray, proba: np.ndarray, classes: np.ndar
             auc = float(roc_auc_score(y_bin, proba[:, idx]))
         rows.append({"class": str(cls), "auc": auc, "n_pos": n_pos, "n_neg": n_neg})
     return rows
-
-
-def score_sparse_lr(
-    X_train: pd.DataFrame,
-    y_train: np.ndarray,
-    c_grid: List[float],
-    l1_grid: List[float],
-    inner_folds: int,
-    seed: int,
-) -> Tuple[np.ndarray, Dict[str, float]]:
-    inner = StratifiedKFold(n_splits=inner_folds, shuffle=True, random_state=seed)
-    best_score = -np.inf
-    best_params = {"C": None, "l1_ratio": None}
-
-    for c in c_grid:
-        for l1 in l1_grid:
-            fold_scores = []
-            for tr_idx, va_idx in inner.split(X_train, y_train):
-                X_tr, X_va = X_train.iloc[tr_idx], X_train.iloc[va_idx]
-                y_tr, y_va = y_train[tr_idx], y_train[va_idx]
-                model = Pipeline(
-                    [
-                        ("imputer", SimpleImputer(strategy="median")),
-                        (
-                            "clf",
-                            LogisticRegression(
-                                max_iter=1000,
-                                solver="saga",
-                                penalty="elasticnet",
-                                C=c,
-                                l1_ratio=l1,
-                                n_jobs=1,
-                                multi_class="multinomial",
-                            ),
-                        ),
-                    ]
-                )
-                model.fit(X_tr, y_tr)
-                y_pred = model.predict(X_va)
-                fold_scores.append(f1_score(y_va, y_pred, average="macro"))
-            score = float(np.mean(fold_scores))
-            if score > best_score:
-                best_score = score
-                best_params = {"C": float(c), "l1_ratio": float(l1)}
-
-    best_model = Pipeline(
-        [
-            ("imputer", SimpleImputer(strategy="median")),
-            (
-                "clf",
-                LogisticRegression(
-                    max_iter=1000,
-                    solver="saga",
-                    penalty="elasticnet",
-                    C=best_params["C"],
-                    l1_ratio=best_params["l1_ratio"],
-                    n_jobs=1,
-                    multi_class="multinomial",
-                ),
-            ),
-        ]
-    )
-    best_model.fit(X_train, y_train)
-    coef = best_model.named_steps["clf"].coef_
-    scores = np.sum(np.abs(coef), axis=0)
-    scores = np.nan_to_num(scores, nan=-np.inf, neginf=-np.inf, posinf=-np.inf)
-    return scores, {"best_c": best_params["C"], "best_l1_ratio": best_params["l1_ratio"], "best_score": best_score}
-
-
-def discretize_matrix(X: np.ndarray, bins: int) -> np.ndarray:
-    n, p = X.shape
-    Xd = np.zeros((n, p), dtype=np.int16)
-    q = np.linspace(0.0, 1.0, bins + 1)[1:-1]
-    for j in range(p):
-        col = X[:, j]
-        if np.all(col == col[0]):
-            continue
-        edges = np.quantile(col, q)
-        edges = np.unique(edges)
-        if edges.size == 0:
-            continue
-        Xd[:, j] = np.searchsorted(edges, col, side="right").astype(np.int16)
-    return Xd
-
-
-def select_mrmr(
-    X_train: pd.DataFrame,
-    y_train: np.ndarray,
-    k: int,
-    bins: int,
-    seed: int,
-    n_jobs: int,
-) -> Tuple[List[str], pd.DataFrame]:
-    imputer = SimpleImputer(strategy="median")
-    X_imp = imputer.fit_transform(X_train).astype(np.float32, copy=False)
-    y_int, _ = pd.factorize(y_train)
-
-    relevance = mutual_info_classif(X_imp, y_int, random_state=seed)
-    relevance = np.nan_to_num(relevance, nan=-np.inf, neginf=-np.inf, posinf=-np.inf)
-
-    X_disc = discretize_matrix(X_imp, bins=bins)
-    p = X_disc.shape[1]
-    remaining = set(range(p))
-    selected: List[int] = []
-    redundancy_sum = np.zeros(p, dtype=np.float64)
-    select_scores: List[float] = []
-
-    def score_redundancy_block(indices: List[int], last_col: np.ndarray) -> List[Tuple[int, float]]:
-        return [(idx, float(mutual_info_score(X_disc[:, idx], last_col))) for idx in indices]
-
-    for step in range(k):
-        if step == 0:
-            best = int(np.argmax(relevance))
-            selected.append(best)
-            remaining.discard(best)
-            select_scores.append(float(relevance[best]))
-            continue
-
-        last = selected[-1]
-        last_col = X_disc[:, last]
-        remaining_list = sorted(remaining)
-        best = None
-        best_score = -np.inf
-
-        if n_jobs > 1 and len(remaining_list) > 1:
-            chunk_size = max(64, len(remaining_list) // (max(1, n_jobs) * 4))
-            chunks = [remaining_list[i : i + chunk_size] for i in range(0, len(remaining_list), chunk_size)]
-            with ThreadPoolExecutor(max_workers=min(n_jobs, len(chunks))) as executor:
-                for block_scores in executor.map(lambda idxs: score_redundancy_block(idxs, last_col), chunks):
-                    for idx, red in block_scores:
-                        redundancy_sum[idx] += red
-                        score = relevance[idx] - (redundancy_sum[idx] / step)
-                        if score > best_score:
-                            best_score = float(score)
-                            best = idx
-        else:
-            for idx in remaining_list:
-                redundancy_sum[idx] += mutual_info_score(X_disc[:, idx], last_col)
-                score = relevance[idx] - (redundancy_sum[idx] / step)
-                if score > best_score:
-                    best_score = float(score)
-                    best = idx
-
-        if best is None:
-            raise ValueError("mRMR could not select next feature")
-        selected.append(best)
-        remaining.discard(best)
-        select_scores.append(best_score)
-
-    selected_probes = X_train.columns[np.array(selected)].tolist()
-    selected_df = pd.DataFrame(
-        {
-            "rank": np.arange(1, len(selected_probes) + 1),
-            "probe_id": selected_probes,
-            "mrmr_score": select_scores,
-            "relevance_mi": relevance[np.array(selected)],
-        }
-    )
-    return selected_probes, selected_df
 
 
 def score_pairwise_anova(
@@ -874,7 +634,9 @@ def score_pairwise_anova(
             f_score = np.nan_to_num(f_score, nan=0.0, neginf=0.0, posinf=0.0)
             weight = 1.0
             if pair_weights is not None:
-                weight = float(pair_weights.get((cls_i, cls_j), pair_weights.get((cls_j, cls_i), 1.0)))
+                weight = float(
+                    pair_weights.get((cls_i, cls_j), pair_weights.get((cls_j, cls_i), 1.0))
+                )
 
             top_idx = np.argpartition(f_score, -top_per_pair)[-top_per_pair:]
             order = top_idx[np.argsort(f_score[top_idx])[::-1]]
@@ -971,7 +733,9 @@ def score_pairwise_auc(
 
             weight = 1.0
             if pair_weights is not None:
-                weight = float(pair_weights.get((cls_i, cls_j), pair_weights.get((cls_j, cls_i), 1.0)))
+                weight = float(
+                    pair_weights.get((cls_i, cls_j), pair_weights.get((cls_j, cls_i), 1.0))
+                )
 
             top_idx = np.argpartition(sep, -top_per_pair)[-top_per_pair:]
             order = top_idx[np.argsort(sep[top_idx])[::-1]]
@@ -1006,62 +770,6 @@ def score_pairwise_auc(
     return scores, meta
 
 
-def score_pairwise_auc_maximin(
-    X_train: pd.DataFrame,
-    y_train: np.ndarray,
-) -> Tuple[np.ndarray, Dict[str, float]]:
-    imputer = SimpleImputer(strategy="median")
-    X_imp = imputer.fit_transform(X_train).astype(np.float32, copy=False)
-    y = np.asarray(y_train)
-    classes = sorted([str(c) for c in pd.unique(y)])
-    if len(classes) < 2:
-        raise ValueError("pairwise_auc_maximin requires >=2 classes")
-
-    pair_seps: list[np.ndarray] = []
-    t0 = time.perf_counter()
-    for i in range(len(classes)):
-        cls_i = classes[i]
-        for j in range(i + 1, len(classes)):
-            cls_j = classes[j]
-            mask = (y == cls_i) | (y == cls_j)
-            if int(mask.sum()) < 3:
-                continue
-            y_pair = (y[mask] == cls_i).astype(np.int8)
-            if y_pair.sum() == 0 or y_pair.sum() == len(y_pair):
-                continue
-            sep = compute_pairwise_auc_separation(X_imp[mask], y_pair).astype(np.float64, copy=False)
-            pair_seps.append(sep)
-    t_pair = time.perf_counter() - t0
-
-    if not pair_seps:
-        raise ValueError("pairwise_auc_maximin found no valid class pairs")
-
-    sep_mat = np.vstack(pair_seps)
-    min_sep = sep_mat.min(axis=0)
-    q20_sep = np.quantile(sep_mat, 0.2, axis=0)
-    mean_sep = sep_mat.mean(axis=0)
-    scores = min_sep + (0.1 * q20_sep) + (0.01 * mean_sep)
-    meta = {
-        "pairwise_mode": "auc_maximin",
-        "pairwise_score_type": "auc",
-        "pairwise_n_pairs": float(sep_mat.shape[0]),
-        "pairwise_n_valid_classes": float(len(classes)),
-        "t_pairwise_scoring": t_pair,
-    }
-    return scores.astype(np.float64, copy=False), meta
-
-
-def derive_tss_labels(sample_ids: Sequence[str]) -> np.ndarray:
-    labels: List[str] = []
-    for sid in sample_ids:
-        toks = str(sid).split("-")
-        if len(toks) >= 2 and toks[0].upper() == "TCGA" and toks[1]:
-            labels.append(toks[1].upper())
-        else:
-            labels.append("UNK")
-    return np.array(labels, dtype=object)
-
-
 def compute_hard_pair_weights(
     X_train: pd.DataFrame,
     y_train: np.ndarray,
@@ -1072,7 +780,11 @@ def compute_hard_pair_weights(
     seed: int,
 ) -> Tuple[Dict[Tuple[str, str], float], Dict[str, float]]:
     if cv_folds < 2:
-        return {}, {"hardpair_cv_folds": float(cv_folds), "hardpair_n_pairs": 0.0, "hardpair_mean_weight": 1.0}
+        return {}, {
+            "hardpair_cv_folds": float(cv_folds),
+            "hardpair_n_pairs": 0.0,
+            "hardpair_mean_weight": 1.0,
+        }
 
     labels = list(classes)
     topk = max(2, min(int(baseline_topk), X_train.shape[1]))
@@ -1126,7 +838,9 @@ def compute_hard_pair_weights(
         "hardpair_gamma": float(gamma),
         "hardpair_n_pairs": float(len(hardness)),
         "hardpair_mean_hardness": float(np.mean(hard_vals) if hard_vals else 0.0),
-        "hardpair_mean_weight": float(np.mean(list(pair_weights.values())) if pair_weights else 1.0),
+        "hardpair_mean_weight": float(
+            np.mean(list(pair_weights.values())) if pair_weights else 1.0
+        ),
     }
     return pair_weights, meta
 
@@ -1229,97 +943,6 @@ def score_pairwise_hard_weighted_stable(
         "stable_n_boot_used": float(used_boot),
         "stable_subsample_frac": float(frac),
         "stable_alpha": float(alpha),
-    }
-    return scores, meta
-
-
-def select_diverse_by_correlation(
-    X_train: pd.DataFrame,
-    relevance_scores: np.ndarray,
-    k: int,
-    pool_k: int,
-    lambda_penalty: float,
-) -> Tuple[List[int], pd.DataFrame]:
-    imp = SimpleImputer(strategy="median")
-    X_imp = imp.fit_transform(X_train).astype(np.float32, copy=False)
-
-    n_features = X_imp.shape[1]
-    k = max(1, min(int(k), n_features))
-    pool_k = max(k, min(int(pool_k), n_features))
-    lambda_penalty = float(max(0.0, lambda_penalty))
-
-    order = np.argsort(relevance_scores)[::-1]
-    pool_idx = order[:pool_k]
-    rel_pool = relevance_scores[pool_idx].astype(np.float64)
-    X_pool = X_imp[:, pool_idx].astype(np.float64, copy=False)
-
-    # Correlation matrix on candidate pool for fast greedy redundancy checks.
-    X_pool -= X_pool.mean(axis=0, keepdims=True)
-    std = X_pool.std(axis=0, ddof=0, keepdims=True)
-    std[std == 0.0] = 1.0
-    X_pool /= std
-    corr = np.abs((X_pool.T @ X_pool) / float(max(1, X_pool.shape[0])))
-    corr = np.nan_to_num(corr, nan=0.0, posinf=1.0, neginf=1.0)
-
-    selected_local: List[int] = []
-    remaining = set(range(len(pool_idx)))
-    rows: List[Dict[str, float]] = []
-    for rank in range(1, k + 1):
-        best_idx = None
-        best_obj = -np.inf
-        best_red = 0.0
-        for idx in remaining:
-            red = 0.0 if not selected_local else float(np.max(corr[idx, selected_local]))
-            obj = float(rel_pool[idx]) - (lambda_penalty * red)
-            if obj > best_obj:
-                best_obj = obj
-                best_idx = idx
-                best_red = red
-        if best_idx is None:
-            break
-        selected_local.append(best_idx)
-        remaining.discard(best_idx)
-        rows.append(
-            {
-                "rank": float(rank),
-                "pool_index": float(best_idx),
-                "relevance": float(rel_pool[best_idx]),
-                "max_abs_corr_to_selected": float(best_red),
-                "objective": float(best_obj),
-            }
-        )
-
-    selected_global = pool_idx[np.array(selected_local, dtype=int)].tolist()
-    return selected_global, pd.DataFrame(rows)
-
-
-def score_domain_robust_anova(
-    X_train: pd.DataFrame,
-    y_train: np.ndarray,
-    sample_ids: Sequence[str],
-    penalty_lambda: float,
-) -> Tuple[np.ndarray, Dict[str, float]]:
-    imp = SimpleImputer(strategy="median")
-    X_imp = imp.fit_transform(X_train)
-    y_int, _ = pd.factorize(y_train)
-    rel, _ = f_classif(X_imp, y_int)
-    rel = np.nan_to_num(rel, nan=0.0, neginf=0.0, posinf=0.0)
-
-    tss = derive_tss_labels(sample_ids)
-    tss_int, _ = pd.factorize(tss)
-    if len(np.unique(tss_int)) <= 1:
-        dom = np.zeros_like(rel, dtype=np.float64)
-    else:
-        dom, _ = f_classif(X_imp, tss_int)
-        dom = np.nan_to_num(dom, nan=0.0, neginf=0.0, posinf=0.0)
-
-    penalty_lambda = float(max(0.0, penalty_lambda))
-    scores = rel - (penalty_lambda * dom)
-    meta = {
-        "domain_penalty_lambda": penalty_lambda,
-        "domain_unique_groups": float(len(np.unique(tss_int))),
-        "domain_rel_mean": float(np.mean(rel)),
-        "domain_penalty_mean": float(np.mean(dom)),
     }
     return scores, meta
 
@@ -1455,21 +1078,17 @@ def main() -> int:
     candidate_spec = load_candidate_spec(args.candidate_spec_json)
     selection_args = candidate_section(candidate_spec, "selection_args")
     prefilter_args = candidate_section(candidate_spec, "prefilter_args")
-
     probe_matrix = Path(args.probe_matrix)
     manifest_path = Path(args.manifest)
     folds_path = Path(args.folds)
     out_dir = Path(args.out_dir)
-
     for path in [probe_matrix, manifest_path, folds_path]:
         if not path.exists():
             print(f"ERROR: missing input {path}", file=sys.stderr)
             return _return(1, error=f"missing_input:{path}")
-
     pf = pq.ParquetFile(probe_matrix)
     manifest = pd.read_csv(manifest_path, sep="\t", dtype=str)
     folds = pd.read_csv(folds_path, sep="\t", dtype=str)
-
     if "sample_id" not in manifest.columns or "project_id" not in manifest.columns:
         print("ERROR: manifest missing sample_id/project_id", file=sys.stderr)
         return _return(1, error="missing_manifest_columns")
@@ -1478,7 +1097,6 @@ def main() -> int:
         return _return(1, error="missing_fold_columns")
     if "repeat" not in folds.columns:
         folds["repeat"] = "0"
-
     folds["outer_fold"] = folds["outer_fold"].astype(int)
     folds["repeat"] = folds["repeat"].astype(int)
     try:
@@ -1488,23 +1106,26 @@ def main() -> int:
         print(f"ERROR: split integrity: {exc}", file=sys.stderr)
         return _return(1, error=f"split_integrity:{exc}")
     manifest = manifest.merge(folds, on="sample_id", how="inner", validate="one_to_many")
-
-    test_df = manifest[(manifest["repeat"] == args.repeat) & (manifest["outer_fold"] == args.fold)].copy()
+    test_df = manifest[
+        (manifest["repeat"] == args.repeat) & (manifest["outer_fold"] == args.fold)
+    ].copy()
     if test_df.empty:
         print("ERROR: no samples for requested fold/repeat", file=sys.stderr)
         return _return(1, error="empty_test_split")
-    train_df = manifest[(manifest["repeat"] == args.repeat) & (manifest["outer_fold"] != args.fold)].copy()
-
+    train_df = manifest[
+        (manifest["repeat"] == args.repeat) & (manifest["outer_fold"] != args.fold)
+    ].copy()
     train_ids = train_df["sample_id"].astype(str).tolist()
     test_ids = test_df["sample_id"].astype(str).tolist()
     all_classes = sorted(manifest["project_id"].astype(str).unique())
-
     fold_dir = out_dir / f"repeat{args.repeat}" / f"fold{args.fold}"
     qc_dir = fold_dir / "qc"
     fold_dir.mkdir(parents=True, exist_ok=True)
     qc_dir.mkdir(parents=True, exist_ok=True)
     if candidate_spec:
-        (qc_dir / "candidate_spec.json").write_text(json.dumps(candidate_spec, indent=2) + "\n", encoding="utf-8")
+        (qc_dir / "candidate_spec.json").write_text(
+            json.dumps(candidate_spec, indent=2) + "\n", encoding="utf-8"
+        )
     emit_heartbeat(
         event="prepared_output_dirs",
         status="running",
@@ -1512,69 +1133,58 @@ def main() -> int:
         repeat=args.repeat,
         fold=args.fold,
     )
-
-    prefilter_method = override_text(prefilter_args, "prefilter_method", args.prefilter_method).strip() or "anova"
+    prefilter_method = (
+        override_text(prefilter_args, "prefilter_method", args.prefilter_method).strip() or "mi"
+    )
     prefilter_k = override_int(prefilter_args, "prefilter_k", args.prefilter_k)
     chunk_size = override_int(prefilter_args, "chunk_size", args.chunk_size)
-    pairwise_top_per_pair = override_int(selection_args, "pairwise_top_per_pair", args.pairwise_top_per_pair)
+    pairwise_top_per_pair = override_int(
+        selection_args, "pairwise_top_per_pair", args.pairwise_top_per_pair
+    )
     hardpair_cv_folds = override_int(selection_args, "hardpair_cv_folds", args.hardpair_cv_folds)
-    hardpair_baseline_topk = override_int(selection_args, "hardpair_baseline_topk", args.hardpair_baseline_topk)
+    hardpair_baseline_topk = override_int(
+        selection_args, "hardpair_baseline_topk", args.hardpair_baseline_topk
+    )
     hardpair_gamma = override_float(selection_args, "hardpair_gamma", args.hardpair_gamma)
     stable_n_boot = override_int(selection_args, "stable_n_boot", args.stable_n_boot)
-    stable_subsample_frac = override_float(selection_args, "stable_subsample_frac", args.stable_subsample_frac)
+    stable_subsample_frac = override_float(
+        selection_args, "stable_subsample_frac", args.stable_subsample_frac
+    )
     stable_alpha = override_float(selection_args, "stable_alpha", args.stable_alpha)
-    diverse_pool_k = override_int(selection_args, "diverse_pool_k", args.diverse_pool_k)
-    diverse_lambda = override_float(selection_args, "diverse_lambda", args.diverse_lambda)
-    domain_penalty_lambda = override_float(prefilter_args, "domain_penalty_lambda", args.domain_penalty_lambda)
-    rf_n_estimators = override_int(selection_args, "rf_n_estimators", args.rf_n_estimators)
-    rf_rfe_n_estimators = override_int(selection_args, "rf_rfe_n_estimators", args.rf_rfe_n_estimators)
-    rf_rfe_step = override_float(selection_args, "rf_rfe_step", args.rf_rfe_step)
-    sparse_c_grid_text = override_text(selection_args, "sparse_c_grid", args.sparse_c_grid)
-    sparse_l1_grid_text = override_text(selection_args, "sparse_l1_grid", args.sparse_l1_grid)
-    sparse_inner_folds = override_int(selection_args, "sparse_inner_folds", args.sparse_inner_folds)
-    mrmr_bins = override_int(selection_args, "mrmr_bins", args.mrmr_bins)
-    mrmr_n_jobs = override_int(selection_args, "mrmr_n_jobs", args.mrmr_n_jobs)
-
     timing_global: Dict[str, float] = {}
-
     emit_heartbeat(event="compute_missingness_train_all", status="running", force=True)
     t0 = time.perf_counter()
-    sample_missing, probe_ids, _ = compute_missingness(pf, train_ids)
+    (sample_missing, probe_ids, _) = compute_missingness(pf, train_ids)
     timing_global["t_missingness_train_all"] = time.perf_counter() - t0
     total_probes = len(probe_ids)
     if total_probes == 0:
         print("ERROR: no probes found in matrix", file=sys.stderr)
         return _return(1, error="empty_probe_matrix")
-
     sample_missing_frac = sample_missing / float(total_probes)
     sample_keep = sample_missing_frac <= args.sample_missing_thresh
-    train_ids_filtered = [sid for sid, keep in zip(train_ids, sample_keep) if keep]
+    train_ids_filtered = [sid for (sid, keep) in zip(train_ids, sample_keep) if keep]
     if len(train_ids_filtered) < 2:
         print("ERROR: too few training samples after sample missingness filter", file=sys.stderr)
         return _return(1, error="too_few_train_samples")
-
-    pd.DataFrame({"sample_id": train_ids, "missing_frac": sample_missing_frac, "keep": sample_keep}).to_csv(
-        qc_dir / "qc_samples_dropped.tsv", sep="\t", index=False
-    )
-
+    pd.DataFrame(
+        {"sample_id": train_ids, "missing_frac": sample_missing_frac, "keep": sample_keep}
+    ).to_csv(qc_dir / "qc_samples_dropped.tsv", sep="\t", index=False)
     emit_heartbeat(event="compute_missingness_train_filtered", status="running", force=True)
     t1 = time.perf_counter()
-    _, probe_ids2, probe_missing2 = compute_missingness(pf, train_ids_filtered)
+    (_, probe_ids2, probe_missing2) = compute_missingness(pf, train_ids_filtered)
     timing_global["t_missingness_train_filtered"] = time.perf_counter() - t1
-
     probe_missing_frac = np.array(probe_missing2, dtype=np.float32) / float(len(train_ids_filtered))
     probe_keep_mask = probe_missing_frac <= args.probe_missing_thresh
-    probe_df = pd.DataFrame({"probe_id": probe_ids2, "missing_frac": probe_missing_frac, "keep": probe_keep_mask})
-
+    probe_df = pd.DataFrame(
+        {"probe_id": probe_ids2, "missing_frac": probe_missing_frac, "keep": probe_keep_mask}
+    )
     chen = load_blacklist_chen(Path(args.blacklist_chen))
     snp = load_blacklist_simple(Path(args.blacklist_snp))
     sex = load_sex_probes(Path(args.probe_metadata)) if args.exclude_sex_chr else set()
-
     probe_keep = set(probe_df.loc[probe_df["keep"], "probe_id"].astype(str))
     probe_keep -= chen
     probe_keep -= snp
     probe_keep -= sex
-
     probe_df["drop_reason"] = ""
     probe_df.loc[~probe_df["keep"], "drop_reason"] = "missingness"
     probe_df.loc[probe_df["probe_id"].isin(chen), "drop_reason"] = "blacklist_chen"
@@ -1582,21 +1192,24 @@ def main() -> int:
     if sex:
         probe_df.loc[probe_df["probe_id"].isin(sex), "drop_reason"] = "sex_chr"
     probe_df["keep"] = probe_df["probe_id"].isin(probe_keep)
-
     probe_df.loc[~probe_df["keep"], ["probe_id", "missing_frac", "drop_reason"]].to_csv(
         qc_dir / "qc_probes_dropped.tsv", sep="\t", index=False
     )
-    pd.DataFrame({"probe_id": sorted(probe_keep)}).to_csv(qc_dir / "probe_keep_list.tsv", sep="\t", index=False)
-
+    pd.DataFrame({"probe_id": sorted(probe_keep)}).to_csv(
+        qc_dir / "probe_keep_list.tsv", sep="\t", index=False
+    )
     train_df_filtered = train_df[train_df["sample_id"].isin(train_ids_filtered)].copy()
     train_df_filtered.to_csv(qc_dir / "train_manifest_filtered.tsv", sep="\t", index=False)
-
-    y_train = train_df_filtered.set_index("sample_id").loc[train_ids_filtered, "project_id"].astype(str).to_numpy()
+    y_train = (
+        train_df_filtered.set_index("sample_id")
+        .loc[train_ids_filtered, "project_id"]
+        .astype(str)
+        .to_numpy()
+    )
     y_test = test_df.set_index("sample_id").loc[test_ids, "project_id"].astype(str).to_numpy()
-
     emit_heartbeat(event="anovascore_prefilter", status="running", force=True)
     t2 = time.perf_counter()
-    anova_scores, anova_t = score_anova_full(
+    (anova_scores, anova_t) = score_anova_full(
         pf=pf,
         train_ids=train_ids_filtered,
         y_train=y_train,
@@ -1605,14 +1218,9 @@ def main() -> int:
     )
     timing_global.update(anova_t)
     timing_global["t_anova_total"] = time.perf_counter() - t2
-
-    if prefilter_method == "anova":
-        emit_heartbeat(event="prefilter_anova", status="running", force=True, method=prefilter_method)
-        prefilter_scores = anova_scores.copy()
-        prefilter_meta: Dict[str, float] = {"prefilter_method": "anova"}
-    elif prefilter_method == "mi":
+    if prefilter_method == "mi":
         t_pref = time.perf_counter()
-        prefilter_scores, prefilter_meta = score_mi_full(
+        (prefilter_scores, prefilter_meta) = score_mi_full(
             pf=pf,
             train_ids=train_ids_filtered,
             y_train=y_train,
@@ -1621,21 +1229,10 @@ def main() -> int:
             seed=args.seed,
         )
         timing_global["t_mi_prefilter_total"] = time.perf_counter() - t_pref
-    elif prefilter_method == "domain_robust_anova":
-        t_pref = time.perf_counter()
-        prefilter_scores, prefilter_meta = score_domain_robust_anova_full(
-            pf=pf,
-            train_ids=train_ids_filtered,
-            y_train=y_train,
-            probe_set=probe_keep,
-            chunk_size=chunk_size,
-            penalty_lambda=domain_penalty_lambda,
-        )
-        timing_global["t_domain_prefilter_total"] = time.perf_counter() - t_pref
     else:
         t_pref = time.perf_counter()
         try:
-            prefilter_scores, prefilter_meta = plugin_prefilter(
+            (prefilter_scores, prefilter_meta) = plugin_prefilter(
                 prefilter_method,
                 pf=pf,
                 train_ids=train_ids_filtered,
@@ -1648,14 +1245,19 @@ def main() -> int:
                 anova_scores=anova_scores,
             )
         except PluginNotFound:
-            print(f"ERROR: unsupported prefilter_method requested: {prefilter_method}", file=sys.stderr)
+            print(
+                f"ERROR: unsupported prefilter_method requested: {prefilter_method}",
+                file=sys.stderr,
+            )
             return _return(1, error=f"unsupported_prefilter:{prefilter_method}")
-        timing_global[f"t_plugin_prefilter_{slugify(prefilter_method)}_total"] = time.perf_counter() - t_pref
-
+        timing_global[f"t_plugin_prefilter_{slugify(prefilter_method)}_total"] = (
+            time.perf_counter() - t_pref
+        )
     if len(prefilter_scores) < max(args.k, prefilter_k):
-        print("ERROR: not enough probes after filtering for requested k/prefilter-k", file=sys.stderr)
+        print(
+            "ERROR: not enough probes after filtering for requested k/prefilter-k", file=sys.stderr
+        )
         return _return(1, error="insufficient_prefilter_scores")
-
     prefilter_probes = prefilter_scores.head(prefilter_k)["probe_id"].astype(str).tolist()
     pd.DataFrame({"probe_id": prefilter_probes}).to_csv(
         qc_dir / f"{slugify(prefilter_method)}_prefilter_topk.tsv", sep="\t", index=False
@@ -1673,51 +1275,20 @@ def main() -> int:
         + "\n",
         encoding="utf-8",
     )
-
     t3 = time.perf_counter()
     emit_heartbeat(event="read_prefiltered_matrix", status="running", force=True)
     X_train_pref = read_selected(pf, train_ids_filtered, prefilter_probes)
     X_test_pref = read_selected(pf, test_ids, prefilter_probes)
     timing_global["t_read_prefilter_train_test"] = time.perf_counter() - t3
-
-    all_methods = [
-        "anova",
-        "mi",
-        "sparse_lr",
-        "rf_importance",
-        "rf_rfe",
-        "mrmr",
-        "pairwise_anova_freq",
-        "pairwise_anova_rank",
-        "pairwise_auc_maximin",
-        "pairwise_rank_fusion",
-        "pairwise_auc_diverse_max",
-        "pairwise_hard_weighted",
-        "pairwise_hard_weighted_stable",
-        "pairwise_hard_weighted_diverse",
-        "pairwise_hard_weighted_auc",
-        "pairwise_hard_weighted_auc_stable",
-        "pairwise_hard_weighted_auc_diverse",
-        "domain_robust_anova",
-    ]
-    methods = [m.strip() for m in re.split(r"[,\s:]+", str(args.methods)) if m.strip()]
+    all_methods = ["mi", "rare_class_rank_shift", "pairwise_hard_weighted_auc_stable"]
+    methods = [m.strip() for m in re.split("[,\\s:]+", str(args.methods)) if m.strip()]
     if not methods:
         print("ERROR: no methods requested", file=sys.stderr)
         return _return(1, error="empty_methods")
-    c_grid = [float(x.strip()) for x in re.split(r"[,\s:]+", str(args.c_grid)) if x.strip()]
-    sparse_c_grid = [float(x.strip()) for x in re.split(r"[,\s:]+", str(sparse_c_grid_text)) if x.strip()]
-    sparse_l1_grid = [float(x.strip()) for x in re.split(r"[,\s:]+", str(sparse_l1_grid_text)) if x.strip()]
-    hardpair_methods = {
-        "pairwise_hard_weighted",
-        "pairwise_hard_weighted_stable",
-        "pairwise_hard_weighted_diverse",
-        "pairwise_hard_weighted_auc",
-        "pairwise_hard_weighted_auc_stable",
-        "pairwise_hard_weighted_auc_diverse",
-    }
+    c_grid = [float(x.strip()) for x in re.split("[,\\s:]+", str(args.c_grid)) if x.strip()]
+    hardpair_methods = {"pairwise_hard_weighted_auc_stable"}
     pair_weights_cache: Optional[Dict[Tuple[str, str], float]] = None
     pair_weights_meta: Dict[str, float] = {}
-
     for method in methods:
         emit_heartbeat(event="method_start", status="running", force=True, method=method)
         method_dir = fold_dir / method
@@ -1726,333 +1297,96 @@ def main() -> int:
         selected_probes: List[str] = []
         score_df = pd.DataFrame(columns=["probe_id", "score"])
         extra_json: Dict[str, float] = {}
-
         t_sel = time.perf_counter()
         runtime_method = canonical_selection_method(method)
-        if runtime_method == "anova":
-            score_df = anova_scores.copy()
-            selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
-
-        elif runtime_method == "mi":
+        if runtime_method == "mi":
             imp = SimpleImputer(strategy="median")
             X_imp = imp.fit_transform(X_train_pref)
-            y_int, _ = pd.factorize(y_train)
+            (y_int, _) = pd.factorize(y_train)
             scores = mutual_info_classif(X_imp, y_int, random_state=args.seed)
             scores = np.nan_to_num(scores, nan=-np.inf, neginf=-np.inf, posinf=-np.inf)
             score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": scores}).sort_values(
                 "score", ascending=False
             )
             selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
-
-        elif runtime_method == "sparse_lr":
-            scores, sparse_meta = score_sparse_lr(
-                X_train=X_train_pref,
-                y_train=y_train,
-                c_grid=sparse_c_grid,
-                l1_grid=sparse_l1_grid,
-                inner_folds=sparse_inner_folds,
-                seed=args.seed,
-            )
-            score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": scores}).sort_values(
-                "score", ascending=False
-            )
-            selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
-            extra_json.update(sparse_meta)
-
-        elif runtime_method == "rf_importance":
-            imp = SimpleImputer(strategy="median")
-            X_imp = imp.fit_transform(X_train_pref)
-            rf = RandomForestClassifier(
-                n_estimators=rf_n_estimators,
-                random_state=args.seed,
-                n_jobs=args.n_jobs,
-                class_weight="balanced_subsample",
-            )
-            rf.fit(X_imp, y_train)
-            score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": rf.feature_importances_}).sort_values(
-                "score", ascending=False
-            )
-            selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
-
-        elif runtime_method == "rf_rfe":
-            imp = SimpleImputer(strategy="median")
-            X_imp = imp.fit_transform(X_train_pref)
-            rf_est = RandomForestClassifier(
-                n_estimators=rf_rfe_n_estimators,
-                random_state=args.seed,
-                n_jobs=args.n_jobs,
-                class_weight="balanced_subsample",
-            )
-            rfe = RFE(
-                estimator=rf_est,
-                n_features_to_select=args.k,
-                step=rf_rfe_step,
-                verbose=0,
-            )
-            rfe.fit(X_imp, y_train)
-            ranking = -rfe.ranking_.astype(np.float64)
-            score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": ranking}).sort_values(
-                "score", ascending=False
-            )
-            selected_probes = X_train_pref.columns[rfe.support_].astype(str).tolist()
-
-        elif runtime_method == "mrmr":
-            selected_probes, mrmr_df = select_mrmr(
-                X_train=X_train_pref,
-                y_train=y_train,
-                k=args.k,
-                bins=mrmr_bins,
-                seed=args.seed,
-                n_jobs=max(1, mrmr_n_jobs),
-            )
-            # Save selection order explicitly; keep scores.tsv as ANOVA-prefilter relevance proxy.
-            imp = SimpleImputer(strategy="median")
-            X_imp = imp.fit_transform(X_train_pref)
-            y_int, _ = pd.factorize(y_train)
-            rel = mutual_info_classif(X_imp, y_int, random_state=args.seed)
-            rel = np.nan_to_num(rel, nan=-np.inf, neginf=-np.inf, posinf=-np.inf)
-            score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": rel}).sort_values(
-                "score", ascending=False
-            )
-            mrmr_df.to_csv(method_dir / f"selected_order_K{args.k}.tsv", sep="\t", index=False)
-
-        elif runtime_method in {"pairwise_anova_freq", "pairwise_anova_rank"}:
-            mode = "freq" if runtime_method.endswith("_freq") else "rank"
-            scores, pair_meta = score_pairwise_anova(
-                X_train=X_train_pref,
-                y_train=y_train,
-                top_per_pair=pairwise_top_per_pair,
-                mode=mode,
-            )
-            score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": scores}).sort_values(
-                "score", ascending=False
-            )
-            selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
-            extra_json.update(pair_meta)
-
-        elif runtime_method == "pairwise_auc_maximin":
-            scores, pair_meta = score_pairwise_auc_maximin(
-                X_train=X_train_pref,
-                y_train=y_train,
-            )
-            score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": scores}).sort_values(
-                "score", ascending=False
-            )
-            selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
-            extra_json.update(pair_meta)
-
-        elif runtime_method == "pairwise_rank_fusion":
-            if pair_weights_cache is None:
-                pair_weights_cache, pair_weights_meta = compute_hard_pair_weights(
-                    X_train=X_train_pref,
-                    y_train=y_train,
-                    classes=all_classes,
-                    cv_folds=hardpair_cv_folds,
-                    baseline_topk=hardpair_baseline_topk,
-                    gamma=hardpair_gamma,
-                    seed=args.seed,
-                )
-            extra_json.update(pair_weights_meta)
-            scores, pair_meta = score_pairwise_auc(
-                X_train=X_train_pref,
-                y_train=y_train,
-                top_per_pair=pairwise_top_per_pair,
-                mode="rank",
-                pair_weights=pair_weights_cache,
-            )
-            score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": scores}).sort_values(
-                "score", ascending=False
-            )
-            selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
-            extra_json.update(pair_meta)
-            extra_json["pairwise_alias"] = "pairwise_hard_weighted_auc"
-
-        elif runtime_method == "pairwise_auc_diverse_max":
-            if pair_weights_cache is None:
-                pair_weights_cache, pair_weights_meta = compute_hard_pair_weights(
-                    X_train=X_train_pref,
-                    y_train=y_train,
-                    classes=all_classes,
-                    cv_folds=hardpair_cv_folds,
-                    baseline_topk=hardpair_baseline_topk,
-                    gamma=hardpair_gamma,
-                    seed=args.seed,
-                )
-            extra_json.update(pair_weights_meta)
-            scores, pair_meta = score_pairwise_auc(
-                X_train=X_train_pref,
-                y_train=y_train,
-                top_per_pair=pairwise_top_per_pair,
-                mode="rank",
-                pair_weights=pair_weights_cache,
-            )
-            score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": scores})
-            selected_idx, diverse_df = select_diverse_by_correlation(
-                X_train=X_train_pref,
-                relevance_scores=scores,
-                k=args.k,
-                pool_k=diverse_pool_k,
-                lambda_penalty=diverse_lambda,
-            )
-            selected_probes = X_train_pref.columns[np.array(selected_idx, dtype=int)].astype(str).tolist()
-            score_df = score_df.sort_values("score", ascending=False)
-            pd.DataFrame({"rank": np.arange(1, len(selected_probes) + 1), "probe_id": selected_probes}).to_csv(
-                method_dir / f"selected_order_K{args.k}.tsv", sep="\t", index=False
-            )
-            if not diverse_df.empty:
-                diverse_df.to_csv(method_dir / f"diverse_details_K{args.k}.tsv", sep="\t", index=False)
-            extra_json.update(pair_meta)
-            extra_json["diverse_pool_k"] = float(diverse_pool_k)
-            extra_json["diverse_lambda"] = float(diverse_lambda)
-            extra_json["pairwise_alias"] = "pairwise_hard_weighted_auc_diverse"
-
-        elif runtime_method in hardpair_methods:
-            if pair_weights_cache is None:
-                pair_weights_cache, pair_weights_meta = compute_hard_pair_weights(
-                    X_train=X_train_pref,
-                    y_train=y_train,
-                    classes=all_classes,
-                    cv_folds=hardpair_cv_folds,
-                    baseline_topk=hardpair_baseline_topk,
-                    gamma=hardpair_gamma,
-                    seed=args.seed,
-                )
-            extra_json.update(pair_weights_meta)
-
-            uses_auc = "_auc" in method
-            score_kind = "auc" if uses_auc else "anova"
-
-            if runtime_method in {"pairwise_hard_weighted", "pairwise_hard_weighted_auc"}:
-                if score_kind == "auc":
-                    scores, pair_meta = score_pairwise_auc(
-                        X_train=X_train_pref,
-                        y_train=y_train,
-                        top_per_pair=pairwise_top_per_pair,
-                        mode="rank",
-                        pair_weights=pair_weights_cache,
-                    )
-                else:
-                    scores, pair_meta = score_pairwise_anova(
-                        X_train=X_train_pref,
-                        y_train=y_train,
-                        top_per_pair=pairwise_top_per_pair,
-                        mode="rank",
-                        pair_weights=pair_weights_cache,
-                    )
-                score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": scores}).sort_values(
-                    "score", ascending=False
-                )
-                selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
-                extra_json.update(pair_meta)
-
-            elif runtime_method in {"pairwise_hard_weighted_stable", "pairwise_hard_weighted_auc_stable"}:
-                scores, stable_meta = score_pairwise_hard_weighted_stable(
-                    X_train=X_train_pref,
-                    y_train=y_train,
-                    k=args.k,
-                    top_per_pair=pairwise_top_per_pair,
-                    pair_weights=pair_weights_cache,
-                    n_boot=stable_n_boot,
-                    subsample_frac=stable_subsample_frac,
-                    alpha=stable_alpha,
-                    seed=args.seed,
-                    score_kind=score_kind,
-                )
-                score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": scores}).sort_values(
-                    "score", ascending=False
-                )
-                selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
-                extra_json.update(stable_meta)
-
-            elif runtime_method in {"pairwise_hard_weighted_diverse", "pairwise_hard_weighted_auc_diverse"}:
-                if score_kind == "auc":
-                    scores, pair_meta = score_pairwise_auc(
-                        X_train=X_train_pref,
-                        y_train=y_train,
-                        top_per_pair=pairwise_top_per_pair,
-                        mode="rank",
-                        pair_weights=pair_weights_cache,
-                    )
-                else:
-                    scores, pair_meta = score_pairwise_anova(
-                        X_train=X_train_pref,
-                        y_train=y_train,
-                        top_per_pair=pairwise_top_per_pair,
-                        mode="rank",
-                        pair_weights=pair_weights_cache,
-                    )
-                score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": scores})
-                selected_idx, diverse_df = select_diverse_by_correlation(
-                    X_train=X_train_pref,
-                    relevance_scores=scores,
-                    k=args.k,
-                    pool_k=diverse_pool_k,
-                    lambda_penalty=diverse_lambda,
-                )
-                selected_probes = X_train_pref.columns[np.array(selected_idx, dtype=int)].astype(str).tolist()
-                score_df = score_df.sort_values("score", ascending=False)
-                if not diverse_df.empty:
-                    diverse_df.to_csv(method_dir / f"diverse_details_K{args.k}.tsv", sep="\t", index=False)
-                extra_json.update(pair_meta)
-                extra_json["diverse_pool_k"] = float(diverse_pool_k)
-                extra_json["diverse_lambda"] = float(diverse_lambda)
-
-            else:
-                raise ValueError(f"Unsupported hardpair method: {method}")
-
-        elif runtime_method == "domain_robust_anova":
-            scores, dom_meta = score_domain_robust_anova(
-                X_train=X_train_pref,
-                y_train=y_train,
-                sample_ids=train_ids_filtered,
-                penalty_lambda=domain_penalty_lambda,
-            )
-            score_df = pd.DataFrame({"probe_id": prefilter_probes, "score": scores}).sort_values(
-                "score", ascending=False
-            )
-            selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
-            extra_json.update(dom_meta)
-
         else:
-            try:
-                selected_probes, score_df, extra_json = plugin_selector(
-                    runtime_method,
-                    X_train_pref=X_train_pref,
-                    y_train=y_train,
-                    all_classes=all_classes,
-                    k=args.k,
-                    prefilter_probes=prefilter_probes,
-                    seed=args.seed,
-                    selection_args=selection_args,
-                    prefilter_args=prefilter_args,
-                )
-            except PluginNotFound:
-                raise ValueError(f"Unsupported method: {method}") from None
-
+            if runtime_method in hardpair_methods:
+                if pair_weights_cache is None:
+                    (pair_weights_cache, pair_weights_meta) = compute_hard_pair_weights(
+                        X_train=X_train_pref,
+                        y_train=y_train,
+                        classes=all_classes,
+                        cv_folds=hardpair_cv_folds,
+                        baseline_topk=hardpair_baseline_topk,
+                        gamma=hardpair_gamma,
+                        seed=args.seed,
+                    )
+                extra_json.update(pair_weights_meta)
+                uses_auc = "_auc" in method
+                score_kind = "auc" if uses_auc else "anova"
+                if runtime_method in {
+                    "pairwise_hard_weighted_stable",
+                    "pairwise_hard_weighted_auc_stable",
+                }:
+                    (scores, stable_meta) = score_pairwise_hard_weighted_stable(
+                        X_train=X_train_pref,
+                        y_train=y_train,
+                        k=args.k,
+                        top_per_pair=pairwise_top_per_pair,
+                        pair_weights=pair_weights_cache,
+                        n_boot=stable_n_boot,
+                        subsample_frac=stable_subsample_frac,
+                        alpha=stable_alpha,
+                        seed=args.seed,
+                        score_kind=score_kind,
+                    )
+                    score_df = pd.DataFrame(
+                        {"probe_id": prefilter_probes, "score": scores}
+                    ).sort_values("score", ascending=False)
+                    selected_probes = score_df.head(args.k)["probe_id"].astype(str).tolist()
+                    extra_json.update(stable_meta)
+                else:
+                    raise ValueError(f"Unsupported hardpair method: {method}")
+            else:
+                try:
+                    (selected_probes, score_df, extra_json) = plugin_selector(
+                        runtime_method,
+                        X_train_pref=X_train_pref,
+                        y_train=y_train,
+                        all_classes=all_classes,
+                        k=args.k,
+                        prefilter_probes=prefilter_probes,
+                        seed=args.seed,
+                        selection_args=selection_args,
+                        prefilter_args=prefilter_args,
+                    )
+                except PluginNotFound:
+                    raise ValueError(f"Unsupported method: {method}") from None
         method_timing["t_feature_selection"] = time.perf_counter() - t_sel
-
         if len(selected_probes) < args.k:
-            print(f"ERROR: method={method} selected only {len(selected_probes)} probes (<{args.k})", file=sys.stderr)
+            print(
+                f"ERROR: method={method} selected only {len(selected_probes)} probes (<{args.k})",
+                file=sys.stderr,
+            )
             return _return(1, error=f"method_selected_too_few:{method}")
         emit_heartbeat(event="method_done", status="running", force=True, method=method)
         selected_probes = selected_probes[: args.k]
         selected_order_df = canonical_selected_order_df(selected_probes, score_df)
-
         score_df.to_csv(method_dir / "scores.tsv", sep="\t", index=False)
-        selected_order_df.to_csv(method_dir / f"selected_order_K{args.k}.tsv", sep="\t", index=False)
+        selected_order_df.to_csv(
+            method_dir / f"selected_order_K{args.k}.tsv", sep="\t", index=False
+        )
         pd.DataFrame({"probe_id": selected_probes}).to_csv(
             method_dir / f"selected_probes_K{args.k}.tsv", sep="\t", index=False
         )
         if extra_json:
             with (method_dir / "selection_meta.json").open("w", encoding="utf-8") as handle:
                 json.dump(extra_json, handle, indent=2)
-
         t_clf_data = time.perf_counter()
         X_train_sel = X_train_pref[selected_probes]
         X_test_sel = X_test_pref[selected_probes]
         method_timing["t_prepare_classifier_data"] = time.perf_counter() - t_clf_data
-
-        metrics, inner_df, cm_df, auc_df = tune_and_eval_classifier(
+        (metrics, inner_df, cm_df, auc_df) = tune_and_eval_classifier(
             X_train=X_train_sel,
             y_train=y_train,
             X_test=X_test_sel,
@@ -2066,7 +1400,6 @@ def main() -> int:
         method_timing["t_inner_cv_total"] = metrics.pop("t_inner_cv_total")
         method_timing["t_refit_full_train"] = metrics.pop("t_refit_full_train")
         method_timing["t_eval_metrics"] = metrics.pop("t_eval_metrics")
-
         metrics_row = {
             "method": method,
             "repeat": args.repeat,
@@ -2080,14 +1413,12 @@ def main() -> int:
         pd.DataFrame([metrics_row]).to_csv(method_dir / "metrics.tsv", sep="\t", index=False)
         inner_df.to_csv(method_dir / "innercv_results.tsv", sep="\t", index=False)
         cm_df.to_csv(method_dir / f"confusion_matrix_K{args.k}.tsv", sep="\t")
-
-        if args.compute_auroc and not auc_df.empty:
+        if args.compute_auroc and (not auc_df.empty):
             auc_df.insert(0, "k", args.k)
             auc_df.insert(0, "fold", args.fold)
             auc_df.insert(0, "repeat", args.repeat)
             auc_df.insert(0, "method", method)
             auc_df.to_csv(method_dir / f"auc_by_class_K{args.k}.tsv", sep="\t", index=False)
-
         timing_row = {
             "method": method,
             "repeat": args.repeat,
@@ -2097,7 +1428,6 @@ def main() -> int:
             **method_timing,
         }
         pd.DataFrame([timing_row]).to_csv(method_dir / "timing.tsv", sep="\t", index=False)
-
     return _return(0)
 
 

@@ -9,16 +9,16 @@ from minicpg.analysis_io import BoundStage,sha256 as digest
 parser=argparse.ArgumentParser(description="Consensus versus single-split panels on a common scoreable subset")
 parser.add_argument('--config',required=True)
 parser.add_argument('--out-dir',required=True)
-parser.add_argument('--bucket',default='main',choices=['main','stress_epic','stress_ffpe','stress_metastatic'])
+parser.add_argument('--bucket',default='main',choices=['main'])
 args=parser.parse_args();stage=BoundStage(args.config,args.out_dir);bucket=args.bucket
 p=json.loads(stage.input('plan').read_text())
-panels=p['primary_panels'] if bucket=='main' else p['shifted_panels'];seeds=p['seeds']
+panels=p['primary_panels'];seeds=p['seeds']
 with stage.input('model').open('rb') as f:classes=pickle.load(f)['class_order']
 C=len(classes);enc={c:i for i,c in enumerate(classes)};K=['gse_id','sample_id'];base=None;preds=[];metricrows=[];qcs=[]
 for row in panels:
  for seed in seeds:
   key=row['panel_id']+'_'+str(seed)+'_'+bucket;d=pd.read_csv(stage.input(key),sep='\t',float_precision='round_trip')
-  if base is None:base=d[K+['tcga_label']].copy();axis=classes if bucket=='main' else sorted(base.tcga_label.unique())
+  if base is None:base=d[K+['tcga_label']].copy();axis=classes
   assert base.equals(d[K+['tcga_label']]);pr=d[['proba__'+c for c in classes]].to_numpy();assert np.isfinite(pr).all() and np.allclose(pr.sum(axis=1),1,atol=1e-12);assert np.array_equal(np.array(classes)[pr.argmax(axis=1)],d.y_pred);preds.append(d.y_pred.map(enc).to_numpy());metricrows.append(dict(panel_id=row['panel_id'],seed=seed,n=len(d),macro_f1=f1_score(d.tcga_label,d.y_pred,labels=axis,average='macro',zero_division=0),macro_f1_fixed27=f1_score(d.tcga_label,d.y_pred,labels=classes,average='macro',zero_division=0),macro_f1_present=f1_score(d.tcga_label,d.y_pred,labels=sorted(base.tcga_label.unique()),average='macro',zero_division=0),accuracy=accuracy_score(d.tcga_label,d.y_pred)));qcs.append(dict(panel_id=row['panel_id'],seed=seed,argmax_verified=True,hash=digest(stage.input(key))))
 metrics=pd.DataFrame(metricrows);metrics.to_csv(stage.output('metrics_by_panel_seed'),sep='\t',index=False);pd.DataFrame(qcs).to_csv(stage.output('prediction_checks'),sep='\t',index=False)
 u=base.merge(pd.read_csv(stage.input('units'),sep='\t'),on=K,validate='one_to_one');assert u.resampling_unit.notna().all();y=base.tcga_label.map(enc).to_numpy();pred=np.stack(preds);M,N=pred.shape;cl,cn=pd.factorize(u.resampling_unit,sort=True);cnt=np.bincount(cl);bal=1/cnt[cl];u['patient_balanced_weight']=bal;u.to_csv(stage.output('sample_units'),sep='\t',index=False);groups={}

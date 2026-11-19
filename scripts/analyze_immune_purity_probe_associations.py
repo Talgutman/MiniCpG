@@ -22,9 +22,6 @@ import pandas as pd
 import seaborn as sns
 
 
-LEGACY_IMMUNE_PROBES = ["cg08940169", "cg02753354", "cg02075410", "cg27147556", "cg02357751"]
-LEGACY_CONTROL_PROBES = ["cg26687072", "cg19817912", "cg02546607", "cg02748089"]
-LEGACY_FOCUS_PROBES = LEGACY_IMMUNE_PROBES + LEGACY_CONTROL_PROBES
 
 LYMPHOID_COLS = [
     "B.cells.naive",
@@ -63,7 +60,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--focus-probes-tsv",
         default="",
-        help="Optional subset probe TSV to highlight in the markdown summary. Defaults to legacy immune/HOX/WWOX probes when present.",
+        help="Optional subset probe TSV to highlight in the markdown summary. Defaults to all panel probes.",
     )
     parser.add_argument("--dev-manifest-tsv", required=True)
     parser.add_argument("--purity-tsv", required=True)
@@ -112,7 +109,7 @@ def derive_focus_probes(probe_order: list[str], focus_probes_tsv: str) -> list[s
         if not focus:
             raise SystemExit("None of the requested probes from --focus-probes-tsv were found in the active probe order.")
         return focus
-    return [probe for probe in LEGACY_FOCUS_PROBES if probe in set(probe_order)]
+    return list(probe_order)
 
 
 def _safe_corr(x: pd.Series, y: pd.Series, method: str) -> float:

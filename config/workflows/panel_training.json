@@ -1,14 +1,6 @@
 {
   "files": {
-    "extension_plan": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
     "k30_model": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
-    "primary_panel_plan": {
       "path": "<local input path>",
       "sha256": "<bind with bind_analysis_inputs.py>"
     },
@@ -20,23 +12,7 @@
       "path": "<local input path>",
       "sha256": "<bind with bind_analysis_inputs.py>"
     },
-    "base_primary_predictions": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
     "matrix_main": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
-    "matrix_stress_epic": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
-    "matrix_stress_ffpe": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
-    "matrix_stress_metastatic": {
       "path": "<local input path>",
       "sha256": "<bind with bind_analysis_inputs.py>"
     },
@@ -44,15 +20,11 @@
       "path": "<local input path>",
       "sha256": "<bind with bind_analysis_inputs.py>"
     },
-    "base_predictions_stress_epic": {
+    "panel_plan": {
       "path": "<local input path>",
       "sha256": "<bind with bind_analysis_inputs.py>"
     },
-    "base_predictions_stress_ffpe": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
-    "base_predictions_stress_metastatic": {
+    "estimator_plan": {
       "path": "<local input path>",
       "sha256": "<bind with bind_analysis_inputs.py>"
     }

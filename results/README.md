@@ -1,5 +1,5 @@
-# Revised aggregate results
+# Supplementary results
 
-Use [revision_20261119](revision_20261119/README.md) for the final-paper supplementary numerical sources. `tables.json` maps Tables S1–S25 to TSV blocks; `manifest.tsv` records hashes. No individual-level matrices or predictions are included.
+The [table index](revision_20261119/README.md) provides machine-readable data for Supplementary Tables S1–S25. Each table is split into its constituent TSV blocks, with titles in `tables.json` and checksums in `manifest.tsv`.
 
-Historical v0.1.0 results have been removed from this branch. They remain accessible through the unchanged v0.1.0 Git tag. The working manuscript remains the authority for final prose, captions and reference numbering.
+The exports contain aggregate results. Specimen-level measurements, clinical annotations and predictions are obtained or generated separately using the [analysis workflows](../docs/workflows.md).

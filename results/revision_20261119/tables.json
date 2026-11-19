@@ -101,7 +101,6 @@
     "notes": [
       "Both classifiers used 3,496 matched primary-tumor samples across 25 represented classes. MiniCpG K20 uses 20 CpGs; MethyDeep uses 30. Differences are MiniCpG K20 minus MethyDeep and are reported in percentage points (pp); the source proportion differences equal pp/100.",
       "The K=20 model was evaluated only as a panel-size sensitivity analysis. Both classifiers were evaluated on identical matched samples with their original predictions unchanged. MiniCpG refers to the locked K=30 model, selected during development.",
-      "Final eligibility refresh, 10 November 2026; K20 comparison and uncertainty tables.",
       "Paired confidence intervals use 2,000 bootstrap replicates. AUROC, area under the receiver operating characteristic curve; CI, confidence interval."
     ],
     "blocks": [
@@ -123,8 +122,7 @@
       "Confidence intervals use 2,000 paired bootstrap replicates of known patient groups, stratified by each group’s set of truth classes. Specimens without patient identifiers form separate units; resampling is identical across all panels and seeds.",
       "Selection-frequency association includes single-split panels only, using fixed development-derived frequencies. The bootstrap resamples evaluation samples, not panels. Panels share probes and are not independent biological replications.",
       "Selection frequency is the fraction of the original development folds selecting each CpG. Panel mean frequency averages these fractions across its 30 CpGs. Seed SD describes classifier randomness, not a confidence interval.",
-      "This post hoc analysis did not change the locked panel or classifier configuration. Intervals condition on the fitted models, fixed panels and evaluated cohort.",
-      "Source: final eligibility refresh, 10 November 2026, fixed-panel ten-seed analysis."
+      "This post hoc analysis did not change the locked panel or classifier configuration. Intervals condition on the fitted models, fixed panels and evaluated cohort."
     ],
     "blocks": [
       {
@@ -160,7 +158,7 @@
     "blocks": [
       {
         "file": "Table_S06_01.tsv",
-        "title": "Purity estimates were matched to methylation specimens using file UUIDs, GDC sample metadata and the first 16 characters of ABSOLUTE sample barcodes (patient, sample type and vial). Matching does not establish identical aliquots or tissue sections. Predictions were taken from the unchanged locked MiniCpG classifier.",
+        "title": "Sample matching and analysis support",
         "rows": 9,
         "columns": 2
       },
@@ -654,18 +652,18 @@
   },
   {
     "number": 24,
-    "title": "Protocol-informed cost estimate for a proposed targeted MiniCpG assay",
+    "title": "Estimated cost and turnaround of a proposed targeted MiniCpG assay",
     "notes": [],
     "blocks": [
       {
         "file": "Table_S24_01.tsv",
-        "title": "Standalone batch: 96 patient samples, 16 controls and 2 sequencing runs. Quantities are derived from the specified workflow; sources refer to price anchors, not validation of every assumed quantity.",
+        "title": "Component costs: reagents and quality control",
         "rows": 11,
         "columns": 4
       },
       {
         "file": "Table_S24_02.tsv",
-        "title": "Standalone batch: 96 patient samples, 16 controls and 2 sequencing runs. Quantities are derived from the specified workflow; sources refer to price anchors, not validation of every assumed quantity.",
+        "title": "Batch and per-patient operating costs",
         "rows": 11,
         "columns": 4
       },
@@ -677,13 +675,13 @@
       },
       {
         "file": "Table_S24_04.tsv",
-        "title": "The following is a planning schedule for an established assay, not a measured MiniCpG turnaround. The reference batch comprises 88 patients and 8 controls. Hands-on allowances come from the same cost model; incubation times come from protocols where available. Incubations and staff time can overlap and must not simply be added across every sample.",
+        "title": "Stage-level time estimates",
         "rows": 8,
         "columns": 3
       },
       {
         "file": "Table_S24_05.tsv",
-        "title": "For an explicit calendar example, Day 1 starts at 08:00. Conversion and target PCR are scheduled on Day 1, with products held for cleanup if necessary; cleanup, library preparation and QC finish by 16:00 on Day 2. The two-day preparation schedule is an assumption requiring sufficient equipment and staffing. Three 96-well thermal blocks, two available sequencing instruments for the standalone batch, concurrent library processing and immediate access to QC instruments are assumed. Bench staff work eight-hour days; instruments run overnight. No weekend or holiday interruption is imposed.",
+        "title": "Turnaround estimates under the assumed schedule",
         "rows": 3,
         "columns": 3
       }
