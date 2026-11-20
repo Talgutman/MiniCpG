@@ -28,7 +28,7 @@ These TSV files contain the aggregate numerical data for Supplementary Tables S1
 | S20 | Paired tumor and normal-adjacent substitution outcomes | [1](Table_S20_01.tsv) · [2](Table_S20_02.tsv) · [3](Table_S20_03.tsv) |
 | S21 | Within-class purity and immune association summaries | [1](Table_S21_01.tsv) |
 | S22 | Methylation–expression associations and transcriptome ranks | [1](Table_S22_01.tsv) |
-| S23 | Exploratory cfDNA-native compact-panel analysis | [1](Table_S23_01.tsv) · [2](Table_S23_02.tsv) · [3](Table_S23_03.tsv) · [4](Table_S23_04.tsv) · [5](Table_S23_05.tsv) · [6](Table_S23_06.tsv) · [7](Table_S23_07.tsv) · [8](Table_S23_08.tsv) · [9](Table_S23_09.tsv) |
+| S23 | Exploratory cfDNA-native compact-panel analysis | [1](Table_S23_01.tsv) · [2](Table_S23_02.tsv) · [3](Table_S23_03.tsv) · [4](Table_S23_05.tsv) · [5](Table_S23_06.tsv) · [6](Table_S23_08.tsv) |
 | S24 | Estimated cost and turnaround of a proposed targeted MiniCpG assay | [1](Table_S24_01.tsv) · [2](Table_S24_02.tsv) · [3](Table_S24_03.tsv) · [4](Table_S24_04.tsv) · [5](Table_S24_05.tsv) |
 | S25 | Age representation across development and evaluation cohorts | [1](Table_S25_01.tsv) |
 

@@ -589,8 +589,7 @@
     "number": 23,
     "title": "Exploratory cfDNA-native compact-panel analysis",
     "notes": [
-      "SDs and repeat ranges describe variation across evaluated splits; they are not confidence intervals because training sets overlap and specimens recur across repeats. Subtype metrics condition on each workflow’s own detected cancers.",
-      "Differences are descriptive; subtype-evaluation subsets differ between workflows. Differences and SDs are on the proportion scale (e.g., 0.01 = 1 percentage point).",
+      "SDs and repeat ranges describe variation across evaluated splits; they are not confidence intervals because training sets overlap and specimens recur across repeats. Subtype metrics condition on cancers passing the detection gate.",
       "Cancer-type confusion cells are row percentages."
     ],
     "blocks": [
@@ -613,12 +612,6 @@
         "columns": 5
       },
       {
-        "file": "Table_S23_04.tsv",
-        "title": "Coverage comparison",
-        "rows": 4,
-        "columns": 4
-      },
-      {
         "file": "Table_S23_05.tsv",
         "title": "Cancer-type metrics",
         "rows": 5,
@@ -631,22 +624,10 @@
         "columns": 6
       },
       {
-        "file": "Table_S23_07.tsv",
-        "title": "Coverage variability",
-        "rows": 4,
-        "columns": 5
-      },
-      {
         "file": "Table_S23_08.tsv",
         "title": "Repeat performance",
-        "rows": 40,
+        "rows": 20,
         "columns": 4
-      },
-      {
-        "file": "Table_S23_09.tsv",
-        "title": "Repeat differences",
-        "rows": 4,
-        "columns": 5
       }
     ]
   },

@@ -34,7 +34,7 @@ Normal-adjacent substitution uses the saved tissue classifier. Normal-adjacent d
 
 ## Native cell-free DNA
 
-The exploratory cell-free DNA analysis uses separate detection and subtype models, nested repeated validation and a total panel budget of 100 probes. Its coverage control uses observed/missing indicators. Confusion matrices pool held-out prediction occurrences across repeats, and fold standard deviations are descriptive summaries rather than confidence intervals. Each workflow's subtype result is conditional on its own gate-positive samples.
+The exploratory cell-free DNA analysis uses separate detection and subtype models, nested repeated validation and a total panel budget of 100 probes. Confusion matrices pool held-out prediction occurrences across repeats, and fold standard deviations are descriptive summaries rather than confidence intervals. Cancer-type performance is conditional on cancers passing the detection gate.
 
 ## Names used in the code
 

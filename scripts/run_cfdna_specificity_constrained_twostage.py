@@ -47,7 +47,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--out-dir", required=True, type=Path)
     parser.add_argument("--budgets", default="20:80,30:70,50:50,70:30,80:20")
     parser.add_argument("--max-union", type=int, default=100)
-    parser.add_argument("--value-mode", choices=["methylation", "coverage"], default="methylation")
+    parser.add_argument("--value-mode", choices=["methylation"], default="methylation")
     parser.add_argument("--model-families", default="extra_trees,logistic_l2")
     parser.add_argument("--subtype-selector", choices=["ovr_union"], default="ovr_union")
     parser.add_argument(
@@ -160,8 +160,6 @@ def transform_block(raw: np.ndarray, value_mode: str) -> tuple[np.ndarray, np.nd
     finite = np.isfinite(raw)
     if value_mode == "methylation":
         return np.where(finite, raw, 0.0).astype(np.float32, copy=False), finite
-    if value_mode == "coverage":
-        return finite.astype(np.float32), np.ones(raw.shape, dtype=bool)
     raise ValueError(value_mode)
 
 

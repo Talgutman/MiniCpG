@@ -11,22 +11,10 @@
     "subtype_selector": "ovr_union",
     "config_subtype_metric": "subtype_macro_f1_gate_positive_cancers"
   },
-  "coverage_control": {
-    "status": "complete",
-    "dataset": "prjna628686",
-    "n_samples": 297,
-    "n_features": 2732642,
-    "n_folds": 25,
-    "target_specificity": 0.8,
-    "max_union": 100,
-    "value_mode": "coverage",
-    "subtype_selector": "ovr_union",
-    "config_subtype_metric": "subtype_macro_f1_gate_positive_cancers"
-  },
   "provenance_limits": [
     "cfMethDB processed intermediate; exact upstream per-file software versions unavailable",
     "Separate native cfDNA models and panel; not the tissue K30 model",
-    "Fold summaries are descriptive repeated-CV SD; own gate-positive subset for subtype metrics"
+    "Fold summaries are descriptive repeated-CV SD; gate-positive cancer subset for subtype metrics"
   ],
   "execution_parameters": {
     "prjna_labels": [

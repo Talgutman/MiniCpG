@@ -14,7 +14,7 @@ The saved model is sufficient for prediction. Reproducing analyses requires the 
 | Methylation shift, confusion, purity and study-specific errors | SM5; Fig. 4; Figs. S6–S7; Tables S6–S11 | [Error analyses](#error-patterns-geometry-and-purity) |
 | Metastatic, FFPE and EPIC cohorts; paired clinical/processing comparisons | SM1, SM3–SM4; Fig. 5; Tables S3, S12–S15 | [Additional cohorts](#expanded-domains-and-paired-conditions) |
 | Genomic context, biological scores, normal-adjacent analyses, expression and attribution | SM6; Fig. 6; Figs. S8–S11; Tables S16–S22 | [Biological context](#genomic-and-biological-context) |
-| Exploratory cfDNA-specific models and coverage control | SM7; Fig. 7; Table S23 | [Cell-free DNA](#native-cell-free-dna) |
+| Exploratory cfDNA-specific models | SM7; Fig. 7; Table S23 | [Cell-free DNA](#native-cell-free-dna) |
 | Cost and turnaround assumptions | SM8; Table S24 | [Assay estimate](#assay-cost-and-turnaround) |
 | Age representation | SM1; Table S25 | [Age summaries](#age-representation) |
 | Sample and probe principal components | Figs. S2–S3 | [PCA](#sample-and-probe-pca) |
@@ -174,7 +174,7 @@ For model usage, `analyze_locked_model_shap_and_correlation.py` takes an uncompr
 
 ## Native cell-free DNA
 
-This is a separate nested workflow and panel, not inference with the tissue model. `config/cfdna_executed_runs.json` records the executed K100 methylation/coverage-control metadata. Start from the cfMethDB processed sequencing intermediate, not array betas.
+This is a separate nested workflow and panel, not inference with the tissue model. `config/cfdna_executed_runs.json` records the executed K100 methylation workflow metadata. Start from the cfMethDB processed sequencing intermediate, not array betas.
 
 For data preparation, `filter_cfmethdb_presence_candidates_by_study_fraction.py` applies the label-blind 80% study-presence filter to merged presence-atlas shards. Supply the actual study denominator. `extract_cfmethdb_candidate_matrix_np_chunk.py` reads candidate coordinates (`feature_id`, `chrom`, `start`, `end`) and a sample manifest (`Geoid`, `analysis_label`, `studyid`, `bigwig_url`), downloading BigWigs into an explicit cache directory. This extraction optionally requires `uv sync --locked --extra analysis --extra cfdna-data` and curl. `combine_cfmethdb_candidate_matrix_np_chunks.py` creates the NumPy matrix and aligned metadata. The atlas itself and source annotation need to be obtained/constructed from the permitted upstream source. Exact upstream per-file software versions were not recoverable.
 
@@ -194,7 +194,7 @@ uv run --locked --extra analysis python scripts/run_cfdna_specificity_constraine
   --target-specificity 0.80 --outer-splits 5 --outer-repeats 5 --inner-splits 4 --seed 20260616
 ```
 
-Run fold IDs 1–25, then the same command with `--mode merge` (omit `--fold-id`). Repeat with `--value-mode coverage` and a separate output directory for the coverage-indicator control. Report repeated-CV means/SDs as descriptive summaries, not independent-fold confidence intervals. Each workflow's subtype result is conditional on its own gate-positive samples.
+Run fold IDs 1–25, then the same command with `--mode merge` (omit `--fold-id`). Report repeated-CV means/SDs as descriptive summaries, not independent-fold confidence intervals. Cancer-type performance is conditional on cancers passing the detection gate.
 
 ## Age representation
 
