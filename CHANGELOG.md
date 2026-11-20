@@ -13,3 +13,7 @@
 ## 0.1.0 — 2026-07-26
 
 Original public model, code and aggregate-result snapshot. The tag remains unchanged.
+
+### Input-processing analysis scope
+
+- Restrict alternative-export and IDAT preprocessing contrasts to MiniCpG; align S15 aggregate exports and input requirements. Clinical contrasts and the main external MethyDeep benchmark are unchanged.

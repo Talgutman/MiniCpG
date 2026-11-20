@@ -406,19 +406,19 @@
       {
         "file": "Table_S15_01.tsv",
         "title": "Paired accuracy",
-        "rows": 27,
+        "rows": 15,
         "columns": 17
       },
       {
         "file": "Table_S15_02.tsv",
         "title": "Additional uncertainty",
-        "rows": 27,
+        "rows": 15,
         "columns": 17
       },
       {
         "file": "Table_S15_03.tsv",
         "title": "Coverage",
-        "rows": 18,
+        "rows": 12,
         "columns": 11
       },
       {

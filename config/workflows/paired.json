@@ -40,22 +40,6 @@
       "path": "<local input path>",
       "sha256": "<bind with bind_analysis_inputs.py>"
     },
-    "methydeep_export_alternative_GSE144487.tsv": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
-    "methydeep_export_alternative_GSE234379.tsv": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
-    "methydeep_idat_author.tsv": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
-    "methydeep_idat_sesame.tsv": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
     "PROTOCOL.txt": {
       "path": "<local input path>",
       "sha256": "<bind with bind_analysis_inputs.py>"

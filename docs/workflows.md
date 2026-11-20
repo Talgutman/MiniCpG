@@ -118,7 +118,7 @@ uv run --locked python scripts/evaluate_paired_conditions.py \
   --config work/paired.json --out-dir outputs/paired_evaluation
 ```
 
-The source retains patient aggregation, common four-way eligibility and 20,000 paired resamples. Same-patient contrasts are not propensity-matched independent patients. IDAT contrasts compare complete processing workflows; upstream SeSAMe processing must be supplied separately. The runner produces specimen-level audit outputs locally as well as aggregate results.
+Clinical contrasts retain patient aggregation and common four-way eligibility. Processing contrasts evaluate MiniCpG on its model-specific paired specimens. Both use 20,000 paired resamples. Same-patient contrasts are not propensity-matched independent patients. IDAT contrasts compare complete processing workflows; upstream SeSAMe processing must be supplied separately. The runner produces specimen-level audit outputs locally as well as aggregate results.
 
 ## Consensus versus single-split panels
 
