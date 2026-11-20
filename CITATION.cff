@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use MiniCpG, please cite the associated manuscript and the code version used."
-title: "MiniCpG: Broad validation and characterization of a 30-CpG cancer classifier"
+title: "MiniCpG: Broad Validation and Characterization of a 30-CpG Cancer Classifier"
 authors:
   - family-names: "Gutman"
     given-names: "Tal"

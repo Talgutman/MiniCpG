@@ -2,7 +2,7 @@
 
 MiniCpG classifies tumor tissue using a compact panel of 30 DNA methylation probes. The trained model predicts 27 tumor classes using an ExtraTrees classifier and imputation fitted on the development data.
 
-This repository accompanies “MiniCpG: Broad validation and characterization of a 30-CpG cancer classifier” and provides the trained model, analysis code and aggregate supplementary results. The current code version is `0.2.0.dev0`.
+This repository accompanies “MiniCpG: Broad Validation and Characterization of a 30-CpG Cancer Classifier” and provides the trained model, analysis code and aggregate supplementary results. The current code version is `0.2.0.dev0`.
 
 | I want to… | Start here |
 |---|---|
