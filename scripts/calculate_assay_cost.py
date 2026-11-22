@@ -1,76 +1,130 @@
-"""Recalculate the protocol-informed proposed assay budget; not measured costs."""
-import argparse,json,math,csv
+"""Recalculate the adopted Lam-based research operating budget in SM8/Table S27."""
+import argparse
+import csv
+import hashlib
+import json
+import math
 from pathlib import Path
-from minicpg.analysis_io import sha256
-def calculate(n, **overrides):
- q=p|overrides; pools=q['pools'];reps=q['replicates'];over=1+q['reagent_overage']
- controls=len(q['methylation_levels'])+q['blank_controls']
- reads=q['targets']*q['target_depth']/q['usable_fraction']/q['weakest_to_mean']
- cap=min(q['distinct_barcodes'],math.floor(q['raw_pairs_per_run']/reads))
- assert cap>controls
- runs=math.ceil(n/(cap-controls)); libs=n+runs*controls
- perrun=[n//runs+(i<n%runs)+controls for i in range(runs)]
- assert all(k<=cap and k*reads<=q['raw_pairs_per_run'] for k in perrun)
- rxns=pools*reps*libs;qubits=(pools+2)*libs+8+3*runs;qpcr=27*runs
- plates=math.ceil(rxns/96)+2*math.ceil(pools*libs/96)+4*math.ceil(libs/96)+math.ceil(qpcr/96)
- # Hands-on allowances; exclude outsourced conversion, TapeStation and run operation.
- labor_tasks={'setup_and_control_mixing':1,'target_PCR_setup':rxns/240,'pool_cleanup_and_normalisation':pools*libs/100,'library_setup_and_cleanups':libs/32,'fluorometry_and_pool_QC':libs/80,'pool_assembly_and_records':.5*runs}
- hours=sum(labor_tasks.values())*q.get('labor_multiplier',1)
- tips_per_lib=2*pools*reps+8*pools+10+16+2*(pools+2)+4
- tip_count=math.ceil((tips_per_lib*libs+2*qpcr+20)*q.get('tip_multiplier',1))
- total_beads=(pools*reps*q['pcr_ul']*q['target_bead_ratio']+q['ligation_beads_ul']+q['library_pcr_beads_ul'])*libs
- # Each of the60 target primers appears in three reactions, independent of pool count.
- primer_pmol=2*q['targets']*reps*q['primer_um']*q['pcr_ul']*libs
- rows=[]
- def add(name,qty,unit,refs,basis):rows.append({'component':name,'quantity':qty,'unit_cost':unit,'total':qty*unit,'sources':refs,'basis':basis})
- add('Bisulfite conversion',libs,prices['conversion'],[14],'Published service unit price; one conversion per sample/control, including budgeted blank.')
- add('Target PCR enzyme and buffer',rxns*q['enzyme_u_per_rxn']*over,prices['enzyme'],[2,3],'Enzyme units; manufacturer25µL recipe adapted to multiplex PCR.')
- add('Target PCR dNTP mix',rxns*q['dntp_ul_per_rxn']*over,prices['dntp'],[3,4],'µL; manufacturer concentration.')
- add('Target primers',primer_pmol*over,prices['primer'],[3,5],'pmol;30bases and10nmol delivered per primer assumed; recurring use only.')
- add('Library end repair ligation and PCR',libs*over,prices['library_kit'],[6,7],'Complete kit preparation equivalents; no additional indexing PCR mix charged.')
- add('Adapters USER and unique dual indexes',libs,prices['indexes'],[8],'One complete well per library;96 distinct indexes PER RUN, fresh reagent for every library.')
- add('Cleanup beads',total_beads*over,prices['beads'],[7,9],'µL; target cleanup ratio assumed; kit cleanup volumes from manual.')
- add('Fluorometric quantification',qubits*over,prices['qubit'],[10],'Input DNA, each cleaned target pool, final library, run pools and standards; assumed schedule.')
- add('Qubit tubes',qubits,prices['qubit_tube'],[11],'One tube per measurement.')
- add('TapeStation QC',math.ceil((libs+runs)/12),68,[9],'Full12-position service blocks; all final libraries and run pools. Internal price anchor.')
- add('Run-pool qPCR',qpcr*over,prices['qpcr'],[12],'27 reactions/run:6 standards in triplicate, blank triplicate, pool at2 dilutions in triplicate.')
- add('Filter tips',tip_count,prices['tips'],[13],'Explicit task count; handling allowance, not empirically measured.')
- add('PCR plates and seals',plates,prices['plate']+prices['seal'],[13],'Whole plates rounded up separately for reaction/cleanup stages.')
- add('Storage and mixing tubes',2*libs+20*runs,prices['tube'],[13],'Assumed2/library plus20/run; Qubit tubes separate.')
- add('Minor buffers ethanol and water',libs,q['minor_buffer_allowance_per_library'],[],'Unquoted allowance; includes wash ethanol, TE/water/dilution buffer. Sensitivity0.5–2USD/library.')
- add('Methylation standard DNA',len(q['methylation_levels'])*q['control_input_ng']*runs*over,prices['controls'],[1,16,17],'ng;seven symmetric levels,100ng input/level assumed; blank contains no DNA.')
- add('PhiX',2*runs,prices['phix'],[19,20,21],'µL stock; fresh preparation/run. Historical price; no credit for reusing diluted stock.')
- add('Sequencing runs',runs,prices['run'],[14,18],'Full MiSeq v2 500-cycle run charge; conversion and run fees external academic anchors.')
- add('Demultiplexing service',runs,prices['multiplexing'],[14],'Posted multiplexing fee conservatively charged once/run; confirm invoice scope.')
- add('Hands-on labour',hours,q['labor_hourly'],[15],'Task durations assumed; rate published. Excludes labour inside purchased services.')
- total=sum(x['total'] for x in rows)
- return {'samples':n,'runs':runs,'controls':runs*controls,'libraries':libs,'libraries_per_run':perrun,'raw_pairs_per_library':reads,'reaction_count':rxns,'hours':hours,'labor_tasks':labor_tasks,'plates':plates,'components':rows,'total':total,'per_processed':total/n,'epic_ratio':q['epic']/(total/n),'per_reportable_90pct_sensitivity':total/(n*.9)}
+
+
+def calculate(config, patients, **overrides):
+    """Cost a conditional batch; controls and repeats do not enter its denominator."""
+    q = config['parameters'] | overrides
+    prices = config['unit_prices']
+    if patients <= 0 or int(patients) != patients:
+        raise ValueError('patients must be a positive integer')
+    controls = len(q['methylation_levels']) + q['blank_controls']
+    if q['barcodes'] <= controls:
+        raise ValueError('barcode capacity must exceed controls per run')
+    for key in ('depth', 'seq_usable', 'weakest', 'raw_pairs_per_run'):
+        if q[key] <= 0:
+            raise ValueError(f'{key} must be positive')
+    runs = q['runs'] or max(1, math.ceil((patients + q['repeats']) / (q['barcodes'] - controls)))
+    raw_pairs = q['targets'] * q['depth'] / (q['seq_usable'] * q['weakest'])
+    if raw_pairs * controls >= q['raw_pairs_per_run']:
+        raise ValueError('sequencing capacity must exceed the control allocation')
+    while True:
+        libraries = patients + q['repeats'] + controls * runs
+        needed = max(math.ceil(libraries / q['barcodes']),
+                     math.ceil(libraries * raw_pairs / q['raw_pairs_per_run']))
+        if needed <= runs:
+            break
+        runs = needed
+    rows = []
+    def add(name, quantity, unit, basis):
+        rows.append({'component': name, 'quantity': quantity, 'unit_usd': unit,
+                     'cost_usd': quantity * unit, 'basis': basis,
+                     'sources': config['component_sources'][name]})
+    over = 1 + q['reagent_overage']
+    pools = q['pools']
+    rx = libraries * pools * q['replicates']
+    add('Lightning conversion', math.ceil(libraries / q['conversion_plate_capacity']) * q['conversion_plate_capacity'] if q['whole_conversion'] else libraries,
+        prices['conversion_position'], 'Whole plate capacity charged; no reuse of empty wells assumed')
+    add('GoTaq target and library PCR', over * (rx * q['target_enzyme_units'] + libraries * q['library_enzyme_units']),
+        prices['enzyme_unit'], 'Lam target and library PCR volumes; buffer/Mg supplied')
+    add('dNTPs', over * (rx * q['target_dntp_ul'] + libraries * q['library_dntp_ul']),
+        prices['dntp_ul'], '10 mM each stock; Lam volumes')
+    add('Target and universal PCR oligos', over * (rx * q['target_primer_pmol'] * q['target_primer_bases'] + libraries * q['library_primer_pmol'] * q['library_primer_bases']),
+        prices['oligo_base_pmol'], 'Pooled stock concentration, lengths and delivered yield are assumptions')
+    add('Primer phosphorylation PNK', math.ceil(over * rx * q['primer_stock_ul_per_rxn'] / q['pnk_batch_ul']) * q['pnk_units_per_batch'],
+        prices['pnk_unit'], 'Phosphorylation stock batches rounded up')
+    add('UltraII ligation mix and enhancer', over * libraries * q['ligation_mix_ul'] * q['ligation_added_ul'] / q['ligation_master_ul'],
+        prices['ligation_mix_ul'], 'Small aliquot from Lam supplementary recipe; enhancer included')
+    add('Indexed ligation adapters', libraries, q['adapter_price'],
+        'Monetary proxy scaled to dilute Lam dose; compatibility and aliquot reuse unvalidated')
+    beads = over * (libraries * (pools * q['pcr_ul'] * q['replicates'] * q['target_bead_ratio'] + q['library_cleanup_beads_ul']) + runs * q['pool_cleanup_beads_ul'])
+    add('Cleanup beads', beads, prices['beads_ul'], 'Triplicates pooled before target cleanup')
+    qc = (q['representative_libraries_per_run'] + 1) * runs
+    add('Representative TapeStation QC', max(q['qc_minimum'], qc), prices['qc_sample'],
+        'Representative libraries and run pools; not every library sized')
+    qpcr = q['qpcr_per_run'] * runs
+    tips = libraries * (8 + 3 * pools * q['replicates'] + 14 + 7 + 5) + qpcr * 2 + 80 * runs
+    hours = {'controls_records': 1, 'conversion': libraries / 64,
+             'target_setup': rx / 240, 'pool_clean': libraries / 80,
+             'ligation_library_setup_cleanup': libraries / 40,
+             'quantification_pooling': libraries / 80, 'QC_submission': .5}
+    plates = math.ceil(rx / 96) + 5 * math.ceil(libraries / 96) + math.ceil(qpcr / 96)
+    qubit = patients + q['repeats'] + libraries + 3 * runs
+    add('Qubit assays and tubes', qubit, prices['qubit_with_tube'], 'Input DNA, final libraries and run pools/standards')
+    add('qPCR quantification', qpcr * over, prices['qpcr'], 'Pool-only quantification; contemporary NEB price proxy for KAPA')
+    add('Filter tips', math.ceil(tips * q['tip_factor']), prices['tip'], 'Task-based handling allowance')
+    add('PCR plates and seals', plates, prices['plate_with_seal'], 'Whole plates rounded; conversion plastics in conversion price')
+    add('Storage tubes', 2 * libraries + 20 * runs, prices['tube'], 'Qubit tubes excluded here')
+    add('Minor buffers and chemicals', libraries, prices['minor_buffers'], 'Explicit unsourced operating allowance')
+    add('Methylation control DNA', len(q['methylation_levels']) * runs * q['control_input_ng'] * over,
+        prices['control_ng'], 'Symmetric standards; process blank contains no DNA')
+    add('PhiX', q['phix_ul_per_run'] * runs, prices['phix_ul'], 'Exclude if sequencing invoice already includes this')
+    add('Sequencing service', runs, q['run_fee'], 'Full MiSeq v2 run; no additional operator labour')
+    add('Demultiplexing', runs, prices['demultiplexing'], 'Exclude if included in sequencing fee')
+    add('Hands-on bench labour', sum(hours.values()) * q['labour_factor'], prices['bench_hour'],
+        'Assumed task durations; excludes purchased QC/sequencing services')
+    add('Basic analysis labour', q['analysis_hours'] * q['labour_factor'], prices['analysis_hour'],
+        'Established pipeline execution/QC/export; development excluded')
+    add('Compute and storage', 1, prices['compute_batch'], 'Batch allowance, not a cloud quote')
+    total = sum(row['cost_usd'] for row in rows)
+    return {'workflow': 'Lam', 'patients': patients, 'repeats': q['repeats'],
+            'controls': controls * runs, 'libraries': libraries, 'runs': runs,
+            'target_pcrs': rx, 'raw_pairs_per_library': raw_pairs,
+            'total_raw_pairs': libraries * raw_pairs, 'hours': hours,
+            'components': rows, 'total_usd': total, 'per_patient_usd': total / patients,
+            'epic_ratio': q['epic'] / (total / patients)}
+
 
 def main():
-    global p,prices
-    parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--config',default='config/assay_cost.json')
-    parser.add_argument('--out-dir',required=True)
-    args=parser.parse_args();config=json.loads(Path(args.config).read_text())
-    p=config['parameters'];prices=config['unit_prices'].copy()
-    out=Path(args.out_dir)
-    if out.exists() and any(out.iterdir()):raise ValueError('Output directory must be empty')
-    out.mkdir(parents=True,exist_ok=True)
-    scenarios=[calculate(n) for n in config['batch_sizes']]
-    sensitivity=[]
-    for row in config['sensitivity']:
-        changes=row['changes'].copy();old_run=prices['run']
-        if 'run_fee' in changes:prices['run']=changes.pop('run_fee')
-        value=calculate(config['batch_sizes'][-1],**changes)
-        prices['run']=old_run
-        sensitivity.append({'scenario':row['scenario'],'runs':value['runs'],'per_processed':value['per_processed']})
-    result={'parameters':p,'unit_prices':prices,'references':config['references'],
-            'scenarios':scenarios,'sensitivity':sensitivity,'interpretation':config['interpretation'],
-            'config_sha256':sha256(args.config)}
-    (out/'cost_model.json').write_text(json.dumps(result,indent=2)+'\n')
-    with (out/'components.tsv').open('w') as f:
-        writer=csv.DictWriter(f,fieldnames=['samples']+list(scenarios[0]['components'][0]),delimiter='\t',lineterminator='\n');writer.writeheader()
-        for batch in scenarios:
-            for row in batch['components']:writer.writerow({'samples':batch['samples'],**row})
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--config', default='config/assay_cost.json')
+    parser.add_argument('--out-dir', required=True)
+    args = parser.parse_args()
+    config_path = Path(args.config)
+    if not config_path.is_file():
+        parser.error(f'Cost configuration not found: {config_path}')
+    config = json.loads(config_path.read_text())
+    out = Path(args.out_dir)
+    if out.exists() and any(out.iterdir()):
+        parser.error(f'Output directory must be empty: {out}')
+    scenarios = {row['id']: calculate(config, row['patients'], **row.get('changes', {}))
+                 for row in config['scenarios']}
+    result = {'model': config['model'], 'parameters': config['parameters'],
+              'unit_prices': config['unit_prices'], 'references': config['references'],
+              'interpretation': config['interpretation'], 'source_date': config['source_date'],
+              'assumption_notes': config['assumption_notes'],
+              'config_sha256': hashlib.sha256(config_path.read_bytes()).hexdigest(),
+              'scenarios': scenarios}
+    out.mkdir(parents=True, exist_ok=True)
+    (out / 'cost_model.json').write_text(json.dumps(result, indent=2) + '\n')
+    with (out / 'components.tsv').open('w') as handle:
+        writer = csv.DictWriter(handle, fieldnames=['scenario', 'patients'] + list(next(iter(scenarios.values()))['components'][0]), delimiter='\t', lineterminator='\n')
+        writer.writeheader()
+        for name, batch in scenarios.items():
+            for row in batch['components']:
+                writer.writerow({'scenario': name, 'patients': batch['patients'], **row})
+    with (out / 'scenario_summary.tsv').open('w') as handle:
+        fields = ['scenario', 'patients', 'controls', 'libraries', 'runs', 'total_usd', 'per_patient_usd']
+        writer = csv.DictWriter(handle, fieldnames=fields, delimiter='\t', lineterminator='\n')
+        writer.writeheader()
+        for name, batch in scenarios.items():
+            writer.writerow({'scenario': name, **{key: batch[key] for key in fields[1:]}})
 
-if __name__=='__main__':main()
+
+if __name__ == '__main__':
+    main()

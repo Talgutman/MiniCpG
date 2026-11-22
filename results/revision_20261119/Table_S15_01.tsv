@@ -1,16 +1,91 @@
-Comparison design	Source study	Evaluated subset	Classifier	Paired units (n)	Weighting unit	First-condition specimens (n)	Second-condition specimens (n)	First condition	Second condition	First-condition recall	Second-condition recall	Difference (proportion)	Difference: 95% CI lower (proportion)	Difference: 95% CI upper (proportion)	Bootstrap replicates (n)	Degenerate bootstrap interval
-STATUS_GSE114989	GSE114989	Model-specific paired subset	MiniCpG	4	patient	19	6	primary	Regional lymph node	0.96875	0.5	-0.46875	-1	0.0625	20000	False
-STATUS_GSE114989	GSE114989	common	MiniCpG	4	patient	19	6	primary	Regional lymph node	0.96875	0.5	-0.46875	-1	0.0625	20000	False
-STATUS_GSE114989	GSE114989	common	MethyDeep	4	patient	19	6	primary	Regional lymph node	0.8333333333333334	0.375	-0.4583333333333333	-0.8333333333333334	-0.125	20000	False
-STATUS_GSE58999	GSE58999	Model-specific paired subset	MiniCpG	44	patient	44	44	primary	Regional lymph node	0.9545454545454546	0.9318181818181818	-0.0227272727272727	-0.0909090909090909	0.0454545454545455	20000	False
-STATUS_GSE58999	GSE58999	common	MiniCpG	44	patient	44	44	primary	Regional lymph node	0.9545454545454546	0.9318181818181818	-0.0227272727272727	-0.0909090909090909	0.0454545454545455	20000	False
-STATUS_GSE58999	GSE58999	common	MethyDeep	44	patient	44	44	primary	Regional lymph node	0.9318181818181818	0.7045454545454546	-0.2272727272727272	-0.3636363636363636	-0.0909090909090909	20000	False
-STATUS_GSE73549	GSE73549	Model-specific paired subset	MiniCpG	14	patient	48	16	primary	Regional lymph node	0.9821428571428572	1	0.0178571428571428	0	0.0535714285714286	20000	False
-STATUS_GSE73549	GSE73549	common	MiniCpG	14	patient	48	16	primary	Regional lymph node	0.9821428571428572	1	0.0178571428571428	0	0.0535714285714286	20000	False
-STATUS_GSE73549	GSE73549	common	MethyDeep	14	patient	48	16	primary	Regional lymph node	1	1	0	0	0	20000	True
-EXPORT_GSE144487	GSE144487	Model-specific paired subset	MiniCpG	98	specimen_unknown_patient	98	98	author	alternative_export	0.7551020408163265	0.7857142857142857	0.0306122448979591	-0.0408163265306122	0.1020408163265306	20000	False
-EXPORT_GSE234379	GSE234379	Model-specific paired subset	MiniCpG	46	specimen_unknown_patient	46	46	author	alternative_export	0.9130434782608696	0.9347826086956522	0.0217391304347826	-0.0434782608695653	0.0874999999999526	20000	False
-IDAT_GSE105260	GSE105260	Model-specific paired subset	MiniCpG	35	specimen_unknown_patient	35	35	author	SeSAMe_QCDPB	0.8	0.8	0	0	0	20000	True
-IDAT_GSE178610	GSE178610	Model-specific paired subset	MiniCpG	63	specimen_unknown_patient	63	63	author	SeSAMe_QCDPB	0.9365079365079364	0.9365079365079364	0	-0.0476190476190475	0.0476190476190475	20000	False
-IDAT_GSE180060	GSE180060	Model-specific paired subset	MiniCpG	88	specimen_unknown_patient	88	88	author	SeSAMe_QCDPB	0.9204545454545454	0.5568181818181818	-0.3636363636363636	-0.4659090909090909	-0.2613636363636364	20000	False
-IDAT_GSE234379	GSE234379	Model-specific paired subset	MiniCpG	46	specimen_unknown_patient	46	46	author	SeSAMe_QCDPB	0.9130434782608696	0.9565217391304348	0.0434782608695652	-0.0434782608695651	0.1304347826086956	20000	False
+Cohort	Evaluated subset	Classifier	Weighting	Specimens	Resampling units	Truth classes	Metric	Estimate	95% CI lower	95% CI upper	Bootstrap replicates	Macro-F1 axis
+metastatic	minicpg_full	MiniCpG	specimen	985	935	12	Macro-F1	0.6007951398909032	0.5631951755748756	0.6335993907395483	2000	fixed_original_subset_present_truth
+metastatic	minicpg_full	MiniCpG	specimen	985	935	12	Weighted-F1	0.7647331189367673	0.7420394544869777	0.7870557951526918	2000	fixed_original_subset_present_truth
+metastatic	minicpg_full	MiniCpG	specimen	985	935	12	Balanced accuracy	0.5884437326880863	0.5258157477203189	0.6515883524136857	2000	fixed_original_subset_present_truth
+metastatic	minicpg_full	MiniCpG	specimen	985	935	12	Accuracy	0.699492385786802	0.6751192712295025	0.7255528921913257	2000	fixed_original_subset_present_truth
+metastatic	minicpg_full	MiniCpG	specimen	985	935	12	Macro one-versus-rest AUC	0.9276354845965912	0.8978026830102771	0.9569100391362136	2000	fixed_original_subset_present_truth
+metastatic	minicpg_full	MiniCpG	Patient-balanced	985	935	12	Macro-F1	0.5981510083796444	0.5632026837476004	0.6298882117717965	2000	fixed_original_subset_present_truth
+metastatic	minicpg_full	MiniCpG	Patient-balanced	985	935	12	Weighted-F1	0.7591477070610128	0.7363424789101217	0.7814691925991742	2000	fixed_original_subset_present_truth
+metastatic	minicpg_full	MiniCpG	Patient-balanced	985	935	12	Balanced accuracy	0.5871713823971164	0.5260369361438711	0.649817525768751	2000	fixed_original_subset_present_truth
+metastatic	minicpg_full	MiniCpG	Patient-balanced	985	935	12	Accuracy	0.6941711229946524	0.6696069518716578	0.7197156862745097	2000	fixed_original_subset_present_truth
+metastatic	minicpg_full	MiniCpG	Patient-balanced	985	935	12	Macro one-versus-rest AUC	0.9261491626113388	0.8965713066594692	0.9556847524379564	2000	fixed_original_subset_present_truth
+metastatic	shared	MiniCpG	specimen	848	803	11	Macro-F1	0.6630524797832865	0.6159597690922091	0.7021005269293125	2000	fixed_original_subset_present_truth
+metastatic	shared	MiniCpG	specimen	848	803	11	Weighted-F1	0.7628372361206802	0.7366887992002839	0.7859467254141785	2000	fixed_original_subset_present_truth
+metastatic	shared	MiniCpG	specimen	848	803	11	Balanced accuracy	0.614535329805966	0.5608450483058578	0.6664517215182117	2000	fixed_original_subset_present_truth
+metastatic	shared	MiniCpG	specimen	848	803	11	Accuracy	0.6945754716981131	0.6646914110168289	0.7215658171891022	2000	fixed_original_subset_present_truth
+metastatic	shared	MiniCpG	specimen	848	803	11	Macro one-versus-rest AUC	0.9660657073305304	0.9583153022780784	0.9732888495419356	2000	fixed_original_subset_present_truth
+metastatic	shared	MiniCpG	Patient-balanced	848	803	11	Macro-F1	0.6615595685990756	0.6161401941402794	0.7027074642436923	2000	fixed_original_subset_present_truth
+metastatic	shared	MiniCpG	Patient-balanced	848	803	11	Weighted-F1	0.757244647976902	0.7309121607789499	0.7805248702681666	2000	fixed_original_subset_present_truth
+metastatic	shared	MiniCpG	Patient-balanced	848	803	11	Balanced accuracy	0.6162604184341259	0.5629790836651984	0.6676025179400126	2000	fixed_original_subset_present_truth
+metastatic	shared	MiniCpG	Patient-balanced	848	803	11	Accuracy	0.6893939393939394	0.660024906600249	0.7168975716064758	2000	fixed_original_subset_present_truth
+metastatic	shared	MiniCpG	Patient-balanced	848	803	11	Macro one-versus-rest AUC	0.9663949249922208	0.9586543359690808	0.9731318920886444	2000	fixed_original_subset_present_truth
+metastatic	shared	MethyDeep	specimen	848	803	11	Macro-F1	0.6456901962385767	0.6095810587791147	0.6851451505227703	2000	fixed_original_subset_present_truth
+metastatic	shared	MethyDeep	specimen	848	803	11	Weighted-F1	0.7576038369257048	0.727933845670169	0.7847542843347087	2000	fixed_original_subset_present_truth
+metastatic	shared	MethyDeep	specimen	848	803	11	Balanced accuracy	0.6859689222089022	0.6425528159172453	0.73361506384633	2000	fixed_original_subset_present_truth
+metastatic	shared	MethyDeep	specimen	848	803	11	Accuracy	0.6733490566037735	0.6409356725146199	0.7070399088171972	2000	fixed_original_subset_present_truth
+metastatic	shared	MethyDeep	specimen	848	803	11	Macro one-versus-rest AUC	0.9570319575148576	0.946199867141266	0.9680963490404862	2000	fixed_original_subset_present_truth
+metastatic	shared	MethyDeep	Patient-balanced	848	803	11	Macro-F1	0.6539429540283241	0.6190498016787144	0.6918593509974688	2000	fixed_original_subset_present_truth
+metastatic	shared	MethyDeep	Patient-balanced	848	803	11	Weighted-F1	0.7699778119976713	0.7422434523514104	0.7954485149118996	2000	fixed_original_subset_present_truth
+metastatic	shared	MethyDeep	Patient-balanced	848	803	11	Balanced accuracy	0.6937879989543949	0.6466150637674625	0.7424855380394613	2000	fixed_original_subset_present_truth
+metastatic	shared	MethyDeep	Patient-balanced	848	803	11	Accuracy	0.6864955820435272	0.6554575846527901	0.7175176421751763	2000	fixed_original_subset_present_truth
+metastatic	shared	MethyDeep	Patient-balanced	848	803	11	Macro one-versus-rest AUC	0.9595984821513852	0.9493828064801229	0.9693102230734764	2000	fixed_original_subset_present_truth
+ffpe	minicpg_full	MiniCpG	specimen	3397	3210	16	Macro-F1	0.6415185907997544	0.616678251584535	0.6638123741788698	2000	fixed_original_subset_present_truth
+ffpe	minicpg_full	MiniCpG	specimen	3397	3210	16	Weighted-F1	0.8074295246006343	0.795151524471922	0.8183828670607415	2000	fixed_original_subset_present_truth
+ffpe	minicpg_full	MiniCpG	specimen	3397	3210	16	Balanced accuracy	0.6688260677111586	0.644732944694913	0.6928437994868765	2000	fixed_original_subset_present_truth
+ffpe	minicpg_full	MiniCpG	specimen	3397	3210	16	Accuracy	0.7771563143950545	0.7640657657045348	0.7895830669610256	2000	fixed_original_subset_present_truth
+ffpe	minicpg_full	MiniCpG	specimen	3397	3210	16	Macro one-versus-rest AUC	0.9706315144679248	0.9621553900653104	0.9780401167764836	2000	fixed_original_subset_present_truth
+ffpe	minicpg_full	MiniCpG	Patient-balanced	3397	3210	16	Macro-F1	0.6316287872571656	0.6053880400688073	0.6557577346198084	2000	fixed_original_subset_present_truth
+ffpe	minicpg_full	MiniCpG	Patient-balanced	3397	3210	16	Weighted-F1	0.7995415481731404	0.7868812020327056	0.8106621788228808	2000	fixed_original_subset_present_truth
+ffpe	minicpg_full	MiniCpG	Patient-balanced	3397	3210	16	Balanced accuracy	0.6675865334698248	0.6430619266159854	0.6916342521615095	2000	fixed_original_subset_present_truth
+ffpe	minicpg_full	MiniCpG	Patient-balanced	3397	3210	16	Accuracy	0.7695615028792598	0.7564847658831304	0.7816855234588879	2000	fixed_original_subset_present_truth
+ffpe	minicpg_full	MiniCpG	Patient-balanced	3397	3210	16	Macro one-versus-rest AUC	0.9706042557082049	0.9622259773753288	0.9779052197323708	2000	fixed_original_subset_present_truth
+ffpe	shared	MiniCpG	specimen	3276	3091	15	Macro-F1	0.676569292621728	0.6493826337551603	0.7010303896680494	2000	fixed_original_subset_present_truth
+ffpe	shared	MiniCpG	specimen	3276	3091	15	Weighted-F1	0.8154744265580192	0.803661074975826	0.8270769682052451	2000	fixed_original_subset_present_truth
+ffpe	shared	MiniCpG	specimen	3276	3091	15	Balanced accuracy	0.6647821388255603	0.6384035440496147	0.6910334107176601	2000	fixed_original_subset_present_truth
+ffpe	shared	MiniCpG	specimen	3276	3091	15	Accuracy	0.7802197802197802	0.7679824348008935	0.7935898444941063	2000	fixed_original_subset_present_truth
+ffpe	shared	MiniCpG	specimen	3276	3091	15	Macro one-versus-rest AUC	0.9745831095086304	0.9667823286587937	0.981041977962504	2000	fixed_original_subset_present_truth
+ffpe	shared	MiniCpG	Patient-balanced	3276	3091	15	Macro-F1	0.6654138125386481	0.6378014987603992	0.690803970028867	2000	fixed_original_subset_present_truth
+ffpe	shared	MiniCpG	Patient-balanced	3276	3091	15	Weighted-F1	0.8078338989002393	0.7958013198485905	0.8197440093157875	2000	fixed_original_subset_present_truth
+ffpe	shared	MiniCpG	Patient-balanced	3276	3091	15	Balanced accuracy	0.6632507643654701	0.6373697015828994	0.6900638296848781	2000	fixed_original_subset_present_truth
+ffpe	shared	MiniCpG	Patient-balanced	3276	3091	15	Accuracy	0.7726601178396713	0.7606432041214473	0.7858810647726046	2000	fixed_original_subset_present_truth
+ffpe	shared	MiniCpG	Patient-balanced	3276	3091	15	Macro one-versus-rest AUC	0.974461649729286	0.9669605079718901	0.980697946464518	2000	fixed_original_subset_present_truth
+ffpe	shared	MethyDeep	specimen	3276	3091	15	Macro-F1	0.6597767018543547	0.6317335652979544	0.6873749508300249	2000	fixed_original_subset_present_truth
+ffpe	shared	MethyDeep	specimen	3276	3091	15	Weighted-F1	0.7717942747683181	0.7586438837104846	0.7850771583381482	2000	fixed_original_subset_present_truth
+ffpe	shared	MethyDeep	specimen	3276	3091	15	Balanced accuracy	0.67230775099214	0.6419907845989041	0.7049203810632285	2000	fixed_original_subset_present_truth
+ffpe	shared	MethyDeep	specimen	3276	3091	15	Accuracy	0.7112332112332111	0.6971721772400001	0.7256394640682094	2000	fixed_original_subset_present_truth
+ffpe	shared	MethyDeep	specimen	3276	3091	15	Macro one-versus-rest AUC	0.9617665593842992	0.9546434368366992	0.968746477310738	2000	fixed_original_subset_present_truth
+ffpe	shared	MethyDeep	Patient-balanced	3276	3091	15	Macro-F1	0.629529298380527	0.600688833948173	0.6584103698410038	2000	fixed_original_subset_present_truth
+ffpe	shared	MethyDeep	Patient-balanced	3276	3091	15	Weighted-F1	0.7638765121790636	0.7505504600997953	0.7776132474415253	2000	fixed_original_subset_present_truth
+ffpe	shared	MethyDeep	Patient-balanced	3276	3091	15	Balanced accuracy	0.6717330235063914	0.6412664772123831	0.704555090268929	2000	fixed_original_subset_present_truth
+ffpe	shared	MethyDeep	Patient-balanced	3276	3091	15	Accuracy	0.7001705832181407	0.6860670764585357	0.714785962177583	2000	fixed_original_subset_present_truth
+ffpe	shared	MethyDeep	Patient-balanced	3276	3091	15	Macro one-versus-rest AUC	0.960732284075144	0.9536314248296072	0.9677762842048876	2000	fixed_original_subset_present_truth
+epic	minicpg_full	MiniCpG	specimen	3443	3214	18	Macro-F1	0.6301148996828742	0.6082763829427712	0.6516152700737528	2000	fixed_original_subset_present_truth
+epic	minicpg_full	MiniCpG	specimen	3443	3214	18	Weighted-F1	0.770600121284009	0.7569730677100897	0.7833596294021528	2000	fixed_original_subset_present_truth
+epic	minicpg_full	MiniCpG	specimen	3443	3214	18	Balanced accuracy	0.6456095278864125	0.6060422251473072	0.6854509052129368	2000	fixed_original_subset_present_truth
+epic	minicpg_full	MiniCpG	specimen	3443	3214	18	Accuracy	0.7307580598315422	0.7166989646878293	0.7441198511286371	2000	fixed_original_subset_present_truth
+epic	minicpg_full	MiniCpG	specimen	3443	3214	18	Macro one-versus-rest AUC	0.9507182431145372	0.9294622668280538	0.9719360576826898	2000	fixed_original_subset_present_truth
+epic	minicpg_full	MiniCpG	Patient-balanced	3443	3214	18	Macro-F1	0.6189396325232897	0.5958619137707581	0.6427660196785681	2000	fixed_original_subset_present_truth
+epic	minicpg_full	MiniCpG	Patient-balanced	3443	3214	18	Weighted-F1	0.7602259264345433	0.7460671090795931	0.7736908635234194	2000	fixed_original_subset_present_truth
+epic	minicpg_full	MiniCpG	Patient-balanced	3443	3214	18	Balanced accuracy	0.6445651474925516	0.6049751771271955	0.6847504892949648	2000	fixed_original_subset_present_truth
+epic	minicpg_full	MiniCpG	Patient-balanced	3443	3214	18	Accuracy	0.7209269106748883	0.7069324074597876	0.734400570735356	2000	fixed_original_subset_present_truth
+epic	minicpg_full	MiniCpG	Patient-balanced	3443	3214	18	Macro one-versus-rest AUC	0.949775806787049	0.928786013220347	0.9709474518806528	2000	fixed_original_subset_present_truth
+epic	shared	MiniCpG	specimen	3253	3047	16	Macro-F1	0.6511379810189178	0.634885402773433	0.6657988927568375	2000	fixed_original_subset_present_truth
+epic	shared	MiniCpG	specimen	3253	3047	16	Weighted-F1	0.7884465603174557	0.7756058760428948	0.8000326550845063	2000	fixed_original_subset_present_truth
+epic	shared	MiniCpG	specimen	3253	3047	16	Balanced accuracy	0.6416766866294048	0.624732077475824	0.6582265626802087	2000	fixed_original_subset_present_truth
+epic	shared	MiniCpG	specimen	3253	3047	16	Accuracy	0.7509990777743621	0.7373887916153277	0.7638073014034071	2000	fixed_original_subset_present_truth
+epic	shared	MiniCpG	specimen	3253	3047	16	Macro one-versus-rest AUC	0.9649960353247656	0.9520874718446732	0.9762683509991084	2000	fixed_original_subset_present_truth
+epic	shared	MiniCpG	Patient-balanced	3253	3047	16	Macro-F1	0.6393138621990082	0.621997457656877	0.6564857808288983	2000	fixed_original_subset_present_truth
+epic	shared	MiniCpG	Patient-balanced	3253	3047	16	Weighted-F1	0.7801301120155792	0.7661726831127688	0.792463292830568	2000	fixed_original_subset_present_truth
+epic	shared	MiniCpG	Patient-balanced	3253	3047	16	Balanced accuracy	0.6422410169307324	0.6247421237844718	0.6591070611659239	2000	fixed_original_subset_present_truth
+epic	shared	MiniCpG	Patient-balanced	3253	3047	16	Accuracy	0.7434847324574925	0.7303715154498712	0.7567102556579909	2000	fixed_original_subset_present_truth
+epic	shared	MiniCpG	Patient-balanced	3253	3047	16	Macro one-versus-rest AUC	0.9642921244205844	0.9514707081548464	0.9755625688776958	2000	fixed_original_subset_present_truth
+epic	shared	MethyDeep	specimen	3253	3047	16	Macro-F1	0.6543912391249495	0.6320812380940977	0.6746786174880137	2000	fixed_original_subset_present_truth
+epic	shared	MethyDeep	specimen	3253	3047	16	Weighted-F1	0.755142999396385	0.7407544339483856	0.7691954940231374	2000	fixed_original_subset_present_truth
+epic	shared	MethyDeep	specimen	3253	3047	16	Balanced accuracy	0.6864512768892731	0.6501204219743671	0.7214545692228205	2000	fixed_original_subset_present_truth
+epic	shared	MethyDeep	specimen	3253	3047	16	Accuracy	0.6849062403934829	0.6692259185048495	0.7004602327416842	2000	fixed_original_subset_present_truth
+epic	shared	MethyDeep	specimen	3253	3047	16	Macro one-versus-rest AUC	0.9603852790860992	0.9516057879561824	0.9685747078391622	2000	fixed_original_subset_present_truth
+epic	shared	MethyDeep	Patient-balanced	3253	3047	16	Macro-F1	0.635542096723406	0.6130592505036518	0.6577866231330431	2000	fixed_original_subset_present_truth
+epic	shared	MethyDeep	Patient-balanced	3253	3047	16	Weighted-F1	0.751637495794931	0.7374260383371624	0.7655240067873493	2000	fixed_original_subset_present_truth
+epic	shared	MethyDeep	Patient-balanced	3253	3047	16	Balanced accuracy	0.6883907656242627	0.6519677972249469	0.7235107855817587	2000	fixed_original_subset_present_truth
+epic	shared	MethyDeep	Patient-balanced	3253	3047	16	Accuracy	0.6814844847746062	0.6662722053272184	0.6965476492384105	2000	fixed_original_subset_present_truth
+epic	shared	MethyDeep	Patient-balanced	3253	3047	16	Macro one-versus-rest AUC	0.9607649274706274	0.952068377801178	0.96894723260753	2000	fixed_original_subset_present_truth

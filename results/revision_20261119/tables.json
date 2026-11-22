@@ -1,15 +1,33 @@
 [
   {
     "number": 1,
-    "title": "TCGA held-out test set performance",
+    "title": "Development performance of 30-CpG pipelines",
     "notes": [
-      "Performance is evaluated on 1,681 patients across 27 tumor classes. All five metrics use 2,000 bootstrap replicates.",
-      "Percentile confidence intervals use patient bootstrap resampling within true cancer class, preserving observed class counts and the fixed classifier and panel (Methods).",
-      "AUROC, area under the receiver operating characteristic curve; CI, confidence interval; TCGA, The Cancer Genome Atlas."
+      "Best configuration within each feature-selection and classifier combination, ranked by mean development macro-F1. These are the same configurations represented in the K = 30 column of Table 1. Each configuration was evaluated over 15 outer cross-validation folds. Values are mean ± standard deviation.",
+      "The selected MiniCpG configuration is ranked first (Rare-aware rank; Extra trees).",
+      "Each row reports the configuration with the highest mean macro-F1 within that selector–classifier combination; these are not averages across hyperparameter settings. Ranking uses unrounded values. Standard deviations describe variability across overlapping cross-validation folds and are not confidence intervals. These screening estimates were used for model selection and are not independent held-out validation results.",
+      "SVM, support vector machine; MI, mutual information; AUC/AUC, area under the receiver operating characteristic curve. Logistic regression was multinomial."
     ],
     "blocks": [
       {
         "file": "Table_S01_01.tsv",
+        "title": "Best configuration per selector and classifier",
+        "rows": 12,
+        "columns": 22
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "title": "TCGA held-out test set performance",
+    "notes": [
+      "Performance is evaluated on 1,681 patients across 27 tumor classes. All five metrics use 2,000 bootstrap replicates.",
+      "Percentile confidence intervals use patient bootstrap resampling within true cancer class, preserving observed class counts and the fixed classifier and panel (Methods).",
+      "AUC, area under the receiver operating characteristic curve; CI, confidence interval; TCGA, The Cancer Genome Atlas."
+    ],
+    "blocks": [
+      {
+        "file": "Table_S02_01.tsv",
         "title": "Aggregate performance",
         "rows": 5,
         "columns": 4
@@ -17,54 +35,54 @@
     ]
   },
   {
-    "number": 2,
+    "number": 3,
     "title": "External primary-tumor performance and matched original-prediction comparison",
     "notes": [
       "Primary matched macro-F1 uses the fixed 26-class shared axis (25 truth classes present).",
       "Original predictions are retained, including MiniCpG ESCA/STAD assignments. Full and matched subsets have different membership.",
       "Confidence intervals: 2,000 percentile bootstrap resamples of known patient groups, stratified by unit truth-class signature; unidentified specimens are separate units.",
       "Patient-balanced estimates give each patient unit equal total weight: each specimen receives the inverse of the number of that unit’s included specimens in the evaluated subset. Specimens without patient identifiers form separate units. Bootstrap draws multiply these fixed subset weights by the sampled unit multiplicity.",
-      "AUROC, area under the receiver operating characteristic curve; CI, confidence interval. Full-cohort macro-F1 uses the fixed model-class axis; matched macro-F1 uses the fixed shared axis."
+      "AUC, area under the receiver operating characteristic curve; CI, confidence interval. Full-cohort macro-F1 uses the fixed model-class axis; matched macro-F1 uses the fixed shared axis."
     ],
     "blocks": [
       {
-        "file": "Table_S02_01.tsv",
+        "file": "Table_S03_01.tsv",
         "title": "Matched original predictions",
         "rows": 5,
         "columns": 3
       },
       {
-        "file": "Table_S02_02.tsv",
+        "file": "Table_S03_02.tsv",
         "title": "Full cohort — MiniCpG (original predictions) — specimen weighting",
         "rows": 5,
         "columns": 4
       },
       {
-        "file": "Table_S02_03.tsv",
+        "file": "Table_S03_03.tsv",
         "title": "Full cohort — MiniCpG (original predictions) — Patient-balanced weighting",
         "rows": 5,
         "columns": 4
       },
       {
-        "file": "Table_S02_04.tsv",
+        "file": "Table_S03_04.tsv",
         "title": "Matched subset — MiniCpG (original predictions) — specimen weighting",
         "rows": 5,
         "columns": 4
       },
       {
-        "file": "Table_S02_05.tsv",
+        "file": "Table_S03_05.tsv",
         "title": "Matched subset — MethyDeep — specimen weighting",
         "rows": 5,
         "columns": 4
       },
       {
-        "file": "Table_S02_06.tsv",
+        "file": "Table_S03_06.tsv",
         "title": "Matched subset — MiniCpG (original predictions) — Patient-balanced weighting",
         "rows": 5,
         "columns": 4
       },
       {
-        "file": "Table_S02_07.tsv",
+        "file": "Table_S03_07.tsv",
         "title": "Matched subset — MethyDeep — Patient-balanced weighting",
         "rows": 5,
         "columns": 4
@@ -72,40 +90,43 @@
     ]
   },
   {
-    "number": 3,
+    "number": 4,
     "title": "Matched comparisons under original and reassigned predictions",
     "notes": [
       "Original MiniCpG predictions are principal. Runner-up changes only ESCA/STAD predictions to the highest-probability remaining class, without retraining or changing specimens.",
       "Both policies reuse identical bootstrap draws. Differences and confidence intervals are in percentage points (MiniCpG minus MethyDeep). Primary macro-F1 has a fixed 26-class axis; domains use represented truth classes.",
-      "AUROC is unchanged by output reassignment because probability scores are unchanged. Specimen-weighted results are principal; patient-balanced estimates are complementary.",
-      "Patient-balanced estimates give each patient unit equal total weight: each specimen receives the inverse of the number of that unit’s included specimens in the evaluated subset. Specimens without patient identifiers form separate units. Bootstrap draws multiply these fixed subset weights by the sampled unit multiplicity."
+      "AUC is unchanged by output reassignment because probability scores are unchanged. Specimen-weighted results are principal; patient-balanced estimates are complementary.",
+      "Patient-balanced estimates give each patient unit equal total weight: each specimen receives the inverse of the number of that unit’s included specimens in the evaluated subset. Specimens without patient identifiers form separate units. Bootstrap draws multiply these fixed subset weights by the sampled unit multiplicity.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S03_01.tsv",
+        "file": "Table_S04_01.tsv",
         "title": "Paired comparisons",
         "rows": 64,
         "columns": 11
       },
       {
-        "file": "Table_S03_02.tsv",
-        "title": "Unchanged AUROC",
+        "file": "Table_S04_02.tsv",
+        "title": "Unchanged AUC",
         "rows": 4,
         "columns": 10
       }
     ]
   },
   {
-    "number": 4,
+    "number": 5,
     "title": "Panel-size sensitivity comparing MiniCpG K20 with MethyDeep",
     "notes": [
       "Both classifiers used 3,496 matched primary-tumor samples across 25 represented classes. MiniCpG K20 uses 20 CpGs; MethyDeep uses 30. Differences are MiniCpG K20 minus MethyDeep and are reported in percentage points (pp); the source proportion differences equal pp/100.",
       "The K=20 model was evaluated only as a panel-size sensitivity analysis. Both classifiers were evaluated on identical matched samples with their original predictions unchanged. MiniCpG refers to the locked K=30 model, selected during development.",
-      "Paired confidence intervals use 2,000 bootstrap replicates. AUROC, area under the receiver operating characteristic curve; CI, confidence interval."
+      "Paired confidence intervals use 2,000 bootstrap replicates. AUC, area under the receiver operating characteristic curve; CI, confidence interval."
     ],
     "blocks": [
       {
-        "file": "Table_S04_01.tsv",
+        "file": "Table_S05_01.tsv",
         "title": "Matched original predictions",
         "rows": 5,
         "columns": 5
@@ -113,7 +134,7 @@
     ]
   },
   {
-    "number": 5,
+    "number": 6,
     "title": "Consensus and single-split panel performance",
     "notes": [
       "All 101 panels contain 30 CpGs; each was fitted using 10 matched classifier seeds and evaluated on the same 3,186 primary-tumor samples with at most 5 missing CpGs per panel.",
@@ -122,29 +143,33 @@
       "Confidence intervals use 2,000 paired bootstrap replicates of known patient groups, stratified by each group’s set of truth classes. Specimens without patient identifiers form separate units; resampling is identical across all panels and seeds.",
       "Selection-frequency association includes single-split panels only, using fixed development-derived frequencies. The bootstrap resamples evaluation samples, not panels. Panels share probes and are not independent biological replications.",
       "Selection frequency is the fraction of the original development folds selecting each CpG. Panel mean frequency averages these fractions across its 30 CpGs. Seed SD describes classifier randomness, not a confidence interval.",
-      "This post hoc analysis did not change the locked panel or classifier configuration. Intervals condition on the fitted models, fixed panels and evaluated cohort."
+      "This post hoc analysis did not change the locked panel or classifier configuration. Intervals condition on the fitted models, fixed panels and evaluated cohort.",
+      "Source: final eligibility refresh, 10 November 2026, fixed-panel ten-seed analysis.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S05_01.tsv",
+        "file": "Table_S06_01.tsv",
         "title": "Summary",
         "rows": 7,
         "columns": 5
       },
       {
-        "file": "Table_S05_02.tsv",
+        "file": "Table_S06_02.tsv",
         "title": "Classifier seeds",
         "rows": 10,
         "columns": 4
       },
       {
-        "file": "Table_S05_03.tsv",
+        "file": "Table_S06_03.tsv",
         "title": "Panel summaries",
         "rows": 101,
         "columns": 9
       },
       {
-        "file": "Table_S05_04.tsv",
+        "file": "Table_S06_04.tsv",
         "title": "Panel-seed metrics",
         "rows": 1010,
         "columns": 6
@@ -152,30 +177,55 @@
     ]
   },
   {
-    "number": 6,
+    "number": 7,
+    "title": "Sensitivity of methylation geometry associations",
+    "notes": [
+      "All prespecified configurations are reported. Primary estimates use mean profiles and fixed development-median imputation.",
+      "Recall decline is held-out minus external recall for both reference cohorts. Available-probe calculations use pair-specific measured dimensions, not a second fitted imputer.",
+      "Shift tests use nominal two-sided Spearman p-values. Similarity tests use whole-class-label permutations. Sensitivity ranges are not confidence intervals.",
+      "Source: frozen geometry-sensitivity outputs; Supplementary Methods SM5.",
+      "Available-probe calculations used 26–30 probes per class shift and 26–30 probes per class-pair distance. The imputed analyses used all 30 panel probes."
+    ],
+    "blocks": [
+      {
+        "file": "Table_S07_01.tsv",
+        "title": "Shift and recall",
+        "rows": 16,
+        "columns": 8
+      },
+      {
+        "file": "Table_S07_02.tsv",
+        "title": "Similarity and confusion",
+        "rows": 4,
+        "columns": 13
+      }
+    ]
+  },
+  {
+    "number": 8,
     "title": "Tumor purity and classification errors in the TCGA held-out test set",
     "notes": [],
     "blocks": [
       {
-        "file": "Table_S06_01.tsv",
+        "file": "Table_S08_01.tsv",
         "title": "Sample matching and analysis support",
         "rows": 9,
         "columns": 2
       },
       {
-        "file": "Table_S06_02.tsv",
+        "file": "Table_S08_02.tsv",
         "title": "Association and matching sensitivity",
         "rows": 2,
         "columns": 6
       },
       {
-        "file": "Table_S06_03.tsv",
+        "file": "Table_S08_03.tsv",
         "title": "Sample support by cancer type",
         "rows": 27,
         "columns": 7
       },
       {
-        "file": "Table_S06_04.tsv",
+        "file": "Table_S08_04.tsv",
         "title": "Sensitivity to individual cancer types",
         "rows": 18,
         "columns": 3
@@ -183,16 +233,19 @@
     ]
   },
   {
-    "number": 7,
+    "number": 9,
     "title": "Primary-tumor recognition by source study and class",
     "notes": [
       "Recall is the fraction of specimens of a true class correctly classified. Wilson intervals are descriptive 95% binomial intervals; specimens within a study may not be independent.",
       "All eligible source–class groups are included, including small groups. Patient-unit counts use available identifiers; unknown rows remain separate units. No minimum sample-size threshold was applied.",
-      "COAD/READ and ESCA/STAD denote the merged classifier classes. Source links point to public study records."
+      "COAD/READ and ESCA/STAD denote the merged classifier classes. Source links point to public study records.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S07_01.tsv",
+        "file": "Table_S09_01.tsv",
         "title": "Study-class recall",
         "rows": 79,
         "columns": 11
@@ -200,22 +253,25 @@
     ]
   },
   {
-    "number": 8,
+    "number": 10,
     "title": "Directed confusions and class-pair methylation similarity",
     "notes": [
       "Directed error rate = specimens assigned to the destination class / specimens of the true class in that source. Only observed directions are listed in the first block.",
       "Pooled pair confusion rate = (A assigned to B + B assigned to A) / (number of A + number of B). All pairs of externally represented classes are included in the second block.",
-      "Similarity = 1 − (distance − minimum distance) / (maximum distance − minimum distance), using all pairwise Euclidean distances between external class mean beta profiles, with frozen training-median imputation."
+      "Similarity = 1 − (distance − minimum distance) / (maximum distance − minimum distance), using all pairwise Euclidean distances between external class mean beta profiles, with frozen training-median imputation.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S08_01.tsv",
+        "file": "Table_S10_01.tsv",
         "title": "Directed confusions",
         "rows": 166,
         "columns": 7
       },
       {
-        "file": "Table_S08_02.tsv",
+        "file": "Table_S10_02.tsv",
         "title": "Class-pair similarity",
         "rows": 325,
         "columns": 11
@@ -223,7 +279,7 @@
     ]
   },
   {
-    "number": 9,
+    "number": 11,
     "title": "Within-class methylation dispersion in the TCGA development set",
     "notes": [
       "The class centroid is the mean beta vector across the MiniCpG probes. Each specimen’s dispersion is its Euclidean distance to its own class mean centroid.",
@@ -232,7 +288,7 @@
     ],
     "blocks": [
       {
-        "file": "Table_S09_01.tsv",
+        "file": "Table_S11_01.tsv",
         "title": "Development-class dispersion",
         "rows": 27,
         "columns": 8
@@ -240,7 +296,7 @@
     ]
   },
   {
-    "number": 10,
+    "number": 12,
     "title": "Aggregate sarcoma and uveal melanoma source annotations",
     "notes": [
       "Histological and reported methylation-cluster categories are source annotations, not new eligibility rules or proof of molecular-subtype coverage.",
@@ -250,19 +306,19 @@
     ],
     "blocks": [
       {
-        "file": "Table_S10_01.tsv",
+        "file": "Table_S12_01.tsv",
         "title": "TCGA sarcoma diagnoses",
         "rows": 11,
         "columns": 7
       },
       {
-        "file": "Table_S10_02.tsv",
+        "file": "Table_S12_02.tsv",
         "title": "External sarcoma diagnoses",
         "rows": 5,
         "columns": 7
       },
       {
-        "file": "Table_S10_03.tsv",
+        "file": "Table_S12_03.tsv",
         "title": "Uveal melanoma source categories",
         "rows": 18,
         "columns": 9
@@ -270,7 +326,7 @@
     ]
   },
   {
-    "number": 11,
+    "number": 13,
     "title": "Uveal melanoma–cutaneous melanoma study geometry and probe missingness",
     "notes": [
       "All full-panel distances are Euclidean distances between mean beta profiles using frozen training-median imputation. Dispersion is the median specimen distance to the relevant source/class mean centroid.",
@@ -279,19 +335,19 @@
     ],
     "blocks": [
       {
-        "file": "Table_S11_01.tsv",
+        "file": "Table_S13_01.tsv",
         "title": "Full-panel geometry",
         "rows": 7,
         "columns": 10
       },
       {
-        "file": "Table_S11_02.tsv",
+        "file": "Table_S13_02.tsv",
         "title": "Missing probe measurements",
         "rows": 6,
         "columns": 8
       },
       {
-        "file": "Table_S11_03.tsv",
+        "file": "Table_S13_03.tsv",
         "title": "Observed-dimension diagnostics",
         "rows": 3,
         "columns": 9
@@ -299,35 +355,39 @@
     ]
   },
   {
-    "number": 12,
+    "number": 14,
     "title": "External study sources, eligibility and cohort coverage",
     "notes": [
       "Counts summarize the curated external inventory. Cohorts overlap; totals must not be added as independent specimens.",
       "Primary eligibility is fixed separately. Metastatic, FFPE and EPIC eligibility is assessed independently using the rules in Methods.",
       "Evaluated counts additionally require adopted beta availability and model-specific panel coverage. Shared comparisons require reference labels supported by both models.",
-      "Study characteristics summarize the source inventory and do not imply identical preservation, platform or processing for every specimen. No individual identifiers or linked annotations are included."
+      "Study characteristics summarize the source inventory and do not imply identical preservation, platform or processing for every specimen. No individual identifiers or linked annotations are included.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis.",
+      "Pending denotes records whose eligibility for the specified cohort had not been established in the frozen evaluation inventory, including unresolved diagnosis or specimen characteristics and unadopted platform extensions. These records were not included in that cohort’s reported evaluation."
     ],
     "blocks": [
       {
-        "file": "Table_S12_01.tsv",
+        "file": "Table_S14_01.tsv",
         "title": "Cohort coverage",
         "rows": 4,
         "columns": 8
       },
       {
-        "file": "Table_S12_02.tsv",
+        "file": "Table_S14_02.tsv",
         "title": "Study eligibility",
         "rows": 736,
         "columns": 9
       },
       {
-        "file": "Table_S12_03.tsv",
+        "file": "Table_S14_03.tsv",
         "title": "Study characteristics",
         "rows": 184,
         "columns": 5
       },
       {
-        "file": "Table_S12_04.tsv",
+        "file": "Table_S14_04.tsv",
         "title": "Membership combinations",
         "rows": 16,
         "columns": 3
@@ -335,17 +395,20 @@
     ]
   },
   {
-    "number": 13,
+    "number": 15,
     "title": "Expanded-cohort original-prediction performance",
     "notes": [
       "Primary matched macro-F1 uses the fixed 26-class shared axis (25 truth classes present). Expanded-domain macro-F1 uses the truth classes present in each evaluated subset.",
       "Original predictions are retained, including MiniCpG ESCA/STAD assignments. Full and matched subsets have different membership. Expanded cohorts overlap.",
       "Confidence intervals: 2,000 percentile bootstrap resamples of known patient groups, stratified by unit truth-class signature; unidentified specimens are separate units.",
-      "Patient-balanced estimates give each patient unit equal total weight: each specimen receives the inverse of the number of that unit’s included specimens in the evaluated subset. Specimens without patient identifiers form separate units. Bootstrap draws multiply these fixed subset weights by the sampled unit multiplicity."
+      "Patient-balanced estimates give each patient unit equal total weight: each specimen receives the inverse of the number of that unit’s included specimens in the evaluated subset. Specimens without patient identifiers form separate units. Bootstrap draws multiply these fixed subset weights by the sampled unit multiplicity.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S13_01.tsv",
+        "file": "Table_S15_01.tsv",
         "title": "Performance and uncertainty",
         "rows": 90,
         "columns": 13
@@ -353,41 +416,44 @@
     ]
   },
   {
-    "number": 14,
+    "number": 16,
     "title": "Class- and study-level performance and cohort overlap",
     "notes": [
       "Original MiniCpG predictions. Cohort-specific summaries retain each cohort membership; Fig. 5B summaries count each specimen once across the three expanded cohorts.",
       "Mixed denotes a study–class group containing more than one membership combination. Study consistency is descriptive; small groups have considerable uncertainty.",
       "Overlap and independent-evidence counts prevent shared specimens from being interpreted as independent replication. Primary results are retained as context.",
-      "Recall intervals are descriptive 95% Wilson binomial intervals based on specimen counts. They do not account for within-patient or within-study dependence; patient-unit and unknown-identity counts expose available support. Overlapping cohorts are not independent."
+      "Recall intervals are descriptive 95% Wilson binomial intervals based on specimen counts. They do not account for within-patient or within-study dependence; patient-unit and unknown-identity counts expose available support. Overlapping cohorts are not independent.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S14_01.tsv",
+        "file": "Table_S16_01.tsv",
         "title": "Class performance",
         "rows": 72,
         "columns": 23
       },
       {
-        "file": "Table_S14_02.tsv",
+        "file": "Table_S16_02.tsv",
         "title": "Study-class recognition",
         "rows": 216,
         "columns": 15
       },
       {
-        "file": "Table_S14_03.tsv",
+        "file": "Table_S16_03.tsv",
         "title": "Unique study-class groups",
         "rows": 79,
         "columns": 15
       },
       {
-        "file": "Table_S14_04.tsv",
+        "file": "Table_S16_04.tsv",
         "title": "Class overlap",
         "rows": 156,
         "columns": 8
       },
       {
-        "file": "Table_S14_05.tsv",
+        "file": "Table_S16_05.tsv",
         "title": "Independent evidence",
         "rows": 26,
         "columns": 8
@@ -395,46 +461,49 @@
     ]
   },
   {
-    "number": 15,
+    "number": 17,
     "title": "Controlled clinical and input-processing comparisons",
     "notes": [
       "Clinical differences: lymph node minus primary, equally weighted by patient. Processing differences: alternative minus evaluated author-supplied workflow, equally weighted by paired specimen.",
       "Fig. 5E reverses the GSE144487 export comparison to display normalized minus non-normalized; source-direction and plotted-direction estimates are both retained below.",
-      "Intervals use 20,000 paired bootstrap draws. Small or zero changes do not establish equivalence; conservative bounds are provided when empirical intervals are unstable or degenerate."
+      "Intervals use 20,000 paired bootstrap draws. Small or zero changes do not establish equivalence; conservative bounds are provided when empirical intervals are unstable or degenerate.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S15_01.tsv",
+        "file": "Table_S17_01.tsv",
         "title": "Paired accuracy",
-        "rows": 15,
+        "rows": 9,
         "columns": 17
       },
       {
-        "file": "Table_S15_02.tsv",
+        "file": "Table_S17_02.tsv",
         "title": "Additional uncertainty",
-        "rows": 15,
+        "rows": 9,
         "columns": 17
       },
       {
-        "file": "Table_S15_03.tsv",
+        "file": "Table_S17_03.tsv",
         "title": "Coverage",
-        "rows": 12,
-        "columns": 11
+        "rows": 9,
+        "columns": 9
       },
       {
-        "file": "Table_S15_04.tsv",
+        "file": "Table_S17_04.tsv",
         "title": "Clinical plotted estimates",
         "rows": 3,
         "columns": 21
       },
       {
-        "file": "Table_S15_05.tsv",
+        "file": "Table_S17_05.tsv",
         "title": "Processing plotted estimates",
         "rows": 6,
         "columns": 21
       },
       {
-        "file": "Table_S15_06.tsv",
+        "file": "Table_S17_06.tsv",
         "title": "Study interpretation",
         "rows": 8,
         "columns": 6
@@ -442,17 +511,20 @@
     ]
   },
   {
-    "number": 16,
+    "number": 18,
     "title": "Genomic annotation of the MiniCpG consensus panel",
     "notes": [
       "GRCh38/hg38 coordinates follow the source manifest: start is 0-based and end is exclusive (the corresponding 1-based final base). Each interval spans the two-base CpG dinucleotide.",
       "Unique genes are listed in full. Transcript-associated gene entries may repeat; their signed distances to transcription start sites (TSS), in base pairs, correspond positionally to the next column.",
       "CGI denotes CpG island. The CGI identifier and island/shore/shelf context are retained from the manifest; open sea indicates no annotated island context. NA denotes an unavailable annotation.",
-      "Source: NCI GDC HM450.hg38.manifest.gencode.v36.tsv; https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files. Coordinate definitions: https://zwdzwd.github.io/InfiniumAnnotation/manifest.html."
+      "Source: NCI GDC HM450.hg38.manifest.gencode.v36.tsv; https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files. Coordinate definitions: https://zwdzwd.github.io/InfiniumAnnotation/manifest.html.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S16_01.tsv",
+        "file": "Table_S18_01.tsv",
         "title": "Probe annotations",
         "rows": 30,
         "columns": 10
@@ -460,14 +532,17 @@
     ]
   },
   {
-    "number": 17,
+    "number": 19,
     "title": "Tumor–normal methylation shifts for MiniCpG probes",
     "notes": [
-      "Development and held-out tumor summaries use the corresponding tumor subsets. Normal-reference means/medians can recur across subsets. Beta differences are tumor minus normal; values are unitless."
+      "Development and held-out tumor summaries use the corresponding tumor subsets. Normal-reference means/medians can recur across subsets. Beta differences are tumor minus normal; values are unitless.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S17_01.tsv",
+        "file": "Table_S19_01.tsv",
         "title": "Tumor-normal shifts",
         "rows": 600,
         "columns": 22
@@ -475,30 +550,30 @@
     ]
   },
   {
-    "number": 18,
+    "number": 20,
     "title": "Tumor-versus-normal-adjacent signal-check performance",
     "notes": [
-      "95% confidence intervals use 20,000 patient-cluster bootstrap resamples, stratified by TCGA project and available specimen types. Matched tumor/normal specimens remain together; models and thresholds are fixed. AUROC and AUPRC are threshold-independent. These results concern normal-adjacent tissue, not healthy or benign-disease screening specificity.",
-      "AUROC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. TP/FP/TN/FN denote true positive, false positive, true negative and false negative classifications. Performance and confidence limits are proportions; the decision threshold is on the model-specific score scale.",
+      "95% confidence intervals use 20,000 patient-cluster bootstrap resamples, stratified by TCGA project and available specimen types. Matched tumor/normal specimens remain together; models and thresholds are fixed. AUC and AUPRC are threshold-independent. These results concern normal-adjacent tissue, not healthy or benign-disease screening specificity.",
+      "AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. TP/FP/TN/FN denote true positive, false positive, true negative and false negative classifications. Performance and confidence limits are proportions; the decision threshold is on the model-specific score scale.",
       "Training samples: 4,899 tumors and 543 normal-adjacent specimens. Held-out samples: 1,217 tumors and 170 normal-adjacent specimens across 14 represented TCGA classes. Threshold selection repeats: 200.",
       "Thresholds use repeated calibration at each target sensitivity and the median threshold across repeats; rules and exact settings are given in Supplementary Methods SM6.",
       "Secondary TCGA tumor versus normal-adjacent signal check using the locked 30-CpG panel; not healthy no-cancer or benign-disease specificity."
     ],
     "blocks": [
       {
-        "file": "Table_S18_01.tsv",
+        "file": "Table_S20_01.tsv",
         "title": "Discrimination and calibrated threshold",
         "rows": 6,
         "columns": 5
       },
       {
-        "file": "Table_S18_02.tsv",
+        "file": "Table_S20_02.tsv",
         "title": "Held-out classification outcomes",
         "rows": 6,
         "columns": 6
       },
       {
-        "file": "Table_S18_03.tsv",
+        "file": "Table_S20_03.tsv",
         "title": "Threshold-dependent performance",
         "rows": 6,
         "columns": 5
@@ -506,15 +581,18 @@
     ]
   },
   {
-    "number": 19,
+    "number": 21,
     "title": "Continuous probe-level biological scores and supporting measurements",
     "notes": [
       "Lineage, tumor–normal shift and tumor-composition scores are complementary continuous summaries. They do not assign mutually exclusive biological categories or establish mechanisms.",
-      "Percentiles and scores are on a 0–1 scale. The normal–tumor lineage correlation uses pooled TCGA development set and held-out class medians, as specified in Methods."
+      "Percentiles and scores are on a 0–1 scale. The normal–tumor lineage correlation uses pooled TCGA development set and held-out class medians, as specified in Methods.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S19_01.tsv",
+        "file": "Table_S21_01.tsv",
         "title": "Biological scores",
         "rows": 30,
         "columns": 21
@@ -522,7 +600,7 @@
     ]
   },
   {
-    "number": 20,
+    "number": 22,
     "title": "Paired tumor and normal-adjacent substitution outcomes",
     "notes": [
       "The same 147 patient pairs and cancer labels were evaluated in both conditions with the locked MiniCpG classifier and CpG panel.",
@@ -532,19 +610,19 @@
     ],
     "blocks": [
       {
-        "file": "Table_S20_01.tsv",
+        "file": "Table_S22_01.tsv",
         "title": "Overall performance",
         "rows": 3,
         "columns": 7
       },
       {
-        "file": "Table_S20_02.tsv",
+        "file": "Table_S22_02.tsv",
         "title": "Paired outcomes by cancer type",
         "rows": 15,
         "columns": 8
       },
       {
-        "file": "Table_S20_03.tsv",
+        "file": "Table_S22_03.tsv",
         "title": "Aggregate prediction destinations",
         "rows": 44,
         "columns": 4
@@ -552,15 +630,18 @@
     ]
   },
   {
-    "number": 21,
+    "number": 23,
     "title": "Within-class purity and immune association summaries",
     "notes": [
       "Spearman ρ and absolute ρ are reported without causal interpretation. Composition breadth counts associations meeting the displayed absolute-correlation threshold and minimum sample count. Project-specific and class-centered summaries are separate analyses.",
-      "Class-centered correlations subtract within-project means from methylation and covariates before pooled Spearman correlation. They differ from within-project composition-score correlations. Descriptive category labels follow the thresholds and sequential rules in Supplementary Methods SM6; they do not establish causal categories."
+      "Class-centered correlations subtract within-project means from methylation and covariates before pooled Spearman correlation. They differ from within-project composition-score correlations. Descriptive category labels follow the thresholds and sequential rules in Supplementary Methods SM6; they do not establish causal categories.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S21_01.tsv",
+        "file": "Table_S23_01.tsv",
         "title": "Composition summaries",
         "rows": 30,
         "columns": 22
@@ -568,63 +649,69 @@
     ]
   },
   {
-    "number": 22,
+    "number": 24,
     "title": "Methylation–expression associations and transcriptome ranks",
     "notes": [
       "Project-matched specimens count the project-level methylation–expression overlap. Specimens used in correlation exclude missing beta values for that CpG; this is the sample size for the reported Spearman test.",
       "Benjamini–Hochberg (BH) q-values are calculated separately for each CpG × TCGA project across all tested genes, before selecting the annotated gene associations shown here.",
       "Transcriptome ranks and percentiles compare absolute Spearman ρ with all tested genes for the same CpG and project. These ranks are distinct from the Spearman p-value and its BH correction.",
-      "The current panel contributes 23 annotated probes. Genes without usable expression in a project are absent; remaining panel probes have no linked gene annotation."
+      "The current panel contributes 23 annotated probes. Genes without usable expression in a project are absent; remaining panel probes have no linked gene annotation.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S22_01.tsv",
+        "file": "Table_S24_01.tsv",
         "title": "Expression associations",
-        "rows": 849,
+        "rows": 944,
         "columns": 16
       }
     ]
   },
   {
-    "number": 23,
-    "title": "Exploratory cfDNA-native compact-panel analysis",
+    "number": 25,
+    "title": "Exploratory cfDNA-specific compact-panel analysis",
     "notes": [
       "SDs and repeat ranges describe variation across evaluated splits; they are not confidence intervals because training sets overlap and specimens recur across repeats. Subtype metrics condition on cancers passing the detection gate.",
-      "Cancer-type confusion cells are row percentages."
+      "Cancer-type confusion cells are row percentages.",
+      "Abbreviations: CI, confidence interval; SD, standard deviation; TCGA, The Cancer Genome Atlas; FFPE, formalin-fixed paraffin-embedded; EPIC, Infinium MethylationEPIC array; HM450, HumanMethylation450 array; AUC, area under the receiver operating characteristic curve; AUPRC, area under the precision–recall curve. NA indicates unavailable or not applicable, never zero.",
+      "Cancer-class abbreviations: ACC, adrenocortical carcinoma; BLCA, bladder urothelial carcinoma; BRCA, breast invasive carcinoma; CESC, cervical squamous cell carcinoma and endocervical adenocarcinoma; COAD/READ, colon/rectum adenocarcinoma; ESCA/STAD, esophageal/stomach carcinoma; GBM/LGG, glioblastoma/lower-grade glioma; HNSC, head and neck squamous cell carcinoma; KICH, kidney chromophobe; KIRC, kidney renal clear cell carcinoma; KIRP, kidney renal papillary cell carcinoma; LAML, acute myeloid leukemia; LIHC, liver hepatocellular carcinoma; LUAD, lung adenocarcinoma; LUSC, lung squamous cell carcinoma.",
+      "Cancer-class abbreviations (continued): MESO, mesothelioma; PAAD, pancreatic adenocarcinoma; PCPG, pheochromocytoma and paraganglioma; PRAD, prostate adenocarcinoma; SARC, sarcoma; SKCM, skin cutaneous melanoma; TGCT, testicular germ cell tumors; THCA, thyroid carcinoma; THYM, thymoma; UCEC, uterine corpus endometrial carcinoma; UCS, uterine carcinosarcoma; UVM, uveal melanoma. TCGA project codes in expression analyses remain project-specific. CRC denotes colorectal cancer and GASTRIC denotes gastric cancer in the separate cfDNA analysis."
     ],
     "blocks": [
       {
-        "file": "Table_S23_01.tsv",
+        "file": "Table_S25_01.tsv",
         "title": "Analysis setup",
         "rows": 8,
         "columns": 2
       },
       {
-        "file": "Table_S23_02.tsv",
+        "file": "Table_S25_02.tsv",
         "title": "Class counts",
         "rows": 6,
         "columns": 2
       },
       {
-        "file": "Table_S23_03.tsv",
+        "file": "Table_S25_03.tsv",
         "title": "Headline metrics",
         "rows": 4,
         "columns": 5
       },
       {
-        "file": "Table_S23_05.tsv",
+        "file": "Table_S25_04.tsv",
         "title": "Cancer-type metrics",
         "rows": 5,
         "columns": 6
       },
       {
-        "file": "Table_S23_06.tsv",
+        "file": "Table_S25_05.tsv",
         "title": "Cancer-type confusion",
         "rows": 5,
         "columns": 6
       },
       {
-        "file": "Table_S23_08.tsv",
+        "file": "Table_S25_06.tsv",
         "title": "Repeat performance",
         "rows": 20,
         "columns": 4
@@ -632,44 +719,7 @@
     ]
   },
   {
-    "number": 24,
-    "title": "Estimated cost and turnaround of a proposed targeted MiniCpG assay",
-    "notes": [],
-    "blocks": [
-      {
-        "file": "Table_S24_01.tsv",
-        "title": "Component costs: reagents and quality control",
-        "rows": 11,
-        "columns": 4
-      },
-      {
-        "file": "Table_S24_02.tsv",
-        "title": "Batch and per-patient operating costs",
-        "rows": 11,
-        "columns": 4
-      },
-      {
-        "file": "Table_S24_03.tsv",
-        "title": "Batch size and operational scenarios",
-        "rows": 10,
-        "columns": 5
-      },
-      {
-        "file": "Table_S24_04.tsv",
-        "title": "Stage-level time estimates",
-        "rows": 8,
-        "columns": 3
-      },
-      {
-        "file": "Table_S24_05.tsv",
-        "title": "Turnaround estimates under the assumed schedule",
-        "rows": 3,
-        "columns": 3
-      }
-    ]
-  },
-  {
-    "number": 25,
+    "number": 26,
     "title": "Age representation across development and evaluation cohorts",
     "notes": [
       "Paediatric: below 18 years; adult: at least 18 years. Unknown denotes absent or uninterpretable age metadata. Cohorts overlap.",
@@ -677,10 +727,47 @@
     ],
     "blocks": [
       {
-        "file": "Table_S25_01.tsv",
+        "file": "Table_S26_01.tsv",
         "title": "Age representation",
         "rows": 6,
         "columns": 5
+      }
+    ]
+  },
+  {
+    "number": 27,
+    "title": "Estimated cost and turnaround of a proposed targeted MiniCpG assay",
+    "notes": [],
+    "blocks": [
+      {
+        "file": "Table_S27_01.tsv",
+        "title": "Component costs: reagents and quality control",
+        "rows": 11,
+        "columns": 4
+      },
+      {
+        "file": "Table_S27_02.tsv",
+        "title": "Batch and per-patient operating costs",
+        "rows": 11,
+        "columns": 4
+      },
+      {
+        "file": "Table_S27_03.tsv",
+        "title": "Batch size and operational scenarios",
+        "rows": 10,
+        "columns": 5
+      },
+      {
+        "file": "Table_S27_04.tsv",
+        "title": "Stage-level time estimates",
+        "rows": 8,
+        "columns": 3
+      },
+      {
+        "file": "Table_S27_05.tsv",
+        "title": "Turnaround estimates under the assumed schedule",
+        "rows": 3,
+        "columns": 3
       }
     ]
   }

@@ -14,7 +14,7 @@ The saved tissue model is included. The 20-CpG sensitivity model and the separat
 
 ```bash
 uv sync --locked --extra analysis
-uv run --locked pytest
+uv run --locked --extra analysis pytest
 uv run --locked python scripts/verify_model_artifacts.py
 ```
 

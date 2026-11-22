@@ -20,7 +20,7 @@ Primary–regional-lymph-node comparisons use samples from the same patients. Au
 
 ## Metrics and uncertainty
 
-Primary macro-F1 uses the fixed modeled class axis, including absent-reference classes with zero F1. Matched comparisons use their specified shared axis. Expanded-domain metrics use the classes represented in the original evaluated subset. All prediction columns are retained, including outputs without reference specimens. AUROC availability is reported when a reference class lacks probability support.
+Primary macro-F1 uses the fixed modeled class axis, including absent-reference classes with zero F1. Matched comparisons use their specified shared axis. Expanded-domain metrics use the classes represented in the original evaluated subset. All prediction columns are retained, including outputs without reference specimens. AUC availability is reported when a reference class lacks probability support.
 
 Patient-balanced point estimates weight each specimen by the inverse of its patient's specimen count within the subset. Bootstrap uncertainty instead resamples patient groups; paired model comparisons use the same draws. The configurations preserve each analysis's resampling units, strata, seeds and replicate counts.
 

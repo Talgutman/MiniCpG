@@ -1,7 +1,0 @@
-Classifier	Target sensitivity	Held-out true positives (n)	Held-out false positives (n)	Held-out true negatives (n)	Held-out false negatives (n)
-L2 logistic regression (balanced)	0.95	1158	78	92	59
-Extra Trees (balanced)	0.95	1139	6	164	78
-Centroid distance	0.95	1149	126	44	68
-L2 logistic regression (balanced)	0.99	1206	151	19	11
-Extra Trees (balanced)	0.99	1200	26	144	17
-Centroid distance	0.99	1204	142	28	13

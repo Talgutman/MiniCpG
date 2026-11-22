@@ -1,6 +1,6 @@
 [project]
 name = "minicpg"
-version = "0.2.0.dev0"
+version = "0.2.0"
 description = "Compact DNA methylation classifier for cancer type"
 readme = "README.md"
 requires-python = ">=3.11,<3.13"

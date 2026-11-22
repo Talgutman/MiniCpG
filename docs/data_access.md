@@ -10,11 +10,11 @@ Reproducing the paper's analyses requires the study measurements and curated met
 | External tissue evaluation | GEO/ArrayExpress measurements, verified tumor labels, specimen characteristics, source-availability records and patient identifiers where available |
 | Purity and biological context | Specimen-linked ABSOLUTE purity/covariates, normal-tissue references, HM450 annotation, SCREEN regulatory intervals and RNA-seq inputs as required by the chosen analysis |
 | MethyDeep comparison | Published MethyDeep model, feature/class files and measurements for its probe panel |
-| Native cell-free DNA | cfMethDB processed sequencing measurements, feature coordinates, specimen labels and stage annotations |
+| Exploratory cell-free DNA | cfMethDB processed sequencing measurements, feature coordinates, specimen labels and stage annotations |
 
 ## Identify the study sources
 
-[Supplementary Table S12](../results/revision_20261119/README.md#table-index) provides the external study/accession information. Obtain measurements and metadata from their original sources under the applicable terms. The accession table describes studies; it does not contain the specimen membership needed to reproduce an evaluation.
+[Supplementary Table S14](../results/revision_20261119/README.md) provides the external study/accession information. Obtain measurements and metadata from their original sources under the applicable terms. The accession table describes studies. The [external-validation manifest](../data/external_validation_manifest/README.txt) supplies study-qualified public accessions, harmonized classes, cohort eligibility and model-evaluation membership for the frozen evaluation scope. Its data dictionary explains how to reconstruct the evaluated and shared comparison subsets. It excludes molecular measurements, clinical prose and individual prediction outputs.
 
 For each dataset, retain the source versions and file hashes, verify the diagnoses and specimen identities, and apply the paper's eligibility rules before inference. Patient identities must preserve development/test separation and the resampling groups. The [workflow recipes](workflows.md) specify the table columns and configurations for each analysis.
 

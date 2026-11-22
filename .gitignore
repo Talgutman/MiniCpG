@@ -9,7 +9,13 @@ venv/
 
 # Local data and user-generated outputs should not be committed.
 local_data/
-data/
+/data/*
+!/data/external_validation_manifest/
+/data/external_validation_manifest/*
+!/data/external_validation_manifest/README.txt
+!/data/external_validation_manifest/data_dictionary.json
+!/data/external_validation_manifest/external_samples.tsv
+!/data/external_validation_manifest/source_studies.tsv
 work/
 tmp/
 outputs/

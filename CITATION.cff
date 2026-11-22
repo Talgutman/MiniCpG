@@ -6,7 +6,8 @@ authors:
     given-names: "Tal"
   - family-names: "Tuller"
     given-names: "Tamir"
-version: "0.2.0.dev0"
+version: "0.2.0"
+date-released: "2026-11-23"
 license: "LicenseRef-MiniCpG-Academic-NonCommercial"
 repository-code: "https://github.com/Talgutman/MiniCpG"
 keywords:

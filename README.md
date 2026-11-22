@@ -2,7 +2,7 @@
 
 MiniCpG classifies tumor tissue using a compact panel of 30 DNA methylation probes. The trained model predicts 27 tumor classes using an ExtraTrees classifier and imputation fitted on the development data.
 
-This repository accompanies “MiniCpG: Broad Validation and Characterization of a 30-CpG Cancer Classifier” and provides the trained model, analysis code and aggregate supplementary results. The current code version is `0.2.0.dev0`.
+This repository accompanies “MiniCpG: Broad Validation and Characterization of a 30-CpG Cancer Classifier” and provides the trained model, analysis code and aggregate supplementary results. The current code version is `0.2.0`.
 
 | I want to… | Start here |
 |---|---|
@@ -49,7 +49,7 @@ The model is included in the repository and source distribution. A Python-wheel 
 
 The [reproduction guide](docs/reproduction_workflow.md) explains how to choose an analysis, prepare its inputs and run it. The [workflow recipes](docs/workflows.md) contain commands and configuration requirements; the [command reference](docs/cli_reference.md) lists script arguments.
 
-[Supplementary results](results/revision_20261119/README.md) cover Tables S1–S25 as 71 aggregate TSV blocks. Study-level measurements, clinical metadata and specimen-level predictions are obtained separately; see [data access](docs/data_access.md). The [reproduction requirements](docs/reproduction_requirements.md) explain the data and software needed for these workflows.
+[Supplementary results](results/revision_20261119/README.md) cover Tables S1–S27 as 71 aggregate TSV blocks. The [external-validation manifest](data/external_validation_manifest/README.txt) records the public accessions and cohort/evaluation membership. Measurements and clinical metadata must be obtained from the source repositories; specimen-level predictions are generated locally. See [data access](docs/data_access.md). The [reproduction requirements](docs/reproduction_requirements.md) explain the data and software needed for these workflows.
 
 ## Citation and license
 

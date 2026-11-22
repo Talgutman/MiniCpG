@@ -1,8 +1,6 @@
-Summary statistic	Estimate	95% CI lower	95% CI upper	Unit
-Consensus mean macro-F1	0.7137277760312845			Proportion
-Single-split-panel mean macro-F1	0.7095119115732961			Proportion
-Consensus minus single-split mean	0.4215864457988383	-0.5918062343095012	1.3098391879510891	Percentage points
-Selection-frequency association	0.13741497823819387	0.045270134446488315	0.24564397520324685	Spearman rho
-Consensus rank	37			Among 101 panels
-Seeds above single-split mean	8			Of 10 seeds
-Consensus minus lowest-performing single-split panel	4.9114122418903445			Percentage points
+Metric	MiniCpG K20	MethyDeep	Difference (pp)	95% CI (pp)
+Macro-F1	0.6959859945815554	0.7067890980517618	-1.0803103470206399	-3.6599 to 0.9875
+Weighted-F1	0.8333713430591951	0.8017775720325857	3.1593771026609403	1.8220 to 4.4376
+Balanced accuracy	0.7538006166232885	0.782366134482001	-2.85655178587125	-5.4162 to -0.3275
+Accuracy	0.8103546910755148	0.7886155606407322	2.17391304347825	0.7155 to 3.5980
+Macro one-versus-rest AUC	0.974088487528156	0.975265200184402	-0.11767126562458	-0.7433 to 0.4187

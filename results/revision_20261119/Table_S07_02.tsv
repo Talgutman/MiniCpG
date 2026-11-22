@@ -1,0 +1,5 @@
+Rho	P	Exceedances	Permutations	Seed	Mc tail lower	Mc tail upper	Configuration	Profile	Missingness	N pairs	Minimum n probes	Maximum n probes
+0.4219031876603275	1e-06	0	999999	20261113	0	3.688876339076023e-06	mean_imputed	mean	imputed	325	30	30
+0.412826623490203	1e-06	0	999999	20261113	0	3.688876339076023e-06	mean_omit	mean	omit	325	26	30
+0.3860374112998503	1e-06	0	999999	20261113	0	3.688876339076023e-06	median_imputed	median	imputed	325	30	30
+0.3784708270146453	1e-06	0	999999	20261113	0	3.688876339076023e-06	median_omit	median	omit	325	26	30

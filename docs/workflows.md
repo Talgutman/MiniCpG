@@ -8,16 +8,16 @@ The saved model is sufficient for prediction. Reproducing analyses requires the 
 
 | Paper analysis | Methods and reported outputs | Recipe |
 |---|---|---|
-| Development, consensus selection and 20-CpG sensitivity | SM2; Fig. 2; Fig. S1; Tables S1, S4 | [Development](#development-and-reduced-panel-sensitivity) |
-| Primary external validation and MethyDeep | SM1–SM3; Fig. 3; Tables S2–S3, S12 | [External evaluation](#primary-external-validation-and-methydeep) |
-| Consensus versus single-split panels | SM2–SM3; Fig. S5; Table S5 | [Panel comparison](#consensus-versus-single-split-panels) |
-| Methylation shift, confusion, purity and study-specific errors | SM5; Fig. 4; Figs. S6–S7; Tables S6–S11 | [Error analyses](#error-patterns-geometry-and-purity) |
-| Metastatic, FFPE and EPIC cohorts; paired clinical/processing comparisons | SM1, SM3–SM4; Fig. 5; Tables S3, S12–S15 | [Additional cohorts](#expanded-domains-and-paired-conditions) |
-| Genomic context, biological scores, normal-adjacent analyses, expression and attribution | SM6; Fig. 6; Figs. S8–S11; Tables S16–S22 | [Biological context](#genomic-and-biological-context) |
-| Exploratory cfDNA-specific models | SM7; Fig. 7; Table S23 | [Cell-free DNA](#native-cell-free-dna) |
-| Cost and turnaround assumptions | SM8; Table S24 | [Assay estimate](#assay-cost-and-turnaround) |
-| Age representation | SM1; Table S25 | [Age summaries](#age-representation) |
-| Sample and probe principal components | Figs. S2–S3 | [PCA](#sample-and-probe-pca) |
+| Development, consensus selection and 20-CpG sensitivity | SM2; Fig. 2; Fig. S1; Tables S1–S2, S5 | [Development](#development-and-reduced-panel-sensitivity) |
+| Primary external validation and MethyDeep | SM1–SM3; Fig. 3; Tables S3–S4, S14 | [External evaluation](#primary-external-validation-and-methydeep) |
+| Consensus versus single-split panels | SM2–SM3; Fig. S5; Table S6 | [Panel comparison](#consensus-versus-single-split-panels) |
+| Methylation shift, confusion, purity and study-specific errors | SM5; Fig. 4; Figs. S6–S8; Tables S7–S13 | [Error analyses](#error-patterns-geometry-and-purity) |
+| Metastatic, FFPE and EPIC cohorts; paired clinical/processing comparisons | SM1, SM3–SM4; Fig. 5; Tables S4, S14–S17 | [Additional cohorts](#expanded-domains-and-paired-conditions) |
+| Genomic context, biological scores, normal-adjacent analyses, expression and attribution | SM6; Fig. 6; Figs. S10–S11; Tables S18–S24 | [Biological context](#genomic-and-biological-context) |
+| Exploratory cfDNA-specific models | SM7; Fig. 7; Table S25 | [Cell-free DNA](#native-cell-free-dna) |
+| Cost and turnaround assumptions | SM8; Table S27 | [Assay estimate](#assay-cost-and-turnaround) |
+| Age representation | SM1; Table S26 | [Age summaries](#age-representation) |
+| Sample principal components; additional probe PCA output | Fig. S2 (Fig. S3 contains held-out confusions) | [PCA](#sample-and-probe-pca) |
 
 ## Synthetic evaluation example
 
@@ -60,7 +60,7 @@ All tables below are tab-delimited unless noted. Preserve specimen order when re
 | Class axis | One `tcga_label` per row, in the declared modeled-class order |
 | TCGA panel matrix | `sample_id`, `project_id`, then panel CpGs; development and held-out manifests must retain their locked patient separation |
 
-Use the evaluated curation snapshot together with its measurement inventory. The code validates supplied identities; it cannot reconstruct manual diagnosis, tissue, source-availability or patient-identity adjudication from an accession list. Supplementary Table S12 supplies aggregate study information, not a specimen-membership substitute.
+Use the evaluated curation snapshot together with its measurement inventory. The code validates supplied identities; it cannot reconstruct manual diagnosis, tissue, source-availability or patient-identity adjudication from an accession list. Supplementary Table S14 supplies aggregate study information, not a specimen-membership substitute.
 
 ## Development and reduced-panel sensitivity
 
@@ -103,13 +103,13 @@ uv run --locked python scripts/evaluate_external.py \
   --config work/primary.json --out-dir outputs/primary_evaluation
 ```
 
-The template preserves original predictions, the fixed full/shared macro-F1 axes, paired truth-stratified patient-cluster draws, specimen and patient-balanced estimates, and a separately named ESCA/STAD runner-up sensitivity. Primary AUROC averages evaluable truth classes. Missing probability columns and class axes are recorded. Do not renormalize predictions or remove an output class in the principal comparison. `float_precision: null`, unsorted selected rows and `first_seen` stratum ordering preserve the adopted primary bootstrap stream.
+The template preserves original predictions, the fixed full/shared macro-F1 axes, paired truth-stratified patient-cluster draws, specimen and patient-balanced estimates, and a separately named ESCA/STAD runner-up sensitivity. Primary AUC averages evaluable truth classes. Missing probability columns and class axes are recorded. Do not renormalize predictions or remove an output class in the principal comparison. `float_precision: null`, unsorted selected rows and `first_seen` stratum ordering preserve the adopted primary bootstrap stream.
 
 MethyDeep execution uses `run_methydeep_inference.py` with its separately obtained `RF_feature45.csv`, `targer_names.csv` and SavedModel. Use a compatible TensorFlow/Keras SavedModel environment; TensorFlow is intentionally not in the tissue-inference lock. The runner's `--help` is available without TensorFlow. It uses the top 30 probes, requires 27 measurements, and imputes using the specimen's measured-panel mean. Pass its original specimen-level predictions to `evaluate_external.py` to calculate the matched comparison with the paper’s class axis and resampling rules.
 
 ## Expanded domains and paired conditions
 
-Bind `config/workflows/expanded.json` and use the same evaluator. Each metastatic, FFPE and EPIC membership flag is independent; a specimen can belong to multiple cohorts. This template uses present-truth class axes, full-axis AUROC availability checks, sorted strata and the recorded domain/subset seeds.
+Bind `config/workflows/expanded.json` and use the same evaluator. Each metastatic, FFPE and EPIC membership flag is independent; a specimen can belong to multiple cohorts. This template uses present-truth class axes, full-axis AUC availability checks, sorted strata and the recorded domain/subset seeds.
 
 `evaluate_paired_conditions.py` uses `config/workflows/paired.json` for the adopted same-patient primary/regional-node and same-specimen processing contrasts. Input names in that template are literal file keys. Prediction files use the common schema; clinical membership additionally has `patient_namespace_and_id` and `sample_role` (`primary`/`metastatic`); IDAT membership has specimen keys; beta-difference inputs have `gse_id`, `model`, `difference`; `PROTOCOL.txt` describes and binds the comparison. `canonical_master_scope.tsv` supplies export-comparison membership. The two export comparisons remain study-specific (GSE144487 and GSE234379).
 
@@ -118,7 +118,7 @@ uv run --locked python scripts/evaluate_paired_conditions.py \
   --config work/paired.json --out-dir outputs/paired_evaluation
 ```
 
-Clinical contrasts retain patient aggregation and common four-way eligibility. Processing contrasts evaluate MiniCpG on its model-specific paired specimens. Both use 20,000 paired resamples. Same-patient contrasts are not propensity-matched independent patients. IDAT contrasts compare complete processing workflows; upstream SeSAMe processing must be supplied separately. The runner produces specimen-level audit outputs locally as well as aggregate results.
+Controlled clinical and processing contrasts use MiniCpG alone, retaining patient or specimen aggregation and 20,000 paired resamples. Same-patient contrasts are not propensity-matched independent patients. IDAT contrasts compare complete processing workflows; upstream SeSAMe processing must be supplied separately. The runner produces specimen-level audit outputs locally as well as aggregate results.
 
 ## Consensus versus single-split panels
 
@@ -198,18 +198,20 @@ Run fold IDs 1–25, then the same command with `--mode merge` (omit `--fold-id`
 
 ## Age representation
 
-`summarize_age_representation.py` with `config/workflows/age.json` uses explicit membership (`cohort`, specimen keys, `tcga_label`) and source-curated `age_category` (`adult`, `paediatric`, `unknown`). Paediatric means <18; adult means ≥18. Unresolved/crossing bands remain unknown, including missing annotations. Independent cohort memberships can overlap. This produces representation counts; it is not a powered age-specific validation analysis. Table S25 reports the cohort-specific counts.
+`summarize_age_representation.py` with `config/workflows/age.json` uses explicit membership (`cohort`, specimen keys, `tcga_label`) and source-curated `age_category` (`adult`, `paediatric`, `unknown`). Paediatric means <18; adult means ≥18. Unresolved/crossing bands remain unknown, including missing annotations. Independent cohort memberships can overlap. This produces representation counts; it is not a powered age-specific validation analysis. Table S26 reports the cohort-specific counts.
 
 ## Assay cost and turnaround
 
-`calculate_assay_cost.py` derives batch and sensitivity totals from `config/assay_cost.json`; references and price/overhead assumptions are included. Table S24 also contains the proposed turnaround schedule. That schedule is an assumption-based protocol scenario, not an empirical runtime benchmark.
+`calculate_assay_cost.py` implements the adopted Lam-based workflow in SM8 and Table S27. The configuration contains the protocol assumptions, historical price anchors reviewed on 1–2 November 2026, component source identifiers, and named scenarios. It uses triplicate 15-µL GoTaq target PCR, small ligation-mix aliquots, a dilute-adapter monetary proxy, and representative library QC. This replaces the earlier full-kit adaptation mistakenly retained in the initial revision-code release.
+
+The default scenarios reproduce the standalone batch, continuously filled run, small batch, and all other Table S27 cost scenarios. Eight- and 24-patient scenarios retain the original 500-depth assumption; other scenarios use 1,000 unless overridden. Outputs are `cost_model.json` (named scenarios with complete component ledgers), `components.tsv`, and `scenario_summary.tsv`. The JSON schema now uses a scenario dictionary, rather than the old batch list. Table S27 also contains the proposed turnaround schedule; this calculator reproduces its cost calculations, not an empirical runtime benchmark.
 
 ```bash
 uv run --locked python scripts/calculate_assay_cost.py \
   --config config/assay_cost.json --out-dir outputs/assay_cost
 ```
 
-The outputs summarize costs under the supplied assumptions; they are not a validated assay quote.
+The outputs are conditional research operating estimates, not a validated assay quote. Adapter compatibility, primer-pool feasibility, handling times and the proposed assay remain unvalidated. The external EPIC service-price benchmark and this operating budget have different accounting boundaries; the configuration states the excluded costs. Price anchors are frozen for manuscript reproducibility, not refreshed market quotations.
 
 ## Sample and probe PCA
 
@@ -224,6 +226,10 @@ Probe PCA additionally needs `fold_presence.tsv` (`fold_id` plus binary probe co
 
 ## Aggregate results
 
-The [results index](../results/revision_20261119/README.md) links Tables S1–S25 to machine-readable TSV files. `tables.json` records their titles and blocks; `manifest.tsv` records file hashes. The tables contain aggregate results, with specimen-level inputs and outputs kept separately.
+The [results index](../results/revision_20261119/README.md) links Tables S1–S27 to machine-readable TSV files. `tables.json` records their titles and blocks; `manifest.tsv` records file hashes. The tables contain aggregate results, with specimen-level inputs and outputs kept separately.
 
 See [reproduction requirements](reproduction_requirements.md) for software and data prerequisites. The example data demonstrate usage; they do not reproduce the paper’s numerical findings.
+
+The external accession manifest and its dictionary are in `data/external_validation_manifest/`. Original-project expression preparation uses `scripts/prepare_expression_original_project_inputs.py`; merged classifier labels must not replace original TCGA project identifiers in methylation–expression matching.
+
+Development complementary metrics are reported in Table S1; all geometry-sensitivity configurations are reported in Table S7.

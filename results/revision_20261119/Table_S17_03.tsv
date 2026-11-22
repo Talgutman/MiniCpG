@@ -1,0 +1,10 @@
+Comparison design	Source study	Classifier	Selected specimens (n)	Selected patients (n)	First-condition scoreable specimens (n)	Second-condition scoreable specimens (n)	Paired scoreable specimens (n)	Specimens lost before paired evaluation (n)
+STATUS_GSE114989	GSE114989	MiniCpG	25	4	19	6	25	0
+STATUS_GSE58999	GSE58999	MiniCpG	88	44	44	44	88	0
+STATUS_GSE73549	GSE73549	MiniCpG	64	14	48	16	64	0
+EXPORT_GSE144487	GSE144487	MiniCpG	98		98	98	98	0
+EXPORT_GSE234379	GSE234379	MiniCpG	46		46	46	46	0
+IDAT_GSE105260	GSE105260	MiniCpG	35		35	35	35	0
+IDAT_GSE178610	GSE178610	MiniCpG	80		80	63	63	17
+IDAT_GSE180060	GSE180060	MiniCpG	88		88	88	88	0
+IDAT_GSE234379	GSE234379	MiniCpG	46		46	46	46	0

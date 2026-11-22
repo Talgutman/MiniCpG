@@ -11,7 +11,7 @@ The saved MiniCpG tissue classifier uses the 30-CpG consensus panel and predicts
 | [class_labels.tsv](class_labels.tsv) | Internal TCGA identifiers and displayed tumor names, including combined classes |
 | [artifact_manifest.json](artifact_manifest.json) | Model, panel and class-metadata hashes |
 
-The bundle contains no raw methylation matrices or specimen-level metadata. Its fitted model is unchanged from the original `v0.1.0` release. Held-out TCGA performance is reported in [Supplementary Table S1](../results/revision_20261119/Table_S01_01.tsv); use the [results index](../results/revision_20261119/README.md) for the complete table mapping.
+The bundle contains no raw methylation matrices or specimen-level metadata. Its fitted model is unchanged from the original `v0.1.0` release. Held-out TCGA performance is reported in [Supplementary Table S2](../results/revision_20261119/Table_S02_01.tsv); use the [results index](../results/revision_20261119/README.md) for the complete table mapping.
 
 ## Run the model
 

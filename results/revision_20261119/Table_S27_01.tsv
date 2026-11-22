@@ -1,0 +1,12 @@
+Component and source	Quantity	Unit cost	Batch cost
+Lightning conversion [COSTREF:2]	192.00 plate positions	$2.9323	$563.00
+GoTaq target and library PCR [COSTREF:3]	344.96 enzyme units	$0.9982	$344.34
+dNTPs [COSTREF:4]	160.16 µL stock	$0.0777	$12.45
+Target and universal PCR oligos [COSTREF:5]	960,960.00 base-pmol	$0.000047	$45.17
+Primer phosphorylation PNK [COSTREF:6]	900.00 enzyme units	$0.1020	$91.80
+UltraII ligation mix and enhancer [COSTREF:7]	357.32 µL mix	$0.6111	$218.36
+Indexed ligation adapters [COSTREF:8], [COSTREF:9], [COSTREF:10]	112.00 libraries	$0.1389	$15.55
+Cleanup beads [COSTREF:11]	22,756.80 µL beads	$0.0310	$705.46
+Representative TapeStation QC [COSTREF:12]	14.00 QC samples	$4.3700	$61.18
+Qubit assays and tubes [COSTREF:13], [COSTREF:14]	214.00 assays with tubes	$1.1880	$254.23
+qPCR quantification [COSTREF:15]	59.40 reactions	$1.0100	$59.99

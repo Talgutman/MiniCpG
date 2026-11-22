@@ -4,10 +4,6 @@
       "path": "<local input path>",
       "sha256": "<bind with bind_analysis_inputs.py>"
     },
-    "methydeep_canonical_predictions.tsv": {
-      "path": "<local input path>",
-      "sha256": "<bind with bind_analysis_inputs.py>"
-    },
     "clinical_design_members.tsv": {
       "path": "<local input path>",
       "sha256": "<bind with bind_analysis_inputs.py>"

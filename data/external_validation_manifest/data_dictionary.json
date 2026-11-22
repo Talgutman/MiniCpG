@@ -1,0 +1,321 @@
+{
+  "version": "external_cohorts_20261113_manifest_20261120_v1",
+  "format": "UTF-8 TSV; tab separator; no index; empty string means missing only where specified",
+  "identity_key": [
+    "study_accession",
+    "sample_identifier"
+  ],
+  "fields": {
+    "study_accession": {
+      "description": "Public GEO Series or ArrayExpress study accession; study-qualified identity key with sample_identifier.",
+      "provenance": "public repository identifier",
+      "missing_value": "not permitted"
+    },
+    "sample_identifier": {
+      "description": "GEO GSM accession, or exact public ArrayExpress SDRF specimen/sample name. Internal aliases removed; no specimens merged.",
+      "provenance": "public repository identifier",
+      "missing_value": "not permitted"
+    },
+    "sample_identifier_type": {
+      "description": "Repository namespace of sample_identifier.",
+      "provenance": "public repository identifier",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "ArrayExpress_public_sample_name",
+        "GEO_sample_accession"
+      ]
+    },
+    "harmonized_class": {
+      "description": "Frozen adopted analysis class derived from source annotations and project curation; not a new diagnosis adjudication. Blank for pending-only specimens.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "empty string",
+      "observed_values": [
+        "",
+        "TCGA-ACC",
+        "TCGA-BLCA",
+        "TCGA-BRCA",
+        "TCGA-CESC",
+        "TCGA-COAD",
+        "TCGA-ESCA",
+        "TCGA-GBM",
+        "TCGA-HNSC",
+        "TCGA-KICH",
+        "TCGA-KIRC",
+        "TCGA-LAML",
+        "TCGA-LIHC",
+        "TCGA-LUAD",
+        "TCGA-LUSC",
+        "TCGA-MESO",
+        "TCGA-PAAD",
+        "TCGA-PCPG",
+        "TCGA-PRAD",
+        "TCGA-SARC",
+        "TCGA-SKCM",
+        "TCGA-TGCT",
+        "TCGA-THCA",
+        "TCGA-THYM",
+        "TCGA-UCEC",
+        "TCGA-UCS",
+        "TCGA-UVM"
+      ]
+    },
+    "class_assignment_status": {
+      "description": "Whether class was adopted in any frozen cohort; pending-only candidates do not expose provisional labels.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "adopted_analysis_class",
+        "not_adopted_pending_eligibility"
+      ]
+    },
+    "curation_version": {
+      "description": "Version of this manifest; cohort assignments bind the frozen November 2026 analyses.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "external_cohorts_20261113_manifest_20261120_v1"
+      ]
+    },
+    "primary_eligibility": {
+      "description": "Frozen cohort eligibility decision.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "exclude",
+        "include"
+      ]
+    },
+    "primary_eligibility_reason": {
+      "description": "Controlled summary of existing eligibility decision; not original clinical text.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "eligible",
+        "outside_frozen_primary_cohort"
+      ]
+    },
+    "primary_minicpg_status": {
+      "description": "Frozen model evaluation disposition. Primary MethyDeep evaluated denotes matched subset; additional scored specimens use scored_not_in_shared_benchmark. Domain evaluated denotes model full subset, which may exceed shared subset.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "evaluated",
+        "not_cohort_eligible",
+        "processed_data_unavailable"
+      ]
+    },
+    "primary_methydeep_status": {
+      "description": "Frozen model evaluation disposition. Primary MethyDeep evaluated denotes matched subset; additional scored specimens use scored_not_in_shared_benchmark. Domain evaluated denotes model full subset, which may exceed shared subset.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "evaluated",
+        "not_cohort_eligible",
+        "probe_coverage_failed",
+        "processed_data_unavailable",
+        "scored_not_in_shared_benchmark"
+      ]
+    },
+    "primary_shared_benchmark": {
+      "description": "1 identifies the exact shared comparison subset; 0 otherwise.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "0",
+        "1"
+      ]
+    },
+    "metastatic_eligibility": {
+      "description": "Frozen cohort eligibility decision.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "exclude",
+        "include",
+        "pending"
+      ]
+    },
+    "metastatic_eligibility_reason": {
+      "description": "Controlled summary of existing eligibility decision; not original clinical text.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "diagnosis_or_material_scope_unresolved",
+        "domain_characteristic_unresolved",
+        "eligibility_evidence_unresolved",
+        "eligible",
+        "platform_extension_not_adopted",
+        "required_domain_characteristic_absent",
+        "supported_diagnosis_unresolved"
+      ]
+    },
+    "metastatic_minicpg_status": {
+      "description": "Frozen model evaluation disposition. Primary MethyDeep evaluated denotes matched subset; additional scored specimens use scored_not_in_shared_benchmark. Domain evaluated denotes model full subset, which may exceed shared subset.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "eligibility_pending",
+        "evaluated",
+        "not_cohort_eligible",
+        "raw_only_processing_not_adopted"
+      ]
+    },
+    "metastatic_methydeep_status": {
+      "description": "Frozen model evaluation disposition. Primary MethyDeep evaluated denotes matched subset; additional scored specimens use scored_not_in_shared_benchmark. Domain evaluated denotes model full subset, which may exceed shared subset.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "eligibility_pending",
+        "evaluated",
+        "not_cohort_eligible",
+        "probe_coverage_or_value_qc_failed",
+        "raw_only_processing_not_adopted"
+      ]
+    },
+    "metastatic_shared_benchmark": {
+      "description": "1 identifies the exact shared comparison subset; 0 otherwise.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "0",
+        "1"
+      ]
+    },
+    "ffpe_eligibility": {
+      "description": "Frozen cohort eligibility decision.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "exclude",
+        "include",
+        "pending"
+      ]
+    },
+    "ffpe_eligibility_reason": {
+      "description": "Controlled summary of existing eligibility decision; not original clinical text.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "diagnosis_or_material_scope_unresolved",
+        "domain_characteristic_unresolved",
+        "eligibility_evidence_unresolved",
+        "eligible",
+        "platform_extension_not_adopted",
+        "required_domain_characteristic_absent",
+        "supported_diagnosis_unresolved"
+      ]
+    },
+    "ffpe_minicpg_status": {
+      "description": "Frozen model evaluation disposition. Primary MethyDeep evaluated denotes matched subset; additional scored specimens use scored_not_in_shared_benchmark. Domain evaluated denotes model full subset, which may exceed shared subset.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "eligibility_pending",
+        "evaluated",
+        "not_cohort_eligible",
+        "probe_coverage_or_value_qc_failed",
+        "raw_only_processing_not_adopted",
+        "source_qc_failed"
+      ]
+    },
+    "ffpe_methydeep_status": {
+      "description": "Frozen model evaluation disposition. Primary MethyDeep evaluated denotes matched subset; additional scored specimens use scored_not_in_shared_benchmark. Domain evaluated denotes model full subset, which may exceed shared subset.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "eligibility_pending",
+        "evaluated",
+        "not_cohort_eligible",
+        "probe_coverage_or_value_qc_failed",
+        "raw_only_processing_not_adopted",
+        "source_qc_failed"
+      ]
+    },
+    "ffpe_shared_benchmark": {
+      "description": "1 identifies the exact shared comparison subset; 0 otherwise.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "0",
+        "1"
+      ]
+    },
+    "epic_eligibility": {
+      "description": "Frozen cohort eligibility decision.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "exclude",
+        "include",
+        "pending"
+      ]
+    },
+    "epic_eligibility_reason": {
+      "description": "Controlled summary of existing eligibility decision; not original clinical text.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "diagnosis_or_material_scope_unresolved",
+        "eligibility_evidence_unresolved",
+        "eligible",
+        "platform_extension_not_adopted",
+        "required_domain_characteristic_absent",
+        "supported_diagnosis_unresolved"
+      ]
+    },
+    "epic_minicpg_status": {
+      "description": "Frozen model evaluation disposition. Primary MethyDeep evaluated denotes matched subset; additional scored specimens use scored_not_in_shared_benchmark. Domain evaluated denotes model full subset, which may exceed shared subset.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "eligibility_pending",
+        "evaluated",
+        "not_cohort_eligible",
+        "probe_coverage_or_value_qc_failed",
+        "raw_only_processing_not_adopted",
+        "source_qc_failed"
+      ]
+    },
+    "epic_methydeep_status": {
+      "description": "Frozen model evaluation disposition. Primary MethyDeep evaluated denotes matched subset; additional scored specimens use scored_not_in_shared_benchmark. Domain evaluated denotes model full subset, which may exceed shared subset.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "eligibility_pending",
+        "evaluated",
+        "not_cohort_eligible",
+        "probe_coverage_or_value_qc_failed",
+        "raw_only_processing_not_adopted",
+        "source_qc_failed"
+      ]
+    },
+    "epic_shared_benchmark": {
+      "description": "1 identifies the exact shared comparison subset; 0 otherwise.",
+      "provenance": "project-derived frozen analysis/curation metadata",
+      "missing_value": "not permitted",
+      "observed_values": [
+        "0",
+        "1"
+      ]
+    }
+  },
+  "model_status_definitions": {
+    "evaluated": "Member of the specified frozen model analysis subset; see primary MethyDeep qualification.",
+    "scored_not_in_shared_benchmark": "Primary MethyDeep prediction exists but reference class was outside the shared benchmark truth scope.",
+    "not_cohort_eligible": "Not included in this cohort; may belong to another cohort.",
+    "eligibility_pending": "Frozen eligibility unresolved; not evaluated in this cohort.",
+    "processed_data_unavailable": "Eligible primary record lacks adopted processed beta input.",
+    "probe_coverage_failed": "Available primary input fails the model coverage rule.",
+    "raw_only_processing_not_adopted": "Raw-only source; processing was not part of adopted evaluation.",
+    "source_qc_failed": "Frozen source QC excluded this specimen.",
+    "probe_coverage_or_value_qc_failed": "Frozen model extraction failed coverage or value QC; combined source disposition retained."
+  },
+  "source_studies_fields": {
+    "study_accession": "Study key",
+    "repository": "GEO or ArrayExpress/BioStudies",
+    "study_url": "Official repository landing page",
+    "publication_pmid": "Semicolon-separated PMIDs present in archived study metadata; blank if absent",
+    "publication_doi": "Semicolon-separated DOIs present in archived study metadata; blank if absent",
+    "curation_version": "Manifest curation version"
+  }
+}

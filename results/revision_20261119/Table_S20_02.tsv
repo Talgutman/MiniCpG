@@ -1,16 +1,7 @@
-Cancer type	Patient pairs	Both correct	Lost after substitution	Recovered after substitution	Both wrong	Tumor accuracy	Substituted accuracy
-TCGA-BLCA	5	2	2	1	0	0.8	0.6
-TCGA-BRCA	19	17	2	0	0	1	0.8947368421052632
-TCGA-CESC	1	0	1	0	0	1	0
-TCGA-COAD	8	8	0	0	0	1	1
-TCGA-ESCA	3	2	0	1	0	0.6666666666666666	1
-TCGA-HNSC	13	11	2	0	0	1	0.8461538461538461
-TCGA-KIRC	36	29	4	3	0	0.9166666666666666	0.8888888888888888
-TCGA-KIRP	8	0	7	0	1	0.875	0
-TCGA-LIHC	15	15	0	0	0	1	1
-TCGA-LUAD	4	4	0	0	0	1	1
-TCGA-LUSC	9	0	8	0	1	0.8888888888888888	0
-TCGA-PAAD	1	1	0	0	0	1	1
-TCGA-PRAD	11	9	2	0	0	1	0.8181818181818182
-TCGA-THCA	9	9	0	0	0	1	1
-TCGA-UCEC	5	3	2	0	0	1	0.6
+Classifier	Target sensitivity	Held-out true positives (n)	Held-out false positives (n)	Held-out true negatives (n)	Held-out false negatives (n)
+L2 logistic regression (balanced)	0.95	1158	78	92	59
+Extra Trees (balanced)	0.95	1139	6	164	78
+Centroid distance	0.95	1149	126	44	68
+L2 logistic regression (balanced)	0.99	1206	151	19	11
+Extra Trees (balanced)	0.99	1200	26	144	17
+Centroid distance	0.99	1204	142	28	13

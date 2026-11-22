@@ -14,7 +14,7 @@ H=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 
 def read(n):
  d=pd.read_csv(inputs.files[n],sep='\t',dtype=str,keep_default_na=False);d.index=d.gse_id+':'+d.sample_id if {'gse_id','sample_id'}<=set(d) else d.index;return d
-base={m:read(m+'_canonical_predictions.tsv') for m in ['minicpg','methydeep']}
+base={m:read(m+'_canonical_predictions.tsv') for m in ['minicpg']}
 rows=[];units=[];specimens=[];coverage=[];dest=[];comparisons=[]
 def cp(k,n,alpha=.05):return [0 if k==0 else float(beta.ppf(alpha/2,k,n-k+1)),1 if k==n else float(beta.ppf(1-alpha/2,k+1,n-k))]
 def stats(a,b,identity):
@@ -38,14 +38,7 @@ def process(design,g,sel,condition_frames,clinical=False):
    survivors[model]=set(s[s.patient_namespace_and_id.isin(good)].index)
   else:survivors[model]=selected & set(first.index)&set(second.index)
   coverage.append({'design':design,'gse_id':g,'model':model,'selected_specimens':len(sel),'selected_patients':sel.patient_namespace_and_id.nunique() if clinical else '', 'first_scoreable':sum(k in first.index for k in sel[sel.sample_role=='primary'].index) if clinical else len(selected&set(first.index)), 'second_scoreable':sum(k in first.index for k in sel[sel.sample_role=='metastatic'].index) if clinical else len(selected&set(second.index)), 'paired_scoreable_specimens':len(survivors[model]),'removed_before_common':len(sel)-len(survivors[model])})
- common=survivors['minicpg']&survivors['methydeep'] if clinical else set()
- if clinical:
-  s=sel.loc[sorted(common)];gp=s.groupby('patient_namespace_and_id').sample_role.nunique();common=set(s[s.patient_namespace_and_id.isin(gp[gp==2].index)].index)
- for c in coverage[-len(condition_frames):]:c['fourway_common_specimens']=len(common) if clinical else '';c['removed_from_model_pair_to_common']=len(survivors[c['model']])-len(common) if clinical else ''
- common_arrays={}
- analyses=[('model_paired','minicpg',survivors['minicpg'])]
- if clinical:analyses += [('common','minicpg',common),('common','methydeep',common)]
- for subset,model,ids in analyses:
+ for subset,model,ids in [('model_paired','minicpg',survivors['minicpg'])]:
   ids=sorted(ids);first,second=condition_frames[model];s=sel.loc[ids]; rec=[]
   for k in ids:
    conds=[('first',first)] if clinical and s.loc[k,'sample_role']=='primary' else ([('second',first)] if clinical else [('first',first),('second',second)])
@@ -63,22 +56,16 @@ def process(design,g,sel,condition_frames,clinical=False):
   if not met['binary_pair_inference_valid']:
    for c in ['correct_to_incorrect','incorrect_to_correct','both_correct','both_incorrect','discordant_exact_p','conservative_difference_low','conservative_difference_high','first_exact_low','first_exact_high','second_exact_low','second_exact_high']:met.pop(c,None)
   rows.append(met)
-  if subset=='common':common_arrays[model]=(a,draw)
- for cond in (['first','second','difference'] if clinical else []):
-  ma,md=common_arrays['minicpg'];ha,hd=common_arrays['methydeep'];assert ma.index.equals(ha.index)
-  if cond=='difference':value=(ma['second']-ma['first']).mean()-(ha['second']-ha['first']).mean();draw=(md[1]-md[0])-(hd[1]-hd[0])
-  else:i=0 if cond=='first' else 1;value=ma[cond].mean()-ha[cond].mean();draw=md[i]-hd[i]
-  comparisons.append({'design':design,'gse_id':g,'contrast':cond+'_Mini_minus_MethyDeep','n_units':len(ma),'difference':value,'ci_low':np.quantile(draw,.025),'ci_high':np.quantile(draw,.975)})
 
 cl=read('clinical_design_members.tsv')
 for g,sel in cl.groupby('gse_id'):process('STATUS_'+g,g,sel,{m:(p,p) for m,p in base.items()},True)
 for g in ['GSE144487','GSE234379']:
- frames={'minicpg':(base['minicpg'],read(f'minicpg_export_alternative_{g}.tsv'))};ids=frames['minicpg'][1].index
+ frames={m:(p,read(f'{m}_export_alternative_{g}.tsv')) for m,p in base.items()};ids=frames['minicpg'][1].index
  sel=read('canonical_master_scope.tsv').loc[ids];process('EXPORT_'+g,g,sel,frames)
 sel=read('idat_design_members.tsv')
-frames={m:(read(m+'_idat_author.tsv'),read(m+'_idat_sesame.tsv')) for m in ['minicpg']}
+frames={m:(read(m+'_idat_author.tsv'),read(m+'_idat_sesame.tsv')) for m in base}
 for g,s in sel.groupby('gse_id'):process('IDAT_'+g,g,s,frames)
-for name,data in [('paired_results',rows),('analysis_units',units),('specimen_outcomes',specimens),('coverage',coverage),('prediction_destinations',dest),('model_comparisons',comparisons)]:pd.DataFrame(data).to_csv(D/(name+'.tsv'),sep='\t',index=False)
+for name,data in [('paired_results',rows),('analysis_units',units),('specimen_outcomes',specimens),('coverage',coverage),('prediction_destinations',dest)]:pd.DataFrame(data).to_csv(D/(name+'.tsv'),sep='\t',index=False)
 bd=read('idat_input_beta_differences.tsv');bd=bd[bd.model=='minicpg'].copy();bd['absolute_change']=pd.to_numeric(bd.difference,errors='coerce').abs()
 bd.groupby(['gse_id','model']).absolute_change.agg(['size','count','mean','median','max']).reset_index().to_csv(D/'beta_difference_diagnostics.tsv',sep='\t',index=False)
 (O/'ANALYSIS_VALIDATION.json').write_text(json.dumps({'status':'passed','protocol_sha256':H(inputs.files['PROTOCOL.txt']),'input_hashes_verified':True,'bootstrap_replicates':20000,'rows':len(rows),'outputs':{p.name:H(p) for p in D.glob('*.tsv')}},indent=2))

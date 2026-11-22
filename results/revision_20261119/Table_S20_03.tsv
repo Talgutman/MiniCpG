@@ -1,45 +1,7 @@
-Input condition	Cancer type	Predicted class	Pairs
-Tumor	TCGA-BLCA	TCGA-BLCA	4
-Tumor	TCGA-BLCA	TCGA-LUSC	1
-Tumor	TCGA-BRCA	TCGA-BRCA	19
-Tumor	TCGA-CESC	TCGA-CESC	1
-Tumor	TCGA-COAD	TCGA-COAD	8
-Tumor	TCGA-ESCA	TCGA-COAD	1
-Tumor	TCGA-ESCA	TCGA-ESCA	2
-Tumor	TCGA-HNSC	TCGA-HNSC	13
-Tumor	TCGA-KIRC	TCGA-KIRC	33
-Tumor	TCGA-KIRC	TCGA-KIRP	3
-Tumor	TCGA-KIRP	TCGA-KIRC	1
-Tumor	TCGA-KIRP	TCGA-KIRP	7
-Tumor	TCGA-LIHC	TCGA-LIHC	15
-Tumor	TCGA-LUAD	TCGA-LUAD	4
-Tumor	TCGA-LUSC	TCGA-LUAD	1
-Tumor	TCGA-LUSC	TCGA-LUSC	8
-Tumor	TCGA-PAAD	TCGA-PAAD	1
-Tumor	TCGA-PRAD	TCGA-PRAD	11
-Tumor	TCGA-THCA	TCGA-THCA	9
-Tumor	TCGA-UCEC	TCGA-UCEC	5
-Normal-substituted	TCGA-BLCA	TCGA-BLCA	3
-Normal-substituted	TCGA-BLCA	TCGA-SARC	2
-Normal-substituted	TCGA-BRCA	TCGA-BRCA	17
-Normal-substituted	TCGA-BRCA	TCGA-SARC	2
-Normal-substituted	TCGA-CESC	TCGA-SARC	1
-Normal-substituted	TCGA-COAD	TCGA-COAD	8
-Normal-substituted	TCGA-ESCA	TCGA-ESCA	3
-Normal-substituted	TCGA-HNSC	TCGA-ESCA	1
-Normal-substituted	TCGA-HNSC	TCGA-HNSC	11
-Normal-substituted	TCGA-HNSC	TCGA-THCA	1
-Normal-substituted	TCGA-KIRC	TCGA-KICH	1
-Normal-substituted	TCGA-KIRC	TCGA-KIRC	32
-Normal-substituted	TCGA-KIRC	TCGA-KIRP	3
-Normal-substituted	TCGA-KIRP	TCGA-KIRC	8
-Normal-substituted	TCGA-LIHC	TCGA-LIHC	15
-Normal-substituted	TCGA-LUAD	TCGA-LUAD	4
-Normal-substituted	TCGA-LUSC	TCGA-LUAD	9
-Normal-substituted	TCGA-PAAD	TCGA-PAAD	1
-Normal-substituted	TCGA-PRAD	TCGA-PRAD	9
-Normal-substituted	TCGA-PRAD	TCGA-UCEC	2
-Normal-substituted	TCGA-THCA	TCGA-THCA	9
-Normal-substituted	TCGA-UCEC	TCGA-PAAD	1
-Normal-substituted	TCGA-UCEC	TCGA-SARC	1
-Normal-substituted	TCGA-UCEC	TCGA-UCEC	3
+Classifier	Target sensitivity	Held-out sensitivity (95% CI)	Held-out specificity (95% CI)	Held-out balanced accuracy (95% CI)
+L2 logistic regression (balanced)	0.95	0.9515 (0.9400–0.9622)	0.5412 (0.4882–0.5941)	0.7463 (0.7177–0.7749)
+Extra Trees (balanced)	0.95	0.9359 (0.9219–0.9491)	0.9647 (0.9412–0.9882)	0.9503 (0.9353–0.9636)
+Centroid distance	0.95	0.9441 (0.9351–0.9532)	0.2588 (0.2235–0.2941)	0.6015 (0.5826–0.6199)
+L2 logistic regression (balanced)	0.99	0.9910 (0.9860–0.9959)	0.1118 (0.0706–0.1588)	0.5514 (0.5304–0.5741)
+Extra Trees (balanced)	0.99	0.9860 (0.9795–0.9918)	0.8471 (0.8000–0.8882)	0.9165 (0.8930–0.9388)
+Centroid distance	0.99	0.9893 (0.9836–0.9942)	0.1647 (0.1294–0.2000)	0.5770 (0.5590–0.5947)

@@ -1,157 +1,17 @@
-TCGA class code	Cancer class	Cohort A	Cohort B	Cohort A specimens (n)	Cohort B specimens (n)	Shared specimens (n)	Shared studies (n)
-TCGA-ACC	ACC	primary	metastatic	12	1	0	1
-TCGA-ACC	ACC	primary	ffpe	12	0	0	0
-TCGA-ACC	ACC	primary	epic	12	0	0	0
-TCGA-ACC	ACC	metastatic	ffpe	1	0	0	0
-TCGA-ACC	ACC	metastatic	epic	1	0	0	0
-TCGA-ACC	ACC	ffpe	epic	0	0	0	0
-TCGA-BLCA	BLCA	primary	metastatic	28	0	0	0
-TCGA-BLCA	BLCA	primary	ffpe	28	0	0	0
-TCGA-BLCA	BLCA	primary	epic	28	0	0	0
-TCGA-BLCA	BLCA	metastatic	ffpe	0	0	0	0
-TCGA-BLCA	BLCA	metastatic	epic	0	0	0	0
-TCGA-BLCA	BLCA	ffpe	epic	0	0	0	0
-TCGA-BRCA	BRCA	primary	metastatic	222	182	0	1
-TCGA-BRCA	BRCA	primary	ffpe	222	888	0	0
-TCGA-BRCA	BRCA	primary	epic	222	842	0	0
-TCGA-BRCA	BRCA	metastatic	ffpe	182	888	45	4
-TCGA-BRCA	BRCA	metastatic	epic	182	842	96	2
-TCGA-BRCA	BRCA	ffpe	epic	888	842	657	4
-TCGA-CESC	CESC	primary	metastatic	346	0	0	0
-TCGA-CESC	CESC	primary	ffpe	346	0	0	0
-TCGA-CESC	CESC	primary	epic	346	0	0	0
-TCGA-CESC	CESC	metastatic	ffpe	0	0	0	0
-TCGA-CESC	CESC	metastatic	epic	0	0	0	0
-TCGA-CESC	CESC	ffpe	epic	0	0	0	0
-TCGA-COAD	COAD/READ	primary	metastatic	375	29	0	2
-TCGA-COAD	COAD/READ	primary	ffpe	375	40	0	0
-TCGA-COAD	COAD/READ	primary	epic	375	161	0	0
-TCGA-COAD	COAD/READ	metastatic	ffpe	29	40	4	1
-TCGA-COAD	COAD/READ	metastatic	epic	29	161	4	1
-TCGA-COAD	COAD/READ	ffpe	epic	40	161	40	2
-TCGA-ESCA	ESCA/STAD	primary	metastatic	67	2	0	0
-TCGA-ESCA	ESCA/STAD	primary	ffpe	67	25	0	0
-TCGA-ESCA	ESCA/STAD	primary	epic	67	2	0	0
-TCGA-ESCA	ESCA/STAD	metastatic	ffpe	2	25	2	1
-TCGA-ESCA	ESCA/STAD	metastatic	epic	2	2	2	1
-TCGA-ESCA	ESCA/STAD	ffpe	epic	25	2	2	1
-TCGA-GBM	GBM/LGG	primary	metastatic	435	0	0	0
-TCGA-GBM	GBM/LGG	primary	ffpe	435	513	0	1
-TCGA-GBM	GBM/LGG	primary	epic	435	258	0	0
-TCGA-GBM	GBM/LGG	metastatic	ffpe	0	513	0	0
-TCGA-GBM	GBM/LGG	metastatic	epic	0	258	0	0
-TCGA-GBM	GBM/LGG	ffpe	epic	513	258	91	2
-TCGA-HNSC	HNSC	primary	metastatic	124	49	0	0
-TCGA-HNSC	HNSC	primary	ffpe	124	91	0	0
-TCGA-HNSC	HNSC	primary	epic	124	74	0	0
-TCGA-HNSC	HNSC	metastatic	ffpe	49	91	49	1
-TCGA-HNSC	HNSC	metastatic	epic	49	74	49	1
-TCGA-HNSC	HNSC	ffpe	epic	91	74	49	1
-TCGA-KICH	KICH	primary	metastatic	8	0	0	0
-TCGA-KICH	KICH	primary	ffpe	8	0	0	0
-TCGA-KICH	KICH	primary	epic	8	0	0	0
-TCGA-KICH	KICH	metastatic	ffpe	0	0	0	0
-TCGA-KICH	KICH	metastatic	epic	0	0	0	0
-TCGA-KICH	KICH	ffpe	epic	0	0	0	0
-TCGA-KIRC	KIRC	primary	metastatic	28	159	0	1
-TCGA-KIRC	KIRC	primary	ffpe	28	138	0	0
-TCGA-KIRC	KIRC	primary	epic	28	139	0	0
-TCGA-KIRC	KIRC	metastatic	ffpe	159	138	0	1
-TCGA-KIRC	KIRC	metastatic	epic	159	139	1	1
-TCGA-KIRC	KIRC	ffpe	epic	138	139	138	1
-TCGA-LAML	LAML	primary	metastatic	183	0	0	0
-TCGA-LAML	LAML	primary	ffpe	183	0	0	0
-TCGA-LAML	LAML	primary	epic	183	155	0	1
-TCGA-LAML	LAML	metastatic	ffpe	0	0	0	0
-TCGA-LAML	LAML	metastatic	epic	0	155	0	0
-TCGA-LAML	LAML	ffpe	epic	0	155	0	0
-TCGA-LIHC	LIHC	primary	metastatic	325	0	0	0
-TCGA-LIHC	LIHC	primary	ffpe	325	0	0	0
-TCGA-LIHC	LIHC	primary	epic	325	0	0	0
-TCGA-LIHC	LIHC	metastatic	ffpe	0	0	0	0
-TCGA-LIHC	LIHC	metastatic	epic	0	0	0	0
-TCGA-LIHC	LIHC	ffpe	epic	0	0	0	0
-TCGA-LUAD	LUAD	primary	metastatic	318	13	0	0
-TCGA-LUAD	LUAD	primary	ffpe	318	21	0	0
-TCGA-LUAD	LUAD	primary	epic	318	81	0	1
-TCGA-LUAD	LUAD	metastatic	ffpe	13	21	7	1
-TCGA-LUAD	LUAD	metastatic	epic	13	81	13	2
-TCGA-LUAD	LUAD	ffpe	epic	21	81	21	2
-TCGA-LUSC	LUSC	primary	metastatic	57	0	0	0
-TCGA-LUSC	LUSC	primary	ffpe	57	0	0	0
-TCGA-LUSC	LUSC	primary	epic	57	0	0	0
-TCGA-LUSC	LUSC	metastatic	ffpe	0	0	0	0
-TCGA-LUSC	LUSC	metastatic	epic	0	0	0	0
-TCGA-LUSC	LUSC	ffpe	epic	0	0	0	0
-TCGA-MESO	MESO	primary	metastatic	62	0	0	0
-TCGA-MESO	MESO	primary	ffpe	62	79	0	0
-TCGA-MESO	MESO	primary	epic	62	79	0	0
-TCGA-MESO	MESO	metastatic	ffpe	0	79	0	0
-TCGA-MESO	MESO	metastatic	epic	0	79	0	0
-TCGA-MESO	MESO	ffpe	epic	79	79	79	1
-TCGA-PAAD	PAAD	primary	metastatic	282	27	0	0
-TCGA-PAAD	PAAD	primary	ffpe	282	43	0	0
-TCGA-PAAD	PAAD	primary	epic	282	43	0	0
-TCGA-PAAD	PAAD	metastatic	ffpe	27	43	27	2
-TCGA-PAAD	PAAD	metastatic	epic	27	43	27	2
-TCGA-PAAD	PAAD	ffpe	epic	43	43	43	2
-TCGA-PCPG	PCPG	primary	metastatic	22	0	0	0
-TCGA-PCPG	PCPG	primary	ffpe	22	0	0	0
-TCGA-PCPG	PCPG	primary	epic	22	0	0	0
-TCGA-PCPG	PCPG	metastatic	ffpe	0	0	0	0
-TCGA-PCPG	PCPG	metastatic	epic	0	0	0	0
-TCGA-PCPG	PCPG	ffpe	epic	0	0	0	0
-TCGA-PRAD	PRAD	primary	metastatic	258	33	0	0
-TCGA-PRAD	PRAD	primary	ffpe	258	134	0	0
-TCGA-PRAD	PRAD	primary	epic	258	5	0	0
-TCGA-PRAD	PRAD	metastatic	ffpe	33	134	25	3
-TCGA-PRAD	PRAD	metastatic	epic	33	5	1	1
-TCGA-PRAD	PRAD	ffpe	epic	134	5	5	2
-TCGA-SARC	SARC	primary	metastatic	74	145	0	2
-TCGA-SARC	SARC	primary	ffpe	74	904	0	2
-TCGA-SARC	SARC	primary	epic	74	1008	0	1
-TCGA-SARC	SARC	metastatic	ffpe	145	904	32	2
-TCGA-SARC	SARC	metastatic	epic	145	1008	117	1
-TCGA-SARC	SARC	ffpe	epic	904	1008	546	4
-TCGA-SKCM	SKCM	primary	metastatic	29	290	0	1
-TCGA-SKCM	SKCM	primary	ffpe	29	335	0	0
-TCGA-SKCM	SKCM	primary	epic	29	312	0	0
-TCGA-SKCM	SKCM	metastatic	ffpe	290	335	146	6
-TCGA-SKCM	SKCM	metastatic	epic	290	312	189	5
-TCGA-SKCM	SKCM	ffpe	epic	335	312	163	5
-TCGA-TGCT	TGCT	primary	metastatic	70	0	0	0
-TCGA-TGCT	TGCT	primary	ffpe	70	0	0	0
-TCGA-TGCT	TGCT	primary	epic	70	0	0	0
-TCGA-TGCT	TGCT	metastatic	ffpe	0	0	0	0
-TCGA-TGCT	TGCT	metastatic	epic	0	0	0	0
-TCGA-TGCT	TGCT	ffpe	epic	0	0	0	0
-TCGA-THCA	THCA	primary	metastatic	123	0	0	0
-TCGA-THCA	THCA	primary	ffpe	123	7	0	0
-TCGA-THCA	THCA	primary	epic	123	55	0	0
-TCGA-THCA	THCA	metastatic	ffpe	0	7	0	0
-TCGA-THCA	THCA	metastatic	epic	0	55	0	0
-TCGA-THCA	THCA	ffpe	epic	7	55	7	2
-TCGA-THYM	THYM	primary	metastatic	18	0	0	0
-TCGA-THYM	THYM	primary	ffpe	18	113	0	0
-TCGA-THYM	THYM	primary	epic	18	113	0	0
-TCGA-THYM	THYM	metastatic	ffpe	0	113	0	0
-TCGA-THYM	THYM	metastatic	epic	0	113	0	0
-TCGA-THYM	THYM	ffpe	epic	113	113	113	1
-TCGA-UCEC	UCEC	primary	metastatic	42	55	0	1
-TCGA-UCEC	UCEC	primary	ffpe	42	33	0	0
-TCGA-UCEC	UCEC	primary	epic	42	82	0	0
-TCGA-UCEC	UCEC	metastatic	ffpe	55	33	2	1
-TCGA-UCEC	UCEC	metastatic	epic	55	82	2	1
-TCGA-UCEC	UCEC	ffpe	epic	33	82	33	2
-TCGA-UCS	UCS	primary	metastatic	88	0	0	0
-TCGA-UCS	UCS	primary	ffpe	88	0	0	0
-TCGA-UCS	UCS	primary	epic	88	7	0	1
-TCGA-UCS	UCS	metastatic	ffpe	0	0	0	0
-TCGA-UCS	UCS	metastatic	epic	0	7	0	0
-TCGA-UCS	UCS	ffpe	epic	0	7	0	0
-TCGA-UVM	UVM	primary	metastatic	87	0	0	0
-TCGA-UVM	UVM	primary	ffpe	87	33	0	0
-TCGA-UVM	UVM	primary	epic	87	27	0	1
-TCGA-UVM	UVM	metastatic	ffpe	0	33	0	0
-TCGA-UVM	UVM	metastatic	epic	0	27	0	0
-TCGA-UVM	UVM	ffpe	epic	33	27	10	1
+Membership basis	Cohort combination	Specimens
+Eligible	EPIC	1190
+Eligible	FFPE	1275
+Eligible	FFPE + EPIC	1852
+Eligible	Metastatic	359
+Eligible	Metastatic + EPIC	304
+Eligible	Metastatic + FFPE	125
+Eligible	Metastatic + FFPE + EPIC	214
+Eligible	Primary	3723
+MiniCpG-evaluated	EPIC	1159
+MiniCpG-evaluated	FFPE	1275
+MiniCpG-evaluated	FFPE + EPIC	1783
+MiniCpG-evaluated	Metastatic	359
+MiniCpG-evaluated	Metastatic + EPIC	287
+MiniCpG-evaluated	Metastatic + FFPE	125
+MiniCpG-evaluated	Metastatic + FFPE + EPIC	214
+MiniCpG-evaluated	Primary	3683

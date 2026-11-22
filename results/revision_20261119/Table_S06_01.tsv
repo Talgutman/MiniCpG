@@ -1,10 +1,8 @@
-Matching step	Samples
-TCGA held-out test set	1681
-No valid patient-level purity estimate	134
-Purity only from a different specimen or vial	4
-Retained specimen and vial matches	1543
-Correct predictions	1431
-Incorrect predictions	112
-Classes represented	27
-Samples informing class-stratified conditional estimate	1121
-Classes informing conditional estimate	18
+Summary statistic	Estimate	95% CI lower	95% CI upper	Unit
+Consensus mean macro-F1	0.7137277760312845			Proportion
+Single-split-panel mean macro-F1	0.7095119115732961			Proportion
+Consensus minus single-split mean	0.4215864457988383	-0.5918062343095012	1.3098391879510891	Percentage points
+Selection-frequency association	0.13741497823819387	0.045270134446488315	0.24564397520324685	Spearman rho
+Consensus rank	37			Among 101 panels
+Seeds above single-split mean	8			Of 10 seeds
+Consensus minus lowest-performing single-split panel	4.9114122418903445			Percentage points

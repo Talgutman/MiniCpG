@@ -279,7 +279,7 @@ options:
   --task-index TASK_INDEX
                         0-based task index. Defaults to $SLURM_ARRAY_TASK_ID
                         if present.
-  --compute-auroc       Enable AUROC computation for the FS classifier.
+  --compute-auroc       Enable AUC computation for the FS classifier.
   --n-jobs N_JOBS       Parallel workers for compatible selectors.
 ```
 
@@ -376,7 +376,7 @@ options:
                         Mixing weight between base pairwise score and
                         stability frequency.
   --n-jobs N_JOBS       Worker count.
-  --compute-auroc       Compute macro and per-class AUROC.
+  --compute-auroc       Compute macro and per-class AUC.
   --run-id RUN_ID       Run identifier for heartbeat tracking.
   --heartbeat-path HEARTBEAT_PATH
                         Path to JSONL heartbeat file for cluster monitoring.
@@ -447,7 +447,7 @@ options:
   --task-index TASK_INDEX
                         0-based task index. Defaults to $SLURM_ARRAY_TASK_ID
                         if present.
-  --compute-auroc       Enable AUROC computation.
+  --compute-auroc       Enable AUC computation.
   --n-jobs N_JOBS       Parallel workers for compatible models.
   --fit-decision-policy
                         Fit decision policy during model benchmarking
@@ -547,7 +547,7 @@ options:
   --rf-min-samples-leaf-grid RF_MIN_SAMPLES_LEAF_GRID
                         RandomForest min_samples_leaf grid.
   --n-jobs N_JOBS       Parallel workers for tree fitting.
-  --compute-auroc       Compute macro/per-class AUROC.
+  --compute-auroc       Compute macro/per-class AUC.
   --fit-decision-policy
                         Fit a post-probability decision policy from dev OOF
                         probabilities before test evaluation.
@@ -743,7 +743,7 @@ options:
   --rf-min-samples-leaf-grid RF_MIN_SAMPLES_LEAF_GRID
                         RandomForest min_samples_leaf grid.
   --n-jobs N_JOBS       Parallel workers for tree fitting.
-  --compute-auroc       Compute macro and per-class AUROC.
+  --compute-auroc       Compute macro and per-class AUC.
   --fit-decision-policy
                         Fit a post-probability decision policy from dev OOF
                         probabilities before lockbox evaluation.
@@ -1822,7 +1822,7 @@ options:
 ```text
 usage: calculate_assay_cost.py [-h] [--config CONFIG] --out-dir OUT_DIR
 
-Recalculate the protocol-informed proposed assay budget; not measured costs.
+Recalculate the adopted Lam-based research operating budget in SM8/Table S27.
 
 options:
   -h, --help         show this help message and exit
